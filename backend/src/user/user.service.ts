@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../generated/prisma/client';
@@ -40,6 +40,19 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    // Check if user already exists
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email: createUserDto.email },
+    });
+    if (existingEmail) {
+      throw new ConflictException('User with this email already exists');
+    }
+    const existingName = await this.prisma.user.findUnique({
+      where: { name: createUserDto.name },
+    });
+    if (existingName) {
+      throw new ConflictException('User with this name already exists');
+    }
     const { email, name, password } = createUserDto;
     const passwordHashed = await bcrypt.hash(password, 10);
 
@@ -75,8 +88,9 @@ export class UserService {
   }
 
   async deleteUser(id: string): Promise<UserResponseDto> {
-    const user = await this.prisma.user.delete({
+    const user = await this.prisma.user.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
     return plainToInstance(UserResponseDto, user);
   }

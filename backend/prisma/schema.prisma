@@ -20,14 +20,46 @@ model User {
   passwordHashed String    @db.Text
   registeredAt   DateTime  @default(now())
   deletedAt      DateTime?
+  following      Follow[]  @relation("UserFollowing")
+  followers      Follow[]  @relation("UserFollowers")
   posts          Post[]
+
+  rates Rate[]
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }
 
 model Post {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   title     String
-  content   String
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
   authorId  String
+
+  rates Rate[]
+}
+
+model Rate {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  postId    String
+  isLike    Boolean
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
 }

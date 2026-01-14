@@ -1,7 +1,11 @@
 ### Variables
 @baseUrl = http://localhost:3000
 @contentType = application/json
-
+@userId='adsfsdf'
+@postId='asdfsadf'
+@authorId='asdfsadf'
+@followerId='asdfsadf'
+@followingId='asdfsadf'
 ### Health Check
 GET {{baseUrl}}
 
@@ -28,7 +32,7 @@ POST {{baseUrl}}/users
 Content-Type: {{contentType}}
 
 {
-  "email": "user@example.com",
+  "email": "different@gmail.com",
   "name": "testuser",
   "password": "password123"
 }
@@ -174,3 +178,139 @@ DELETE {{baseUrl}}/posts/{{flowPostId}}
 
 ### 6. Delete the author
 DELETE {{baseUrl}}/users/{{flowAuthorId}}
+
+################################################################################
+# Follow API Tests
+################################################################################
+
+### Get followers of a user
+GET {{baseUrl}}/follows/users/{{userId}}/followers
+
+### Get followers with pagination
+GET {{baseUrl}}/follows/users/{{userId}}/followers?skip=0&take=10
+
+### Get following list of a user
+GET {{baseUrl}}/follows/users/{{userId}}/following
+
+### Get following with pagination
+GET {{baseUrl}}/follows/users/{{userId}}/following?skip=0&take=10
+
+### Get follow statistics
+GET {{baseUrl}}/follows/users/{{userId}}/stats
+
+### Check if user A follows user B
+GET {{baseUrl}}/follows/users/{{userAId}}/is-following/{{userBId}}
+
+### Follow a user
+# @name followUser
+POST {{baseUrl}}/follows/users/{{followerId}}/follow
+Content-Type: {{contentType}}
+
+{
+  "followingId": "{{followingId}}"
+}
+
+### Unfollow a user
+DELETE {{baseUrl}}/follows/users/{{followerId}}/follow/{{followingId}}
+
+################################################################################
+# Follow Integration Test Flow
+################################################################################
+
+### 1. Create user A
+# @name flowCreateUserA
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "alice@example.com",
+  "name": "alice",
+  "password": "password123"
+}
+
+### 2. Create user B
+# @name flowCreateUserB
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "bob@example.com",
+  "name": "bob",
+  "password": "password123"
+}
+
+### 3. Create user C
+# @name flowCreateUserC
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "charlie@example.com",
+  "name": "charlie",
+  "password": "password123"
+}
+
+### 4. User A follows User B
+@userAId = {{flowCreateUserA.response.body.id}}
+@userBId = {{flowCreateUserB.response.body.id}}
+@userCId = {{flowCreateUserC.response.body.id}}
+
+# @name flowFollowAtoB
+POST {{baseUrl}}/follows/users/{{userAId}}/follow
+Content-Type: {{contentType}}
+
+{
+  "followingId": "{{userBId}}"
+}
+
+### 5. User A follows User C
+# @name flowFollowAtoC
+POST {{baseUrl}}/follows/users/{{userAId}}/follow
+Content-Type: {{contentType}}
+
+{
+  "followingId": "{{userCId}}"
+}
+
+### 6. User B follows User A
+# @name flowFollowBtoA
+POST {{baseUrl}}/follows/users/{{userBId}}/follow
+Content-Type: {{contentType}}
+
+{
+  "followingId": "{{userAId}}"
+}
+
+### 7. Check User A's following list (should be 2: B and C)
+GET {{baseUrl}}/follows/users/{{userAId}}/following
+
+### 8. Check User A's followers (should be 1: B)
+GET {{baseUrl}}/follows/users/{{userAId}}/followers
+
+### 9. Check User B's followers (should be 1: A)
+GET {{baseUrl}}/follows/users/{{userBId}}/followers
+
+### 10. Get User A's follow stats
+GET {{baseUrl}}/follows/users/{{userAId}}/stats
+
+### 11. Check if A follows B (should be true)
+GET {{baseUrl}}/follows/users/{{userAId}}/is-following/{{userBId}}
+
+### 12. Check if B follows C (should be false)
+GET {{baseUrl}}/follows/users/{{userBId}}/is-following/{{userCId}}
+
+### 13. User A unfollows User C
+DELETE {{baseUrl}}/follows/users/{{userAId}}/follow/{{userCId}}
+
+### 14. Check User A's following list again (should be 1: B)
+GET {{baseUrl}}/follows/users/{{userAId}}/following
+
+### 15. Clean up - Delete users
+DELETE {{baseUrl}}/users/{{userAId}}
+
+###
+DELETE {{baseUrl}}/users/{{userBId}}
+
+###
+DELETE {{baseUrl}}/users/{{userCId}}
+

@@ -1,0 +1,176 @@
+### Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Health Check
+GET {{baseUrl}}
+
+################################################################################
+# User API Tests
+################################################################################
+
+### Get all users
+GET {{baseUrl}}/users
+
+### Get all users with pagination
+GET {{baseUrl}}/users?skip=0&take=10
+
+### Get all users with ordering
+GET {{baseUrl}}/users?orderBy=name
+
+### Get user by ID
+# @name getUserById
+GET {{baseUrl}}/users/{{userId}}
+
+### Create a new user
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "user@example.com",
+  "name": "testuser",
+  "password": "password123"
+}
+
+### Create another user (for post tests)
+# @name createAuthor
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "author@example.com",
+  "name": "authoruser",
+  "password": "password123"
+}
+
+### Update user (partial)
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: {{contentType}}
+
+{
+  "name": "updateduser"
+}
+
+### Update user (all fields)
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: {{contentType}}
+
+{
+  "email": "updated@example.com",
+  "name": "completelyupdated",
+  "password": "newpassword123"
+}
+
+### Delete user
+DELETE {{baseUrl}}/users/{{userId}}
+
+################################################################################
+# Post API Tests
+################################################################################
+
+### Get all posts
+GET {{baseUrl}}/posts
+
+### Get all posts with pagination
+GET {{baseUrl}}/posts?skip=0&take=10
+
+### Get all posts with ordering
+GET {{baseUrl}}/posts?orderBy=title
+
+### Get post by ID
+GET {{baseUrl}}/posts/{{postId}}
+
+### Create a new post
+# @name createPost
+POST {{baseUrl}}/posts
+Content-Type: {{contentType}}
+
+{
+  "title": "My First Post",
+  "content": "This is the content of my first post",
+  "authorId": "{{authorId}}"
+}
+
+### Create a post without content
+POST {{baseUrl}}/posts
+Content-Type: {{contentType}}
+
+{
+  "title": "Post Without Content",
+  "authorId": "{{authorId}}"
+}
+
+### Update post (partial)
+PUT {{baseUrl}}/posts/{{postId}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Updated Post Title"
+}
+
+### Update post (publish)
+PUT {{baseUrl}}/posts/{{postId}}
+Content-Type: {{contentType}}
+
+{
+  "published": true
+}
+
+### Update post (complete)
+PUT {{baseUrl}}/posts/{{postId}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Completely Updated Post",
+  "content": "This is completely new content",
+  "published": true
+}
+
+### Delete post
+DELETE {{baseUrl}}/posts/{{postId}}
+
+################################################################################
+# Integration Test Flow
+################################################################################
+
+### 1. Create an author user
+# @name flowCreateAuthor
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "flow-author@example.com",
+  "name": "flowauthor",
+  "password": "password123"
+}
+
+### 2. Create a post with the author ID from step 1
+@flowAuthorId = {{flowCreateAuthor.response.body.id}}
+# @name flowCreatePost
+POST {{baseUrl}}/posts
+Content-Type: {{contentType}}
+
+{
+  "title": "Integration Test Post",
+  "content": "This post was created in an integration test flow",
+  "authorId": "{{flowAuthorId}}"
+}
+
+### 3. Get the created post
+@flowPostId = {{flowCreatePost.response.body.id}}
+GET {{baseUrl}}/posts/{{flowPostId}}
+
+### 4. Update the post
+PUT {{baseUrl}}/posts/{{flowPostId}}
+Content-Type: {{contentType}}
+
+{
+  "published": true
+}
+
+### 5. Delete the post
+DELETE {{baseUrl}}/posts/{{flowPostId}}
+
+### 6. Delete the author
+DELETE {{baseUrl}}/users/{{flowAuthorId}}

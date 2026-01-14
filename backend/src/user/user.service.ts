@@ -1,56 +1,83 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, Prisma } from '../generated/prisma/client';
-
+import { Prisma } from '../generated/prisma/client';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
+import { UserResponseDto } from './dto/user-response.dto';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async user(
+  async getUser(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  ): Promise<UserResponseDto | null> {
+    const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+    if (!user) return null;
+    return plainToInstance(UserResponseDto, user);
   }
 
-  async users(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
+  async getUserById(id: string): Promise<UserResponseDto | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: String(id) },
+    });
+    if (!user) return null;
+    return plainToInstance(UserResponseDto, user);
+  }
+
+  async getUsers(queryDto: GetUsersQueryDto): Promise<UserResponseDto[]> {
+    const { skip, take, orderBy } = queryDto;
+    const users = await this.prisma.user.findMany({
       skip,
       take,
-      cursor,
-      where,
-      orderBy,
+      orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
     });
+    return plainToInstance(UserResponseDto, users);
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
+  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const { email, name, password } = createUserDto;
+    const passwordHashed = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        name,
+        passwordHashed,
+      },
+    });
+    return plainToInstance(UserResponseDto, user);
+  }
+
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
+    const { password, ...otherData } = updateUserDto;
+
+    const data: Prisma.UserUpdateInput = {
+      ...otherData,
+    };
+
+    if (password) {
+      data.passwordHashed = await bcrypt.hash(password, 10);
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id },
       data,
     });
+    return plainToInstance(UserResponseDto, user);
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
+  async deleteUser(id: string): Promise<UserResponseDto> {
+    const user = await this.prisma.user.delete({
+      where: { id },
     });
-  }
-
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+    return plainToInstance(UserResponseDto, user);
   }
 }

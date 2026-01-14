@@ -14,7 +14,7 @@ Each feature module (e.g., `user/`, `post/`) follows this pattern:
 - **Service** (`*.service.ts`): Business logic with Prisma queries
 - **Module Registration**: Controllers and services registered in `app.module.ts`
 
-All modules are imported and declared in [backend/src/app.module.ts](/backend/src/app.module.ts). **Use NestJS CLI to scaffold new modules:**
+All modules are imported and declared in [backend/src/app.module.ts](../backend/src/app.module.ts). **Use NestJS CLI to scaffold new modules:**
 
 ```bash
 nest generate resource feature-name
@@ -46,16 +46,16 @@ export class FeatureModule {}
 
 ### Prisma as Data Layer
 
-- Database models defined in [backend/prisma/schema.prisma](/backend/prisma/schema.prisma)
-- `PrismaService` ([backend/src/prisma/prisma.service.ts](/backend/src/prisma/prisma.service.ts)) extends `PrismaClient` with `PrismaPg` adapter for PostgreSQL
+- Database models defined in [backend/prisma/schema.prisma](../backend/prisma/schema.prisma)
+- `PrismaService` ([backend/src/prisma/prisma.service.ts](../backend/src/prisma/prisma.service.ts)) extends `PrismaClient` with `PrismaPg` adapter for PostgreSQL
 - Generated types imported from `backend/src/generated/prisma/client` (e.g., `User`, `Post`, `Prisma` types)
 - Services accept typed parameters: `Prisma.UserCreateInput`, `Prisma.UserWhereUniqueInput`
 
-See [backend/src/user/user.service.ts](/backend/src/user/user.service.ts) and [backend/src/post/post.service.ts](/backend/src/post/post.service.ts) for standard CRUD patterns.
+See [backend/src/user/user.service.ts](../backend/src/user/user.service.ts) and [backend/src/post/post.service.ts](../backend/src/post/post.service.ts) for standard CRUD patterns.
 
 ### Database Schema
 
-Current models in [backend/prisma/schema.prisma](/backend/prisma/schema.prisma):
+Current models in [backend/prisma/schema.prisma](../backend/prisma/schema.prisma):
 
 - **User**: `id`, `email` (unique), `name`, `posts[]` (relation)
 - **Post**: `id`, `title`, `content`, `published` (default false), `author` (User relation)
@@ -124,20 +124,97 @@ This generates migration SQL and regenerates client types in `src/generated/pris
 - **Module Resolution**: Node, with `@/` alias for `src/` imports
 - **Generated Prisma**: Do NOT edit `src/generated/prisma/` directly—regenerate via migrations
 
-### Service Patterns
+### DTO (Data Transfer Object) Patterns
 
-Services use destructured params for flexibility:
+**DTOs are mandatory for all request/response handling.** Each feature module should have:
+
+#### Request DTOs
+
+- **CreateXxxDto**: For POST requests (e.g., `CreateUserDto`, `CreatePostDto`)
+
+  - Use `class-validator` decorators (`@IsString()`, `@IsEmail()`, etc.) for validation
+  - Validates input before reaching the service layer
+
+- **UpdateXxxDto**: For PUT/PATCH requests (e.g., `UpdateUserDto`, `UpdatePostDto`)
+
+  - All fields should be `@IsOptional()` to allow partial updates
+  - Validates only provided fields
+
+- **GetXxxQueryDto**: For GET query parameters (e.g., `GetUsersQueryDto`, `GetPostsQueryDto`)
+  - Use `@Type(() => Number)` for type conversion from URL strings
+  - Common fields: `skip`, `take`, `orderBy`
+
+#### Response DTOs
+
+- **XxxResponseDto**: For API responses (e.g., `UserResponseDto`, `PostResponseDto`)
+  - Use `@Exclude()` from `class-transformer` to hide sensitive fields (e.g., `passwordHashed`)
+  - Should include constructor that accepts `Partial<XxxResponseDto>`
+  - Use `plainToInstance()` in services to transform Prisma models to DTOs
+
+#### Service Implementation with DTOs
 
 ```typescript
-async users(params: {
-  skip?: number;
-  take?: number;
-  where?: Prisma.UserWhereInput;
-  orderBy?: Prisma.UserOrderByWithRelationInput;
-}): Promise<User[]>
+import { plainToInstance } from 'class-transformer';
+
+async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  // Business logic with Prisma
+  const user = await this.prisma.user.create({
+    data: {
+      email: createUserDto.email,
+      name: createUserDto.name,
+      passwordHashed: await bcrypt.hash(createUserDto.password, 10),
+    },
+  });
+  // Transform to DTO before returning
+  return plainToInstance(UserResponseDto, user);
+}
+
+async getUsers(queryDto: GetUsersQueryDto): Promise<UserResponseDto[]> {
+  const users = await this.prisma.user.findMany({
+    skip: queryDto.skip,
+    take: queryDto.take,
+    orderBy: queryDto.orderBy ? { [queryDto.orderBy]: 'asc' } : undefined,
+  });
+  return plainToInstance(UserResponseDto, users);
+}
 ```
 
-This mirrors Prisma's API and allows optional filtering/pagination.
+**File Structure:**
+
+```
+src/feature-name/
+  dto/
+    create-feature.dto.ts      # POST request validation
+    update-feature.dto.ts      # PUT request validation
+    get-features-query.dto.ts  # GET query parameters
+    feature-response.dto.ts    # Response with @Exclude() for sensitive fields
+  feature.service.ts           # Use DTOs for parameters and returns
+  feature.controller.ts        # Receive DTOs, validate automatically
+  feature.module.ts
+```
+
+### Service Patterns
+
+Services should accept **DTO objects as parameters** instead of raw Prisma types:
+
+```typescript
+// ✅ Recommended: Service accepts DTOs
+async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto>
+async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto>
+async getUsers(queryDto: GetUsersQueryDto): Promise<UserResponseDto[]>
+
+// ❌ Avoid: Service accepts Prisma types directly
+async createUser(data: Prisma.UserCreateInput): Promise<User>
+async getUsers(params: { skip?: number; where?: Prisma.UserWhereInput }): Promise<User[]>
+```
+
+**Benefits:**
+
+- Validation happens automatically before service logic
+- Clear contract between controller and service
+- Sensitive fields excluded from responses via `@Exclude()`
+- Type-safe transformations using `plainToInstance()`
+- Consistent API documentation
 
 ### Dependency Injection
 
@@ -221,10 +298,15 @@ Controllers are currently minimal stubs; expand with route handlers (GET, POST, 
 
 6. **Run tests**: `pnpm run test` runs all unit tests; test files auto-generated by NestJS CLI
 
+## Things to not do
+
+- Do not edit files in `backend/src/generated/prisma/` directly
+- Do not format manually. format on save is enabled.
+
 ## Key Files Reference
 
-- [backend/package.json](/backend/package.json): Scripts, dependencies (NestJS, Prisma, PostgreSQL)
-- [backend/tsconfig.json](/backend/tsconfig.json): TypeScript config with strict mode
-- [backend/src/app.module.ts](/backend/src/app.module.ts): Module registration and DI
-- [backend/prisma/schema.prisma](/backend/prisma/schema.prisma): Database schema definition
-- [backend/src/prisma/prisma.service.ts](/backend/src/prisma/prisma.service.ts): Prisma client setup with PrismaPg adapter
+- [backend/package.json](../backend/package.json): Scripts, dependencies (NestJS, Prisma, PostgreSQL)
+- [backend/tsconfig.json](../backend/tsconfig.json): TypeScript config with strict mode
+- [backend/src/app.module.ts](../backend/src/app.module.ts): Module registration and DI
+- [backend/prisma/schema.prisma](../backend/prisma/schema.prisma): Database schema definition
+- [backend/src/prisma/prisma.service.ts](../backend/src/prisma/prisma.service.ts): Prisma client setup with PrismaPg adapter

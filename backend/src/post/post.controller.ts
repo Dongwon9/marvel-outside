@@ -1,4 +1,56 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { PostService } from './post.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { GetPostsQueryDto } from './dto/get-posts-query.dto';
+import { PostResponseDto } from './dto/post-response.dto';
 
-@Controller('post')
-export class PostController {}
+@Controller('posts')
+export class PostController {
+  constructor(private readonly postService: PostService) {}
+
+  @Get()
+  async getPosts(
+    @Query() queryDto: GetPostsQueryDto,
+  ): Promise<PostResponseDto[]> {
+    return this.postService.posts(queryDto);
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: string): Promise<PostResponseDto | null> {
+    return this.postService.post(id);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async createPost(
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.createPost(createPostDto);
+  }
+
+  @Put(':id')
+  async updatePost(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.updatePost(id, updatePostDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deletePost(@Param('id') id: string): Promise<void> {
+    await this.postService.deletePost(id);
+  }
+}

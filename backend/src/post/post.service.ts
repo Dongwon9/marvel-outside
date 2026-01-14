@@ -1,56 +1,62 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { PrismaService } from '../prisma/prisma.service';
-import { Post, Prisma } from '../generated/prisma/client';
+import { Prisma } from '../generated/prisma/client';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { GetPostsQueryDto } from './dto/get-posts-query.dto';
+import { PostResponseDto } from './dto/post-response.dto';
 
 @Injectable()
 export class PostService {
   constructor(private prisma: PrismaService) {}
 
-  async post(
-    postWhereUniqueInput: Prisma.PostWhereUniqueInput,
-  ): Promise<Post | null> {
-    return this.prisma.post.findUnique({
-      where: postWhereUniqueInput,
+  async post(id: string): Promise<PostResponseDto | null> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
     });
+    if (!post) return null;
+    return plainToInstance(PostResponseDto, post);
   }
 
-  async posts(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.PostWhereUniqueInput;
-    where?: Prisma.PostWhereInput;
-    orderBy?: Prisma.PostOrderByWithRelationInput;
-  }): Promise<Post[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.post.findMany({
+  async posts(queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {
+    const { skip, take, orderBy } = queryDto;
+    const posts = await this.prisma.post.findMany({
       skip,
       take,
-      cursor,
-      where,
-      orderBy,
+      orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
     });
+    return plainToInstance(PostResponseDto, posts);
   }
 
-  async createPost(data: Prisma.PostCreateInput): Promise<Post> {
-    return this.prisma.post.create({
-      data,
+  async createPost(createPostDto: CreatePostDto): Promise<PostResponseDto> {
+    const post = await this.prisma.post.create({
+      data: {
+        title: createPostDto.title,
+        content: createPostDto.content || '',
+        author: {
+          connect: { id: createPostDto.authorId },
+        },
+      },
     });
+    return plainToInstance(PostResponseDto, post);
   }
 
-  async updatePost(params: {
-    where: Prisma.PostWhereUniqueInput;
-    data: Prisma.PostUpdateInput;
-  }): Promise<Post> {
-    const { data, where } = params;
-    return this.prisma.post.update({
-      data,
-      where,
+  async updatePost(
+    id: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
+    const post = await this.prisma.post.update({
+      where: { id },
+      data: updatePostDto,
     });
+    return plainToInstance(PostResponseDto, post);
   }
 
-  async deletePost(where: Prisma.PostWhereUniqueInput): Promise<Post> {
-    return this.prisma.post.delete({
-      where,
+  async deletePost(id: string): Promise<PostResponseDto> {
+    const post = await this.prisma.post.delete({
+      where: { id },
     });
+    return plainToInstance(PostResponseDto, post);
   }
 }

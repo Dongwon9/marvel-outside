@@ -14,17 +14,20 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id             String    @id @default(uuid())
+  email          String    @unique
+  name           String    @unique
+  passwordHashed String    @db.Text
+  registeredAt   DateTime  @default(now())
+  deletedAt      DateTime?
+  posts          Post[]
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        String  @id @default(uuid())
   title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+  content   String
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
 }

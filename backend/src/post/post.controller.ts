@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -21,9 +22,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  async getPosts(
-    @Query() queryDto: GetPostsQueryDto,
-  ): Promise<PostResponseDto[]> {
+  async getPosts(@Query() queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {
     return this.postService.posts(queryDto);
   }
 
@@ -34,9 +33,7 @@ export class PostController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createPost(
-    @Body() createPostDto: CreatePostDto,
-  ): Promise<PostResponseDto> {
+  async createPost(@Body() createPostDto: CreatePostDto): Promise<PostResponseDto> {
     return this.postService.createPost(createPostDto);
   }
 

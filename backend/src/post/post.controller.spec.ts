@@ -1,18 +1,145 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PostController } from './post.controller';
+import { CreatePostDto } from './dto/create-post.dto';
+import { GetPostsQueryDto } from './dto/get-posts-query.dto';
+import { PostResponseDto } from './dto/post-response.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { PostService } from './post.service';
 
 describe('PostController', () => {
   let controller: PostController;
+  let service: PostService;
+
+  const mockPostService = {
+    posts: jest.fn(),
+    post: jest.fn(),
+    createPost: jest.fn(),
+    updatePost: jest.fn(),
+    deletePost: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
+      providers: [
+        {
+          provide: PostService,
+          useValue: mockPostService,
+        },
+      ],
     }).compile();
 
     controller = module.get<PostController>(PostController);
+    service = module.get<PostService>(PostService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('getPosts', () => {
+    it('should return an array of posts', async () => {
+      const queryDto: GetPostsQueryDto = {};
+      const expectedResult: PostResponseDto[] = [
+        { id: '1', title: 'Post 1', content: 'Content 1' },
+        { id: '2', title: 'Post 2', content: 'Content 2' },
+      ] as PostResponseDto[];
+
+      mockPostService.posts.mockResolvedValue(expectedResult);
+
+      const result = await controller.getPosts(queryDto);
+
+      expect(result).toEqual(expectedResult);
+      expect(service.posts).toHaveBeenCalledWith(queryDto);
+      expect(service.posts).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getPostById', () => {
+    it('should return a single post by id', async () => {
+      const postId = '1';
+      const expectedResult: PostResponseDto = {
+        id: postId,
+        title: 'Post 1',
+        content: 'Content 1',
+      } as PostResponseDto;
+
+      mockPostService.post.mockResolvedValue(expectedResult);
+
+      const result = await controller.getPostById(postId);
+
+      expect(result).toEqual(expectedResult);
+      expect(service.post).toHaveBeenCalledWith(postId);
+      expect(service.post).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return null if post not found', async () => {
+      const postId = 'non-existent';
+
+      mockPostService.post.mockResolvedValue(null);
+
+      const result = await controller.getPostById(postId);
+
+      expect(result).toBeNull();
+      expect(service.post).toHaveBeenCalledWith(postId);
+    });
+  });
+
+  describe('createPost', () => {
+    it('should create and return a new post', async () => {
+      const createPostDto: CreatePostDto = {
+        title: 'New Post',
+        content: 'New Content',
+      } as CreatePostDto;
+      const expectedResult: PostResponseDto = {
+        id: '1',
+        ...createPostDto,
+      } as PostResponseDto;
+
+      mockPostService.createPost.mockResolvedValue(expectedResult);
+
+      const result = await controller.createPost(createPostDto);
+
+      expect(result).toEqual(expectedResult);
+      expect(service.createPost).toHaveBeenCalledWith(createPostDto);
+      expect(service.createPost).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('updatePost', () => {
+    it('should update and return the updated post', async () => {
+      const postId = '1';
+      const updatePostDto: UpdatePostDto = {
+        title: 'Updated Post',
+        content: 'Updated Content',
+      } as UpdatePostDto;
+      const expectedResult: PostResponseDto = {
+        id: postId,
+        ...updatePostDto,
+      } as PostResponseDto;
+
+      mockPostService.updatePost.mockResolvedValue(expectedResult);
+
+      const result = await controller.updatePost(postId, updatePostDto);
+
+      expect(result).toEqual(expectedResult);
+      expect(service.updatePost).toHaveBeenCalledWith(postId, updatePostDto);
+      expect(service.updatePost).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('deletePost', () => {
+    it('should delete a post and return void', async () => {
+      const postId = '1';
+
+      mockPostService.deletePost.mockResolvedValue(undefined);
+
+      const result = await controller.deletePost(postId);
+
+      expect(result).toBeUndefined();
+      expect(service.deletePost).toHaveBeenCalledWith(postId);
+      expect(service.deletePost).toHaveBeenCalledTimes(1);
+    });
   });
 });

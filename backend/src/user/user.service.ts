@@ -1,12 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
+
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../generated/prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -66,10 +67,7 @@ export class UserService {
     return plainToInstance(UserResponseDto, user);
   }
 
-  async updateUser(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     const { password, ...otherData } = updateUserDto;
 
     const data: Prisma.UserUpdateInput = {

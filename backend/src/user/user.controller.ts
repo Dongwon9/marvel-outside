@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,9 +22,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getUsers(
-    @Query() queryDto: GetUsersQueryDto,
-  ): Promise<UserResponseDto[]> {
+  async getUsers(@Query() queryDto: GetUsersQueryDto): Promise<UserResponseDto[]> {
     return this.userService.getUsers(queryDto);
   }
 
@@ -34,9 +33,7 @@ export class UserController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createUser(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<UserResponseDto> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
     return this.userService.createUser(createUserDto);
   }
 

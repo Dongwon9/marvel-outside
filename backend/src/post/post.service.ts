@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -41,10 +42,7 @@ export class PostService {
     return plainToInstance(PostResponseDto, post);
   }
 
-  async updatePost(
-    id: string,
-    updatePostDto: UpdatePostDto,
-  ): Promise<PostResponseDto> {
+  async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {
     const post = await this.prisma.post.update({
       where: { id },
       data: updatePostDto,

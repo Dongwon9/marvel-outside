@@ -1,5 +1,7 @@
-import { IsOptional, IsInt, Min } from 'class-validator';
+import { IsInt, IsOptional, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+
+import { OrderByDto } from './order-by.dto';
 
 export class GetFollowersQueryDto {
   @IsOptional()
@@ -13,4 +15,9 @@ export class GetFollowersQueryDto {
   @IsInt()
   @Min(1)
   take?: number;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OrderByDto)
+  orderBy?: OrderByDto;
 }

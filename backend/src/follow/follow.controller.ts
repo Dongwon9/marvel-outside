@@ -9,10 +9,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+
 import { FollowService } from './follow.service';
 import { CreateFollowDto } from './dto/create-follow.dto';
 import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
 import { FollowResponseDto } from './dto/follow-response.dto';
+
+import { UserResponseDto } from '@/user/dto/user-response.dto';
 
 @Controller('follows')
 export class FollowController {
@@ -43,7 +46,12 @@ export class FollowController {
   async getFollowers(
     @Param('userId') userId: string,
     @Query() queryDto: GetFollowersQueryDto,
-  ): Promise<any[]> {
+  ): Promise<
+    Array<{
+      createdAt: Date;
+      user: UserResponseDto;
+    }>
+  > {
     return this.followService.getFollowers(userId, queryDto);
   }
 
@@ -52,7 +60,12 @@ export class FollowController {
   async getFollowing(
     @Param('userId') userId: string,
     @Query() queryDto: GetFollowersQueryDto,
-  ): Promise<any[]> {
+  ): Promise<
+    Array<{
+      createdAt: Date;
+      user: UserResponseDto;
+    }>
+  > {
     return this.followService.getFollowing(userId, queryDto);
   }
 
@@ -70,10 +83,7 @@ export class FollowController {
     @Param('followerId') followerId: string,
     @Param('followingId') followingId: string,
   ): Promise<{ isFollowing: boolean }> {
-    const isFollowing = await this.followService.isFollowing(
-      followerId,
-      followingId,
-    );
+    const isFollowing = await this.followService.isFollowing(followerId, followingId);
     return { isFollowing };
   }
 }

@@ -1,42 +1,47 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { RateService } from './rate.service';
-import { RateDto } from './dto/rate.dto';
-import { UpdateRateDto } from './dto/update-rate.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 
-@Controller('rate')
+import { RateService } from './rate.service';
+import { CreateRateDto } from './dto/create-rate.dto';
+import { UpdateRateDto } from './dto/update-rate.dto';
+import { GetRatesQueryDto } from './dto/get-rates-query.dto';
+import { RateResponseDto } from './dto/rate-response.dto';
+
+@Controller('rates')
 export class RateController {
   constructor(private readonly rateService: RateService) {}
 
   @Post()
-  create(@Body() createRateDto: RateDto) {
+  async create(@Body() createRateDto: CreateRateDto): Promise<RateResponseDto> {
     return this.rateService.create(createRateDto);
   }
 
   @Get()
-  findAll() {
-    return this.rateService.findAll();
+  async findAll(@Query() queryDto: GetRatesQueryDto): Promise<RateResponseDto[]> {
+    return this.rateService.findAll(queryDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rateService.findOne(+id);
+  @Get(':userId/:postId')
+  async findOne(
+    @Param('userId') userId: string,
+    @Param('postId') postId: string,
+  ): Promise<RateResponseDto> {
+    return this.rateService.findOne(userId, postId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRateDto: UpdateRateDto) {
-    return this.rateService.update(+id, updateRateDto);
+  @Patch(':userId/:postId')
+  async update(
+    @Param('userId') userId: string,
+    @Param('postId') postId: string,
+    @Body() updateRateDto: UpdateRateDto,
+  ): Promise<RateResponseDto> {
+    return this.rateService.update(userId, postId, updateRateDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rateService.remove(+id);
+  @Delete(':userId/:postId')
+  async remove(
+    @Param('userId') userId: string,
+    @Param('postId') postId: string,
+  ): Promise<RateResponseDto> {
+    return this.rateService.remove(userId, postId);
   }
 }

@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.dev
+    working_dir: /workspace/backend
+    command: pnpm run start:dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./backend:/workspace/backend
+      - backend_node_modules:/workspace/backend/node_modules
+      - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
+      - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
+    depends_on: []
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.dev
+    working_dir: /workspace/frontend
+    command: pnpm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5173
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/workspace/frontend
+      - frontend_node_modules:/workspace/frontend/node_modules
+      - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
+      - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
+    depends_on: []
+
+volumes:
+  backend_node_modules:
+  frontend_node_modules:

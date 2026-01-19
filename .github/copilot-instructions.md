@@ -1,8 +1,19 @@
-# AI Coding Instructions for Marvel Outside Backend
+# AI Coding Instructions for Marvel Outside
+
+## About me
+
+I am Dongwon, the lead developer of the Marvel Outside project. This document provides comprehensive instructions for AI coding assistants to effectively contribute to the backend and frontend development of the Marvel Outside full-stack application.
+This is my first time developing a full-stack app using NestJS, Prisma, React, Vite, and Tailwind CSS, so detailed instructions are necessary to ensure code quality and consistency.
+I don't plan to(and don't know how to) use advanced CI/CD. so I will not use it until nessesary.
 
 ## Project Overview
 
-This is a **NestJS + Prisma + PostgreSQL** backend for the Marvel Outside project. It implements a modular architecture with feature modules (User, Post) that handle database operations through Prisma ORM.
+This is a full-stack application for the Marvel Outside project:
+
+- **Backend**: NestJS + Prisma + PostgreSQL with modular architecture
+- **Frontend**: React + Vite + Tailwind CSS with modern TypeScript setup
+
+The backend implements feature modules (User, Post, Follow, Rate) that handle database operations through Prisma ORM. The frontend uses React 19 with TypeScript, Vite for build tooling, and Tailwind CSS v4 for styling.
 
 ## Architecture Patterns
 
@@ -73,6 +84,67 @@ pnpm install
 pnpm run start:dev        # watch mode on port 3000
 ```
 
+### Docker Dev Environment
+
+For local development using Docker (no DB container — use your serverless PostgreSQL via `DATABASE_URL`):
+
+**Prerequisites**
+
+- Docker and Docker Compose installed
+- `DATABASE_URL` set in your host environment (consumed by PrismaService)
+
+**Files**
+
+- Compose: [docker-compose.dev.yml](../docker-compose.dev.yml)
+- Backend image: [backend/Dockerfile.dev](../backend/Dockerfile.dev)
+- Frontend image: [frontend/Dockerfile.dev](../frontend/Dockerfile.dev)
+
+**Start containers**
+
+```bash
+cd /home/dongwon/Projects/marvel-outside
+docker compose -f docker-compose.dev.yml up --build
+```
+
+**Access**
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+
+Notes:
+
+- No DB container is started; `DATABASE_URL` must point to your serverless database.
+- File watching inside containers uses polling (`CHOKIDAR_USEPOLLING=true`) for reliability with bind mounts.
+- `node_modules` are kept in named volumes to avoid permission issues while source is bind-mounted.
+- Vite is bound to `0.0.0.0` for external access from the host.
+
+Optional proxy (recommended for API calls from frontend during Docker dev): update [frontend/vite.config.ts](../frontend/vite.config.ts) to proxy to the backend service name:
+
+```typescript
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://backend:3000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
+});
+```
+
+**Stop containers**
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+
 ### Key Commands
 
 - **Build**: `pnpm run build` (outputs to `dist/`)
@@ -131,12 +203,10 @@ This generates migration SQL and regenerates client types in `src/generated/pris
 #### Request DTOs
 
 - **CreateXxxDto**: For POST requests (e.g., `CreateUserDto`, `CreatePostDto`)
-
   - Use `class-validator` decorators (`@IsString()`, `@IsEmail()`, etc.) for validation
   - Validates input before reaching the service layer
 
 - **UpdateXxxDto**: For PUT/PATCH requests (e.g., `UpdateUserDto`, `UpdatePostDto`)
-
   - All fields should be `@IsOptional()` to allow partial updates
   - Validates only provided fields
 
@@ -292,7 +362,7 @@ Controllers are currently minimal stubs; expand with route handlers (GET, POST, 
 
 3. **Add a service method**: Update service in `backend/src/feature/feature.service.ts` with Prisma query using appropriate `Prisma.*Input` types
 
-4. **Add a controller endpoint**: Update `backend/src/feature/feature.controller.ts` with decorated method (`@Get()`, `@Post()`, etc.), inject service, call service method
+4. **Add a controller endpoint**: Update `backend/src/feature/feature.controller.ts` with decorated method (`@Get()`, `@Post()`, `@Body()`, `@Param()`), inject service, call service method
 
 5. **Fix type mismatches**: Check Prisma generated types in `backend/src/generated/prisma/client.ts` for correct Input/Output types
 
@@ -305,8 +375,400 @@ Controllers are currently minimal stubs; expand with route handlers (GET, POST, 
 
 ## Key Files Reference
 
+### Backend
+
 - [backend/package.json](../backend/package.json): Scripts, dependencies (NestJS, Prisma, PostgreSQL)
 - [backend/tsconfig.json](../backend/tsconfig.json): TypeScript config with strict mode
 - [backend/src/app.module.ts](../backend/src/app.module.ts): Module registration and DI
 - [backend/prisma/schema.prisma](../backend/prisma/schema.prisma): Database schema definition
 - [backend/src/prisma/prisma.service.ts](../backend/src/prisma/prisma.service.ts): Prisma client setup with PrismaPg adapter
+
+### Docker
+
+- [docker-compose.dev.yml](../docker-compose.dev.yml): Dev compose with backend/frontend services (no DB)
+- [backend/Dockerfile.dev](../backend/Dockerfile.dev): NestJS dev image (pnpm, watch mode)
+- [frontend/Dockerfile.dev](../frontend/Dockerfile.dev): Vite React dev image (pnpm, dev server)
+
+### Frontend
+
+- [frontend/package.json](../frontend/package.json): Scripts, dependencies (React, Vite, Tailwind CSS)
+- [frontend/tsconfig.json](../frontend/tsconfig.json): TypeScript project references
+- [frontend/tsconfig.app.json](../frontend/tsconfig.app.json): App-specific TypeScript config
+- [frontend/vite.config.ts](../frontend/vite.config.ts): Vite configuration with Tailwind plugin
+- [frontend/src/main.tsx](../frontend/src/main.tsx): React app entry point
+
+---
+
+## Frontend Development
+
+### Tech Stack
+
+- **React 19**: Latest React with improved TypeScript support
+- **Vite**: Fast build tool with HMR (Hot Module Replacement)
+- **Tailwind CSS v4**: Utility-first CSS framework using Vite plugin
+- **TypeScript**: Strict mode enabled with modern ES2022 target
+
+### Project Structure
+
+```
+frontend/
+  src/
+    main.tsx              # App entry point
+    App.tsx               # Root component
+    index.css             # Global styles with Tailwind directives
+    components/           # Reusable UI components
+    api/                  # API client and types
+    hooks/                # Custom React hooks
+    pages/                # Page components
+    stores/               # State management
+  public/                 # Static assets
+  vite.config.ts         # Vite configuration
+  tailwind.config.js     # Tailwind configuration
+  tsconfig.json          # TS project references
+  tsconfig.app.json      # App TypeScript config
+```
+
+### Development Workflow
+
+#### Setup
+
+```bash
+cd frontend
+pnpm install
+pnpm run dev          # Dev server on port 5173 (default)
+```
+
+#### Key Commands
+
+- **Dev Server**: `pnpm run dev` (with HMR)
+- **Build**: `pnpm run build` (TypeScript check + Vite build)
+- **Preview**: `pnpm run preview` (preview production build)
+- **Lint**: `pnpm run lint` (ESLint with auto-fix)
+
+### Tailwind CSS Integration
+
+#### Vite Plugin Setup
+
+Tailwind CSS v4 uses the **Vite plugin** instead of PostCSS:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
+});
+```
+
+**Important**: Do NOT use `postcss.config.js` when using the Vite plugin. The plugin handles all CSS processing internally.
+
+#### Tailwind Configuration
+
+```javascript
+// tailwind.config.js
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+};
+```
+
+This tells Tailwind to scan all source files for class names.
+
+#### Using Tailwind in Components
+
+```tsx
+// Utility-first approach
+export default function Button() {
+  return (
+    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Click me
+    </button>
+  );
+}
+
+// Responsive design
+export default function Card() {
+  return (
+    <div className="w-full md:w-1/2 lg:w-1/3 p-4">
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-2">Title</h2>
+        <p className="text-gray-600">Content</p>
+      </div>
+    </div>
+  );
+}
+
+// Dark mode support
+export default function Header() {
+  return (
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <h1 className="text-gray-900 dark:text-white">Marvel Outside</h1>
+    </header>
+  );
+}
+```
+
+#### Global Styles
+
+```css
+/* src/index.css */
+@import "tailwindcss";
+
+/* Custom global styles */
+body {
+  @apply bg-gray-50 text-gray-900;
+}
+
+/* Custom component classes (use sparingly) */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600;
+  }
+}
+```
+
+### TypeScript Configuration
+
+- **Target**: ES2022 with modern JavaScript features
+- **Module**: ESNext with bundler resolution
+- **JSX**: `react-jsx` (automatic runtime, no React import needed)
+- **Strict Mode**: Enabled with additional linting rules
+- **Project References**: Separated app and node configs for better type checking
+
+Key compiler options:
+
+```jsonc
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+  },
+}
+```
+
+### Component Patterns
+
+#### Functional Components with TypeScript
+
+```tsx
+// Simple component
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: "primary" | "secondary";
+}
+
+export default function Button({
+  label,
+  onClick,
+  variant = "primary",
+}: ButtonProps) {
+  const baseClasses = "px-4 py-2 rounded font-medium transition-colors";
+  const variantClasses = {
+    primary: "bg-blue-500 text-white hover:bg-blue-600",
+    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      className={`${baseClasses} ${variantClasses[variant]}`}
+    >
+      {label}
+    </button>
+  );
+}
+```
+
+#### State Management
+
+```tsx
+import { useState, useEffect } from "react";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export default function UserProfile({ userId }: { userId: string }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  if (loading) return <div className="animate-pulse">Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!user) return <div>User not found</div>;
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6">
+      <h2 className="text-2xl font-bold mb-2">{user.name}</h2>
+      <p className="text-gray-600">{user.email}</p>
+    </div>
+  );
+}
+```
+
+### API Integration
+
+Structure your API calls in separate modules:
+
+```typescript
+// src/api/userApi.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export async function getUsers(): Promise<User[]> {
+  const response = await fetch("/api/users");
+  if (!response.ok) throw new Error("Failed to fetch users");
+  return response.json();
+}
+
+export async function getUserById(id: string): Promise<User> {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) throw new Error("Failed to fetch user");
+  return response.json();
+}
+
+export async function createUser(data: {
+  name: string;
+  email: string;
+}): Promise<User> {
+  const response = await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error("Failed to create user");
+  return response.json();
+}
+```
+
+### Styling Best Practices
+
+#### Use Tailwind Utility Classes
+
+**✅ Recommended:**
+
+```tsx
+<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
+  <h2 className="text-xl font-semibold text-gray-900">Title</h2>
+  <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+    Action
+  </button>
+</div>
+```
+
+**❌ Avoid custom CSS classes:**
+
+```tsx
+// Don't create custom CSS classes unless absolutely necessary
+<div className="custom-card">
+  <h2 className="custom-title">Title</h2>
+</div>
+```
+
+#### Component Organization
+
+```tsx
+// Good: Clear, readable, using Tailwind utilities
+export default function PostCard({ title, content, author }: PostCardProps) {
+  return (
+    <article className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+      <p className="text-gray-600 mb-4">{content}</p>
+      <div className="flex items-center text-sm text-gray-500">
+        <span>By {author}</span>
+      </div>
+    </article>
+  );
+}
+```
+
+#### Responsive Design
+
+```tsx
+// Mobile-first responsive design
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {/* Cards */}
+</div>
+
+// Responsive padding and text
+<div className="p-4 md:p-6 lg:p-8">
+  <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">
+    Responsive Title
+  </h1>
+</div>
+```
+
+### Common Tasks for AI Agents
+
+1. **Create a new component**:
+   - Create file in `src/components/ComponentName.tsx`
+   - Use functional component with TypeScript interfaces
+   - Style with Tailwind utility classes
+   - Export as default
+
+2. **Add a new page**:
+   - Create file in `src/pages/PageName.tsx`
+   - Import and use existing components
+   - Set up routing (if using React Router)
+
+3. **Style with Tailwind**:
+   - Use utility classes directly in `className`
+   - Refer to Tailwind docs for class names
+   - Use responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`
+   - Use state variants: `hover:`, `focus:`, `active:`
+
+4. **Add API integration**:
+   - Create API function in `src/api/`
+   - Define TypeScript interfaces for data
+   - Use in components with `useState` and `useEffect`
+
+5. **Debug styles**:
+   - Check Tailwind config content paths
+   - Verify classes are being detected
+   - Use browser DevTools to inspect computed styles
+
+### Things to NOT do
+
+- Do not create `postcss.config.js` (Vite plugin handles CSS)
+- Do not write custom CSS unless absolutely necessary (use Tailwind)
+- Do not import React in components (automatic JSX runtime)
+- Do not use inline styles (prefer Tailwind utilities)
+
+---
+
+## Backend Development

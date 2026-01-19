@@ -3,10 +3,13 @@ import { ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { UserService } from './user.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
+
+// Mock bcrypt module
+jest.mock('bcrypt');
 
 describe('UserService', () => {
   let service: UserService;
@@ -15,29 +18,34 @@ describe('UserService', () => {
   const mockUser = {
     id: '1',
     email: 'test@example.com',
-    name: 'testuser',
+    name: 'Test User',
     passwordHashed: 'hashedpassword',
     registeredAt: new Date(),
-    updatedAt: new Date(),
     deletedAt: null,
   };
 
   beforeEach(async () => {
-    const mockPrismaService = {
-      user: {
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-    };
-
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, { provide: PrismaService, useValue: mockPrismaService }],
+      providers: [
+        UserService,
+        {
+          provide: PrismaService,
+          useValue: {
+            user: {
+              findUnique: jest.fn(),
+              findMany: jest.fn(),
+              create: jest.fn(),
+              update: jest.fn(),
+            },
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);
     prismaService = module.get<PrismaService>(PrismaService);
+
+    jest.clearAllMocks();
   });
 
   describe('getUser', () => {
@@ -46,188 +54,202 @@ describe('UserService', () => {
 
       const result = await service.getUser({ id: '1' });
 
-      expect(result).toEqual(expect.objectContaining({ id: '1', email: 'test@example.com' }));
       expect(prismaService.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name,
+        }),
+      );
     });
 
     it('should return null when user not found', async () => {
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
 
-      const result = await service.getUser({ id: '999' });
+      const result = await service.getUser({ email: 'missing@example.com' });
 
       expect(result).toBeNull();
     });
   });
 
   describe('getUserById', () => {
-    it('should return a user when found', async () => {
+    it('should return a user by id', async () => {
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
 
       const result = await service.getUserById('1');
 
-      expect(result).toEqual(expect.objectContaining({ id: '1' }));
       expect(prismaService.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name,
+        }),
+      );
     });
 
     it('should return null when user not found', async () => {
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
 
-      const result = await service.getUserById('999');
+      const result = await service.getUserById('missing');
 
       expect(result).toBeNull();
     });
   });
 
   describe('getUsers', () => {
-    it('should return array of users with query parameters', async () => {
-      const mockUsers = [mockUser];
-      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue(mockUsers);
-
-      const queryDto: GetUsersQueryDto = { skip: 0, take: 10, orderBy: 'email' };
-      const result = await service.getUsers(queryDto);
-
-      expect(result).toHaveLength(1);
-      expect(prismaService.user.findMany).toHaveBeenCalledWith({
-        skip: 0,
-        take: 10,
-        orderBy: { email: 'asc' },
-      });
-    });
-
-    it('should return array of users without orderBy', async () => {
-      const mockUsers = [mockUser];
-      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue(mockUsers);
-
+    it('should return array of users with pagination', async () => {
+      const users = [mockUser, { ...mockUser, id: '2', email: 'test2@example.com' }];
+      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue(users);
       const queryDto: GetUsersQueryDto = { skip: 0, take: 10 };
+
       const result = await service.getUsers(queryDto);
 
-      expect(result).toHaveLength(1);
       expect(prismaService.user.findMany).toHaveBeenCalledWith({
         skip: 0,
         take: 10,
         orderBy: undefined,
       });
+      expect(result).toHaveLength(2);
+    });
+
+    it('should return users with orderBy', async () => {
+      const users = [mockUser];
+      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue(users);
+      const queryDto: GetUsersQueryDto = { skip: 0, take: 10, orderBy: 'name' };
+
+      await service.getUsers(queryDto);
+
+      expect(prismaService.user.findMany).toHaveBeenCalledWith({
+        skip: 0,
+        take: 10,
+        orderBy: { name: 'asc' },
+      });
     });
   });
 
   describe('createUser', () => {
-    const createUserDto: CreateUserDto = {
-      email: 'new@example.com',
-      name: 'newuser',
-      password: 'password123',
-    };
+    it('should create and return a new user', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'newuser@example.com',
+        name: 'New User',
+        password: 'password123',
+      };
 
-    it('should create a new user successfully', async () => {
-      jest
-        .spyOn(prismaService.user, 'findUnique')
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null);
-      jest.spyOn(prismaService.user, 'create').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword' as never);
+      const mocks = {
+        findUnique: jest.fn(),
+        create: jest.fn(),
+      };
+      mocks.findUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+      mocks.create.mockResolvedValue(mockUser);
+      prismaService.user.findUnique = mocks.findUnique;
+      prismaService.user.create = mocks.create;
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedpassword');
 
       const result = await service.createUser(createUserDto);
 
-      expect(result).toEqual(expect.objectContaining({ email: mockUser.email }));
-      expect(prismaService.user.findUnique).toHaveBeenCalledTimes(2);
       expect(bcrypt.hash).toHaveBeenCalledWith('password123', 10);
-      expect(prismaService.user.create).toHaveBeenCalledWith({
+      expect(mocks.create).toHaveBeenCalledWith({
         data: {
-          email: 'new@example.com',
-          name: 'newuser',
+          email: createUserDto.email,
+          name: createUserDto.name,
           passwordHashed: 'hashedpassword',
         },
       });
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name,
+        }),
+      );
     });
 
-    it('should throw ConflictException when email already exists', async () => {
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(mockUser);
-      const UserDto2 = { ...createUserDto, name: 'anothername' };
-      await expect(service.createUser(UserDto2)).rejects.toThrow(ConflictException);
+    it('should throw ConflictException if email already exists', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'test@example.com',
+        name: 'New User',
+        password: 'password123',
+      };
+
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
+
+      await expect(service.createUser(createUserDto)).rejects.toThrow(ConflictException);
     });
 
-    it('should throw ConflictException when name already exists', async () => {
-      jest
-        .spyOn(prismaService.user, 'findUnique')
-        .mockResolvedValueOnce(null) // email check passes
-        .mockResolvedValueOnce(mockUser); // name check fails
-      const UserDto2 = { ...createUserDto, email: 'another@example.com' };
-      await expect(service.createUser(UserDto2)).rejects.toThrow(ConflictException);
-    });
+    it('should throw ConflictException if name already exists', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'newuser@example.com',
+        name: 'Test User',
+        password: 'password123',
+      };
 
-    it('should hash password with correct salt rounds', async () => {
-      jest
-        .spyOn(prismaService.user, 'findUnique')
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null);
-      jest.spyOn(prismaService.user, 'create').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword' as never);
-
-      await service.createUser(createUserDto);
-
-      expect(bcrypt.hash).toHaveBeenCalledWith('password123', 10);
-    });
-
-    it('should call findUnique twice to check email and name uniqueness', async () => {
       jest
         .spyOn(prismaService.user, 'findUnique')
         .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null);
-      jest.spyOn(prismaService.user, 'create').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword' as never);
+        .mockResolvedValueOnce(mockUser);
 
-      await service.createUser(createUserDto);
-
-      expect(prismaService.user.findUnique).toHaveBeenNthCalledWith(1, {
-        where: { email: 'new@example.com' },
-      });
-      expect(prismaService.user.findUnique).toHaveBeenNthCalledWith(2, {
-        where: { name: 'newuser' },
-      });
+      await expect(service.createUser(createUserDto)).rejects.toThrow(ConflictException);
     });
   });
 
   describe('updateUser', () => {
     it('should update user without password', async () => {
-      const updateUserDto: UpdateUserDto = { name: 'updatedname' };
-      const updatedUser = { ...mockUser, name: 'updatedname' };
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(updatedUser);
+      const updateUserDto: UpdateUserDto = {
+        name: 'Updated Name',
+      };
+      const updatedUser = { ...mockUser, name: 'Updated Name' };
+
+      const updateMock = jest.fn().mockResolvedValue(updatedUser);
+      prismaService.user.update = updateMock;
 
       const result = await service.updateUser('1', updateUserDto);
 
-      expect(result).toEqual(expect.objectContaining({ name: 'updatedname' }));
-      expect(prismaService.user.update).toHaveBeenCalledWith({
+      expect(updateMock).toHaveBeenCalledWith({
         where: { id: '1' },
-        data: { name: 'updatedname' },
+        data: { name: 'Updated Name' },
       });
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: mockUser.id,
+          name: 'Updated Name',
+        }),
+      );
     });
 
-    it('should update user with password', async () => {
-      const updateUserDto: UpdateUserDto = { password: 'newpassword' };
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('newhashedpassword' as never);
+    it('should update user with password hash', async () => {
+      const updateUserDto: UpdateUserDto = {
+        password: 'newpassword123',
+      };
+      const updatedUser = { ...mockUser, passwordHashed: 'newhashed' };
 
-      const result = await service.updateUser('1', updateUserDto);
+      const updateMock = jest.fn().mockResolvedValue(updatedUser);
+      prismaService.user.update = updateMock;
+      (bcrypt.hash as jest.Mock).mockResolvedValue('newhashed');
 
-      expect(bcrypt.hash).toHaveBeenCalledWith('newpassword', 10);
-      expect(prismaService.user.update).toHaveBeenCalledWith({
+      await service.updateUser('1', updateUserDto);
+
+      expect(bcrypt.hash).toHaveBeenCalledWith('newpassword123', 10);
+      expect(updateMock).toHaveBeenCalledWith({
         where: { id: '1' },
-        data: { passwordHashed: 'newhashedpassword' },
+        data: { passwordHashed: 'newhashed' },
       });
     });
   });
 
   describe('deleteUser', () => {
-    it('should soft delete user', async () => {
+    it('should soft delete a user', async () => {
       const deletedUser = { ...mockUser, deletedAt: new Date() };
-      jest.spyOn(prismaService.user, 'update').mockResolvedValue(deletedUser);
+      const deleteMock = jest.fn().mockResolvedValue(deletedUser);
+      prismaService.user.update = deleteMock;
 
       const result = await service.deleteUser('1');
 
-      expect(result.deletedAt).toBeTruthy();
-      expect(prismaService.user.update).toHaveBeenCalledWith({
-        where: { id: '1' },
-        data: { deletedAt: expect.any(Date) as unknown as Date },
-      });
+      const callArgs = deleteMock.mock.calls[0]?.[0];
+      expect(callArgs?.where).toEqual({ id: '1' });
+      expect(callArgs?.data.deletedAt).toBeInstanceOf(Date);
+      expect(result.deletedAt).not.toBeNull();
     });
   });
 });

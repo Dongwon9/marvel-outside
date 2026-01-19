@@ -50,4 +50,11 @@ export class PostController {
   async deletePost(@Param('id') id: string): Promise<void> {
     await this.postService.deletePost(id);
   }
+
+  @Get('rating/:id')
+  async getPostRating(
+    @Param('id') id: string,
+  ): Promise<{ likeCount: number; dislikeCount: number }> {
+    return this.postService.getPostRatings(id);
+  }
 }

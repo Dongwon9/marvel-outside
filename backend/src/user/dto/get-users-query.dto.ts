@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsInt, Min } from 'class-validator';
+import { IsOptional, IsInt, Min, IsIn } from 'class-validator';
 
 export class GetUsersQueryDto {
   @IsOptional()
@@ -15,5 +15,6 @@ export class GetUsersQueryDto {
   take?: number;
 
   @IsOptional()
+  @IsIn(['id', 'email', 'name', 'registeredAt'])
   orderBy?: string; // 'id' | 'email' | 'name' | 'registeredAt'
 }

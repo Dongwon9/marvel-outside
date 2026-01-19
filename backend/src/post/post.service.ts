@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -55,5 +55,21 @@ export class PostService {
       where: { id },
     });
     return plainToInstance(PostResponseDto, post);
+  }
+  //id로 게시물의 좋아요와 싫어요 수를 가져온다
+  async getPostRatings(id: string): Promise<{ likeCount: number; dislikeCount: number }> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+      include: { rates: true },
+    });
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
+    const likeCount = post.rates.filter(rate => rate.isLike).length;
+    const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
+
+    return { likeCount, dislikeCount };
   }
 }

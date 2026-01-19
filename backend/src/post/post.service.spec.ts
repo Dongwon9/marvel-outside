@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 
 import { PostService } from './post.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -146,6 +147,89 @@ describe('PostService', () => {
 
       expect(prismaMock.post.delete).toHaveBeenCalledWith({ where: { id: '1' } });
       expect(result).toMatchObject(deleted);
+    });
+  });
+
+  describe('getPostRatings', () => {
+    it('returns like and dislike counts for post with ratings', async () => {
+      const post = {
+        id: '1',
+        title: 'test',
+        content: 'content',
+        authorId: 'author-1',
+        rates: [
+          { userId: 'u1', postId: '1', isLike: true, createdAt: new Date() },
+          { userId: 'u2', postId: '1', isLike: true, createdAt: new Date() },
+          { userId: 'u3', postId: '1', isLike: false, createdAt: new Date() },
+        ],
+      };
+      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
+
+      const result = await service.getPostRatings('1');
+
+      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
+        where: { id: '1' },
+        include: { rates: true },
+      });
+      expect(result).toEqual({ likeCount: 2, dislikeCount: 1 });
+    });
+
+    it('returns zero counts for post with no ratings', async () => {
+      const post = {
+        id: '2',
+        title: 'test',
+        content: 'content',
+        authorId: 'author-1',
+        rates: [],
+      };
+      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
+
+      const result = await service.getPostRatings('2');
+
+      expect(result).toEqual({ likeCount: 0, dislikeCount: 0 });
+    });
+
+    it('returns all likes when no dislikes exist', async () => {
+      const post = {
+        id: '3',
+        title: 'test',
+        content: 'content',
+        authorId: 'author-1',
+        rates: [
+          { userId: 'u1', postId: '3', isLike: true, createdAt: new Date() },
+          { userId: 'u2', postId: '3', isLike: true, createdAt: new Date() },
+        ],
+      };
+      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
+
+      const result = await service.getPostRatings('3');
+
+      expect(result).toEqual({ likeCount: 2, dislikeCount: 0 });
+    });
+
+    it('returns all dislikes when no likes exist', async () => {
+      const post = {
+        id: '4',
+        title: 'test',
+        content: 'content',
+        authorId: 'author-1',
+        rates: [
+          { userId: 'u1', postId: '4', isLike: false, createdAt: new Date() },
+          { userId: 'u2', postId: '4', isLike: false, createdAt: new Date() },
+        ],
+      };
+      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
+
+      const result = await service.getPostRatings('4');
+
+      expect(result).toEqual({ likeCount: 0, dislikeCount: 2 });
+    });
+
+    it('throws BadRequestException when post not found', async () => {
+      prismaMock.post.findUnique = jest.fn().mockResolvedValue(null);
+
+      await expect(service.getPostRatings('missing')).rejects.toThrow(BadRequestException);
+      await expect(service.getPostRatings('missing')).rejects.toThrow('Post not found');
     });
   });
 });

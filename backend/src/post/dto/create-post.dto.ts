@@ -1,4 +1,5 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsEnum } from 'class-validator';
+import { ContentFormat } from './content-format.enum';
 
 export class CreatePostDto {
   @IsString()
@@ -13,4 +14,8 @@ export class CreatePostDto {
 
   @IsString()
   boardId!: string;
+
+  @IsEnum(ContentFormat)
+  @IsOptional()
+  contentFormat?: ContentFormat;
 }

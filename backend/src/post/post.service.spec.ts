@@ -88,7 +88,12 @@ describe('PostService', () => {
 
   describe('createPost', () => {
     it('creates and returns mapped post', async () => {
-      const dto: CreatePostDto = { title: 'new', content: 'body', authorId: 'author-1' };
+      const dto: CreatePostDto = {
+        title: 'new',
+        content: 'body',
+        authorId: 'author-1',
+        boardId: 'board-2',
+      };
       const created = { id: '1', ...dto };
       prismaMock.post.create = jest.fn().mockResolvedValue(created);
 

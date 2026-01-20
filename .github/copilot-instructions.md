@@ -150,7 +150,7 @@ docker compose -f docker-compose.dev.yml down
 - **빌드**: `pnpm run build` (`dist/`로 출력)
 - **린트/포맷**: `pnpm run lint` (ESLint + fix), `pnpm run format` (Prettier)
 - **테스트**: `pnpm run test` (Jest 단위 테스트), `pnpm run test:e2e` (e2e 테스트)
-- **데이터베이스**: `pnpm prisma migrate dev` (마이그레이션 생성/적용)
+- **데이터베이스**: `pnpm prisma migrate dev --name migration_name` (마이그레이션 생성/적용) → `pnpm prisma generate` (타입 재생성)
 
 ### NestJS CLI 명령어
 
@@ -182,9 +182,10 @@ CLI는 자동으로:
 
 ```bash
 pnpm prisma migrate dev --name feature_description
+pnpm prisma generate
 ```
 
-이 명령은 마이그레이션 SQL을 생성하고 `src/generated/prisma/`의 클라이언트 타입을 재생성합니다.
+첫 번째 명령은 마이그레이션 SQL을 생성하고 적용합니다. 두 번째 명령은 `src/generated/prisma/`의 클라이언트 타입을 재생성합니다. (**중요**: `migrate dev` 후 자동으로 타입이 생성되지 않으므로 `prisma generate`를 반드시 실행해야 합니다)
 
 ## 코드 스타일 & 패턴
 
@@ -768,7 +769,7 @@ export default function PostCard({ title, content, author }: PostCardProps) {
 - 절대적으로 필요하지 않으면 커스텀 CSS를 작성하지 마세요 (Tailwind 사용)
 - 컴포넌트에서 React를 임포트하지 마세요 (자동 JSX 런타임)
 - 인라인 스타일을 사용하지 마세요 (Tailwind 유틸리티 선호)
-
+- 코드 빌드하지 말 것
 ### 기타 주의 사항
 
 - 모든 코드 파일의 인덴트는 스페이스 2칸

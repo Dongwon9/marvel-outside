@@ -6,6 +6,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
+import { ContentFormat } from './dto/content-format.enum';
 
 @Injectable()
 export class PostService {
@@ -34,6 +35,7 @@ export class PostService {
       data: {
         title: createPostDto.title,
         content: createPostDto.content || '',
+        contentFormat: createPostDto.contentFormat || ContentFormat.Markdown,
         author: {
           connect: { id: createPostDto.authorId },
         },

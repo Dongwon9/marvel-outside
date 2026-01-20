@@ -92,4 +92,11 @@ export class UserService {
     });
     return plainToInstance(UserResponseDto, user);
   }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken },
+    });
+  }
 }

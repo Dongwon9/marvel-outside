@@ -35,26 +35,26 @@ export default function BoardView() {
   return (
     <section className="space-y-4 md:space-y-6">
       {/* Board Header */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg md:rounded-xl p-6 md:p-8 text-white shadow-lg">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white shadow-lg md:rounded-xl md:p-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">
+            <h1 className="mb-2 text-2xl font-bold md:text-3xl">
               {boardData.name}
             </h1>
-            <p className="text-sm md:text-base text-purple-50 mb-4 md:mb-0">
+            <p className="mb-4 text-sm text-purple-50 md:mb-0 md:text-base">
               {boardData.description}
             </p>
           </div>
           <Link
             to="/post/new"
-            className="px-4 py-2.5 md:px-6 md:py-3 bg-white text-purple-600 font-medium rounded-lg hover:bg-purple-50 transition-colors text-center whitespace-nowrap"
+            className="rounded-lg bg-white px-4 py-2.5 text-center font-medium whitespace-nowrap text-purple-600 transition-colors hover:bg-purple-50 md:px-6 md:py-3"
           >
             + 글쓰기
           </Link>
         </div>
-        <div className="flex items-center gap-4 md:gap-6 mt-4 pt-4 border-t border-purple-400">
+        <div className="mt-4 flex items-center gap-4 border-t border-purple-400 pt-4 md:gap-6">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
               <path
                 fillRule="evenodd"
@@ -67,7 +67,7 @@ export default function BoardView() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
             <span className="text-sm md:text-base">
@@ -78,8 +78,8 @@ export default function BoardView() {
       </div>
 
       {/* Board ID Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm text-gray-600">
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <div className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-600">
+        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"
             d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
@@ -90,24 +90,24 @@ export default function BoardView() {
       </div>
 
       {/* Posts List */}
-      <div className="bg-white rounded-lg md:rounded-xl shadow-md overflow-hidden">
+      <div className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-600">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 md:text-sm">
                   제목
                 </th>
-                <th className="hidden sm:table-cell px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-600">
+                <th className="hidden px-4 py-3 text-left text-xs font-medium text-gray-600 sm:table-cell md:text-sm">
                   작성자
                 </th>
-                <th className="hidden md:table-cell px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-600">
+                <th className="hidden px-4 py-3 text-left text-xs font-medium text-gray-600 md:table-cell md:text-sm">
                   작성일
                 </th>
-                <th className="px-4 py-3 text-center text-xs md:text-sm font-medium text-gray-600">
+                <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 md:text-sm">
                   조회
                 </th>
-                <th className="hidden lg:table-cell px-4 py-3 text-center text-xs md:text-sm font-medium text-gray-600">
+                <th className="hidden px-4 py-3 text-center text-xs font-medium text-gray-600 md:text-sm lg:table-cell">
                   좋아요
                 </th>
               </tr>
@@ -116,31 +116,31 @@ export default function BoardView() {
               {mockPosts.map((post) => (
                 <tr
                   key={post.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="transition-colors hover:bg-gray-50"
                 >
                   <td className="px-4 py-4">
                     <Link
                       to={`/post/${post.id}`}
-                      className="text-sm md:text-base text-gray-900 hover:text-blue-600 font-medium line-clamp-1"
+                      className="line-clamp-1 text-sm font-medium text-gray-900 hover:text-blue-600 md:text-base"
                     >
                       {post.title}
                     </Link>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 sm:hidden">
+                    <div className="mt-1 flex items-center gap-2 text-xs text-gray-500 sm:hidden">
                       <span>{post.author}</span>
                       <span>·</span>
                       <span>{post.createdAt}</span>
                     </div>
                   </td>
-                  <td className="hidden sm:table-cell px-4 py-4 text-sm text-gray-600">
+                  <td className="hidden px-4 py-4 text-sm text-gray-600 sm:table-cell">
                     {post.author}
                   </td>
-                  <td className="hidden md:table-cell px-4 py-4 text-sm text-gray-600">
+                  <td className="hidden px-4 py-4 text-sm text-gray-600 md:table-cell">
                     {post.createdAt}
                   </td>
-                  <td className="px-4 py-4 text-sm text-gray-600 text-center">
+                  <td className="px-4 py-4 text-center text-sm text-gray-600">
                     {post.views}
                   </td>
-                  <td className="hidden lg:table-cell px-4 py-4 text-sm text-gray-600 text-center">
+                  <td className="hidden px-4 py-4 text-center text-sm text-gray-600 lg:table-cell">
                     {post.likes}
                   </td>
                 </tr>
@@ -152,19 +152,19 @@ export default function BoardView() {
 
       {/* Pagination */}
       <div className="flex items-center justify-center gap-2">
-        <button className="px-3 py-2 text-sm md:text-base text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 md:text-base">
           이전
         </button>
-        <button className="px-3 py-2 text-sm md:text-base bg-blue-600 text-white rounded-lg">
+        <button className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white md:text-base">
           1
         </button>
-        <button className="px-3 py-2 text-sm md:text-base text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 md:text-base">
           2
         </button>
-        <button className="px-3 py-2 text-sm md:text-base text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 md:text-base">
           3
         </button>
-        <button className="px-3 py-2 text-sm md:text-base text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 md:text-base">
           다음
         </button>
       </div>

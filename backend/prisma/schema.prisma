@@ -18,6 +18,7 @@ model User {
   email          String    @unique
   name           String    @unique
   passwordHashed String    @db.Text
+  refreshToken   String?   @db.Text
   registeredAt   DateTime  @default(now())
   deletedAt      DateTime?
   following      Follow[]  @relation("UserFollowing")
@@ -48,15 +49,21 @@ model Board {
   posts       Post[]
 }
 
+enum ContentFormat {
+  markdown
+  plaintext
+}
+
 model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
+  id            String        @id @default(uuid())
+  title         String
+  content       String        @db.Text
+  contentFormat ContentFormat @default(markdown)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  published     Boolean       @default(false)
+  author        User          @relation(fields: [authorId], references: [id])
+  authorId      String
 
   rates   Rate[]
   board   Board? @relation(fields: [boardId], references: [id])

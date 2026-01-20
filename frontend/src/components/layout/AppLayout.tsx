@@ -8,46 +8,46 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Top bar */}
           <div className="flex items-center justify-between py-3 lg:py-4">
             <Link
               to="/"
-              className="text-xl md:text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
+              className="text-xl font-bold text-blue-600 transition-colors hover:text-blue-700 md:text-2xl"
             >
               Marvel Outside
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-6 text-base">
+            <nav className="hidden items-center gap-6 text-base md:flex">
               <Link
                 to="/feed"
-                className="font-medium hover:text-blue-600 transition-colors"
+                className="font-medium transition-colors hover:text-blue-600"
               >
                 피드
               </Link>
               <Link
                 to="/post"
-                className="font-medium hover:text-blue-600 transition-colors"
+                className="font-medium transition-colors hover:text-blue-600"
               >
                 게시글
               </Link>
               <Link
                 to="/settings"
-                className="font-medium hover:text-blue-600 transition-colors"
+                className="font-medium transition-colors hover:text-blue-600"
               >
                 설정
               </Link>
               <Link
                 to="/login"
-                className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                className="rounded-lg border border-blue-600 px-4 py-2 text-blue-600 transition-colors hover:bg-blue-50"
               >
                 로그인
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 가입
               </Link>
@@ -56,11 +56,11 @@ export default function AppLayout() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="rounded-lg p-2 transition-colors hover:bg-gray-100 md:hidden"
               aria-label="메뉴 열기"
             >
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -79,38 +79,38 @@ export default function AppLayout() {
 
           {/* Mobile Navigation */}
           {menuOpen && (
-            <nav className="md:hidden py-3 border-t border-gray-200 flex flex-col gap-2">
+            <nav className="flex flex-col gap-2 border-t border-gray-200 py-3 md:hidden">
               <Link
                 to="/feed"
-                className="px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"
                 onClick={() => setMenuOpen(false)}
               >
                 피드
               </Link>
               <Link
                 to="/post"
-                className="px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"
                 onClick={() => setMenuOpen(false)}
               >
                 게시글
               </Link>
               <Link
                 to="/settings"
-                className="px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"
                 onClick={() => setMenuOpen(false)}
               >
                 설정
               </Link>
               <Link
                 to="/login"
-                className="px-3 py-2 text-center text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                className="rounded-lg border border-blue-600 px-3 py-2 text-center text-blue-600 transition-colors hover:bg-blue-50"
                 onClick={() => setMenuOpen(false)}
               >
                 로그인
               </Link>
               <Link
                 to="/signup"
-                className="px-3 py-2 text-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-blue-600 px-3 py-2 text-center text-white transition-colors hover:bg-blue-700"
                 onClick={() => setMenuOpen(false)}
               >
                 가입
@@ -125,12 +125,12 @@ export default function AppLayout() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <Suspense
           fallback={
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-blue-600"></div>
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
                 <p className="mt-2 text-gray-600">로딩 중...</p>
               </div>
             </div>
@@ -141,8 +141,8 @@ export default function AppLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <footer className="mt-auto border-t border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500">
             © 2026 Marvel Outside. All rights reserved.
           </p>

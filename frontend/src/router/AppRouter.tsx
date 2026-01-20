@@ -8,7 +8,7 @@ const Login = lazy(() => import("../pages/Login"));
 const Signup = lazy(() => import("../pages/Signup"));
 const Feed = lazy(() => import("../pages/Feed"));
 const PostList = lazy(() => import("../pages/PostList"));
-const PostNew = lazy(() => import("../pages/PostNew"));
+const PostEditor = lazy(() => import("../pages/PostEditor"));
 const PostView = lazy(() => import("../pages/PostView"));
 const UserProfile = lazy(() => import("../pages/UserProfile"));
 const Settings = lazy(() => import("../pages/Settings"));
@@ -24,8 +24,9 @@ export const router = createBrowserRouter([
       { path: "/signup", element: <Signup /> },
       { path: "/feed", element: <Feed /> },
       { path: "/post", element: <PostList /> },
-      { path: "/post/new", element: <PostNew /> },
+      { path: "/post/new", element: <PostEditor /> },
       { path: "/post/:id", element: <PostView /> },
+      { path: "/post/:id/edit", element: <PostEditor /> },
       { path: "/user/:id", element: <UserProfile /> },
       { path: "/settings", element: <Settings /> },
       { path: "/board/:id", element: <BoardView /> },

@@ -27,8 +27,8 @@ export default function Feed() {
     <section className="space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl md:text-3xl font-bold">피드</h1>
-        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+        <h1 className="text-2xl font-bold md:text-3xl">피드</h1>
+        <button className="rounded-lg border border-blue-600 px-3 py-1.5 text-sm text-blue-600 transition-colors hover:bg-blue-50 md:px-4 md:py-2 md:text-base">
           새로고침
         </button>
       </div>
@@ -38,24 +38,24 @@ export default function Feed() {
         {mockFeed.map((item) => (
           <article
             key={item.id}
-            className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-shadow"
+            className="rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg md:rounded-xl md:p-6"
           >
             {/* Author Info */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center text-lg md:text-xl">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg md:h-12 md:w-12 md:text-xl">
                 {item.authorAvatar}
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm md:text-base font-semibold text-gray-900 truncate">
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate text-sm font-semibold text-gray-900 md:text-base">
                   {item.author}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-500">
+                <p className="text-xs text-gray-500 md:text-sm">
                   {item.timestamp}
                 </p>
               </div>
               <button className="text-gray-400 hover:text-gray-600">
                 <svg
-                  className="w-5 h-5 md:w-6 md:h-6"
+                  className="h-5 w-5 md:h-6 md:w-6"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -65,18 +65,18 @@ export default function Feed() {
             </div>
 
             {/* Content */}
-            <h4 className="text-base md:text-lg font-semibold mb-2">
+            <h4 className="mb-2 text-base font-semibold md:text-lg">
               {item.title}
             </h4>
-            <p className="text-sm md:text-base text-gray-600 mb-4">
+            <p className="mb-4 text-sm text-gray-600 md:text-base">
               {item.content}
             </p>
 
             {/* Actions */}
-            <div className="flex items-center gap-4 md:gap-6 pt-4 border-t border-gray-100">
-              <button className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base text-gray-600 hover:text-blue-600 transition-colors">
+            <div className="flex items-center gap-4 border-t border-gray-100 pt-4 md:gap-6">
+              <button className="flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
                 <svg
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -88,9 +88,9 @@ export default function Feed() {
                 </svg>
                 <span>{item.likes}</span>
               </button>
-              <button className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base text-gray-600 hover:text-blue-600 transition-colors">
+              <button className="flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
                 <svg
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -102,9 +102,9 @@ export default function Feed() {
                 </svg>
                 <span>{item.comments}</span>
               </button>
-              <button className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base text-gray-600 hover:text-blue-600 transition-colors ml-auto">
+              <button className="ml-auto flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
                 <svg
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -123,10 +123,10 @@ export default function Feed() {
 
       {/* Empty State */}
       {mockFeed.length === 0 && (
-        <div className="bg-white rounded-lg md:rounded-xl p-8 md:p-12 text-center shadow-md">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-lg bg-white p-8 text-center shadow-md md:rounded-xl md:p-12">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 md:h-20 md:w-20">
             <svg
-              className="w-8 h-8 md:w-10 md:h-10 text-gray-400"
+              className="h-8 w-8 text-gray-400 md:h-10 md:w-10"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -137,10 +137,10 @@ export default function Feed() {
               <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
           </div>
-          <h3 className="text-lg md:text-xl font-semibold mb-2">
+          <h3 className="mb-2 text-lg font-semibold md:text-xl">
             피드가 비어있습니다
           </h3>
-          <p className="text-sm md:text-base text-gray-600 mb-6">
+          <p className="mb-6 text-sm text-gray-600 md:text-base">
             다른 사용자를 팔로우하여 피드를 채워보세요!
           </p>
         </div>

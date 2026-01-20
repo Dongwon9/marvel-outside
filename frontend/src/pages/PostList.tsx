@@ -35,44 +35,44 @@ export default function PostList() {
   return (
     <section className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h1 className="text-2xl md:text-3xl font-bold">게시글 목록</h1>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold md:text-3xl">게시글 목록</h1>
         <Link
           to="/post/new"
-          className="px-4 py-2.5 md:px-6 md:py-3 bg-blue-600 text-white text-sm md:text-base font-medium rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors text-center shadow-md hover:shadow-lg"
+          className="rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg active:bg-blue-800 md:px-6 md:py-3 md:text-base"
         >
           + 새 게시글
         </Link>
       </div>
 
       {/* Filter/Sort Bar */}
-      <div className="flex flex-wrap items-center gap-2 md:gap-3 p-3 md:p-4 bg-white rounded-lg shadow-sm">
-        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg bg-white p-3 shadow-sm md:gap-3 md:p-4">
+        <button className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-blue-700 md:px-4 md:py-2 md:text-base">
           최신순
         </button>
-        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+        <button className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-200 md:px-4 md:py-2 md:text-base">
           인기순
         </button>
-        <button className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+        <button className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-200 md:px-4 md:py-2 md:text-base">
           댓글순
         </button>
       </div>
 
       {/* Posts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
         {mockPosts.map((post) => (
           <Link
             key={post.id}
             to={`/post/${post.id}`}
-            className="block bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1"
+            className="block rounded-lg bg-white p-4 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl md:rounded-xl md:p-6"
           >
-            <h2 className="text-lg md:text-xl font-semibold mb-2 text-gray-900 line-clamp-1">
+            <h2 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900 md:text-xl">
               {post.title}
             </h2>
-            <p className="text-sm md:text-base text-gray-600 mb-4 line-clamp-2">
+            <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:text-base">
               {post.content}
             </p>
-            <div className="flex items-center justify-between text-xs md:text-sm text-gray-500">
+            <div className="flex items-center justify-between text-xs text-gray-500 md:text-sm">
               <div className="flex items-center gap-2 md:gap-3">
                 <span className="font-medium text-gray-700">{post.author}</span>
                 <span>·</span>
@@ -81,7 +81,7 @@ export default function PostList() {
               <div className="flex items-center gap-3 md:gap-4">
                 <span className="flex items-center gap-1">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -91,7 +91,7 @@ export default function PostList() {
                 </span>
                 <span className="flex items-center gap-1">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -111,10 +111,10 @@ export default function PostList() {
 
       {/* Empty State */}
       {mockPosts.length === 0 && (
-        <div className="bg-white rounded-lg md:rounded-xl p-8 md:p-12 text-center shadow-md">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-lg bg-white p-8 text-center shadow-md md:rounded-xl md:p-12">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 md:h-20 md:w-20">
             <svg
-              className="w-8 h-8 md:w-10 md:h-10 text-gray-400"
+              className="h-8 w-8 text-gray-400 md:h-10 md:w-10"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -125,15 +125,15 @@ export default function PostList() {
               <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h3 className="text-lg md:text-xl font-semibold mb-2">
+          <h3 className="mb-2 text-lg font-semibold md:text-xl">
             게시글이 없습니다
           </h3>
-          <p className="text-sm md:text-base text-gray-600 mb-6">
+          <p className="mb-6 text-sm text-gray-600 md:text-base">
             첫 번째 게시글을 작성해보세요!
           </p>
           <Link
             to="/post/new"
-            className="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
           >
             게시글 작성하기
           </Link>

@@ -11,6 +11,7 @@ import { PostModule } from './post/post.module';
 import { FollowModule } from './follow/follow.module';
 import { RateModule } from './rate/rate.module';
 import { BoardModule } from './board/board.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BoardModule } from './board/board.module';
       ],
     }),
     PrismaModule,
+    AuthModule,
     UserModule,
     PostModule,
     FollowModule,

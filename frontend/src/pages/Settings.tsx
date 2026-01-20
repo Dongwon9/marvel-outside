@@ -29,10 +29,10 @@ export default function Settings() {
   return (
     <section className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">설정</h1>
-          <p className="text-sm md:text-base text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold md:text-3xl">설정</h1>
+          <p className="mt-1 text-sm text-gray-600 md:text-base">
             계정 및 설정을 관리하세요
           </p>
         </div>
@@ -43,10 +43,10 @@ export default function Settings() {
         {settingsSections.map((section, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-lg md:rounded-xl shadow-md overflow-hidden"
+            className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl"
           >
-            <div className="px-4 py-3 md:px-6 md:py-4 bg-gray-50 border-b border-gray-200">
-              <h2 className="text-base md:text-lg font-semibold text-gray-900">
+            <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 md:px-6 md:py-4">
+              <h2 className="text-base font-semibold text-gray-900 md:text-lg">
                 {section.title}
               </h2>
             </div>
@@ -54,16 +54,16 @@ export default function Settings() {
               {section.items.map((item, itemIdx) => (
                 <button
                   key={itemIdx}
-                  className="w-full px-4 py-3 md:px-6 md:py-4 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-gray-50 md:px-6 md:py-4"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xl md:text-2xl">{item.icon}</span>
-                    <span className="text-sm md:text-base text-gray-700 font-medium">
+                    <span className="text-sm font-medium text-gray-700 md:text-base">
                       {item.label}
                     </span>
                   </div>
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="h-5 w-5 text-gray-400"
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -81,23 +81,23 @@ export default function Settings() {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-white rounded-lg md:rounded-xl shadow-md overflow-hidden border border-red-200">
-        <div className="px-4 py-3 md:px-6 md:py-4 bg-red-50 border-b border-red-200">
-          <h2 className="text-base md:text-lg font-semibold text-red-900">
+      <div className="overflow-hidden rounded-lg border border-red-200 bg-white shadow-md md:rounded-xl">
+        <div className="border-b border-red-200 bg-red-50 px-4 py-3 md:px-6 md:py-4">
+          <h2 className="text-base font-semibold text-red-900 md:text-lg">
             위험 지역
           </h2>
         </div>
         <div className="p-4 md:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-sm md:text-base font-medium text-gray-900">
+              <h3 className="text-sm font-medium text-gray-900 md:text-base">
                 계정 삭제
               </h3>
-              <p className="text-xs md:text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-xs text-gray-600 md:text-sm">
                 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
               </p>
             </div>
-            <button className="px-4 py-2 md:px-5 md:py-2.5 bg-red-600 text-white text-sm md:text-base font-medium rounded-lg hover:bg-red-700 active:bg-red-800 transition-colors whitespace-nowrap">
+            <button className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-red-700 active:bg-red-800 md:px-5 md:py-2.5 md:text-base">
               계정 삭제
             </button>
           </div>

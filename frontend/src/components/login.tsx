@@ -69,11 +69,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="mb-8 text-center">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">
             Marvel Outside
           </h1>
           <p className="text-gray-600">로그인하여 시작하세요</p>
@@ -81,8 +81,8 @@ export default function Login() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 text-sm font-medium">
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
+            <p className="text-sm font-medium text-green-800">
               로그인이 완료되었습니다!
             </p>
           </div>
@@ -90,8 +90,8 @@ export default function Login() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800 text-sm font-medium">{error}</p>
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
+            <p className="text-sm font-medium text-red-800">{error}</p>
           </div>
         )}
 
@@ -101,7 +101,7 @@ export default function Login() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700"
             >
               이메일
             </label>
@@ -113,7 +113,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="you@example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:border-transparent focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
@@ -121,7 +121,7 @@ export default function Login() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700"
             >
               비밀번호
             </label>
@@ -133,7 +133,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:border-transparent focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
 
@@ -141,19 +141,19 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+            className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white transition duration-200 hover:bg-indigo-700 disabled:bg-indigo-400"
           >
             {loading ? "로그인 중..." : "로그인"}
           </button>
         </form>
 
         {/* Footer Links */}
-        <div className="mt-6 text-center space-y-2">
+        <div className="mt-6 space-y-2 text-center">
           <p className="text-sm text-gray-600">
             계정이 없으신가요?{" "}
             <a
               href="/signup"
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="font-medium text-indigo-600 hover:text-indigo-700"
             >
               가입하기
             </a>
@@ -161,7 +161,7 @@ export default function Login() {
           <p className="text-sm text-gray-600">
             <a
               href="/forgot-password"
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="font-medium text-indigo-600 hover:text-indigo-700"
             >
               비밀번호를 잊으셨나요?
             </a>
@@ -171,7 +171,7 @@ export default function Login() {
         <div className="mt-6">
           <div className="relative flex items-center justify-center">
             <span className="h-px w-full bg-gray-200" />
-            <span className="px-3 text-xs font-semibold text-gray-500 bg-white">
+            <span className="bg-white px-3 text-xs font-semibold text-gray-500">
               OAuth
             </span>
             <span className="h-px w-full bg-gray-200" />
@@ -180,14 +180,14 @@ export default function Login() {
           <div className="mt-4 grid grid-cols-1 gap-3">
             <button
               type="button"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
             >
               <span className="i-carbon-logo-google text-lg" />
               Google로 로그인
             </button>
             <button
               type="button"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-900 bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 transition"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-900 bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800"
             >
               <span className="i-carbon-logo-github text-lg" />
               GitHub로 로그인

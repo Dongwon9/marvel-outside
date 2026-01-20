@@ -17,13 +17,13 @@ export default function PostNew() {
   };
 
   return (
-    <section className="max-w-4xl mx-auto space-y-4 md:space-y-6">
+    <section className="mx-auto max-w-4xl space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl md:text-3xl font-bold">새 게시글 작성</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">새 게시글 작성</h1>
         <button
           onClick={() => navigate(-1)}
-          className="px-3 py-2 md:px-4 md:py-2.5 text-sm md:text-base text-gray-600 hover:text-gray-900 transition-colors"
+          className="px-3 py-2 text-sm text-gray-600 transition-colors hover:text-gray-900 md:px-4 md:py-2.5 md:text-base"
         >
           취소
         </button>
@@ -32,14 +32,14 @@ export default function PostNew() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg md:rounded-xl shadow-md overflow-hidden"
+        className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl"
       >
-        <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
+        <div className="space-y-4 p-4 md:space-y-6 md:p-6 lg:p-8">
           {/* Board Select */}
           <div>
             <label
               htmlFor="board"
-              className="block text-sm md:text-base font-medium text-gray-700 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700 md:text-base"
             >
               게시판 선택
             </label>
@@ -49,7 +49,7 @@ export default function PostNew() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, board: e.target.value }))
               }
-              className="w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-4 md:py-3 md:text-base"
             >
               <option value="board1">자유 게시판</option>
               <option value="board2">질문 게시판</option>
@@ -61,7 +61,7 @@ export default function PostNew() {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm md:text-base font-medium text-gray-700 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700 md:text-base"
             >
               제목
             </label>
@@ -74,7 +74,7 @@ export default function PostNew() {
               }
               required
               placeholder="제목을 입력하세요"
-              className="w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-4 md:py-3 md:text-base"
             />
           </div>
 
@@ -82,7 +82,7 @@ export default function PostNew() {
           <div>
             <label
               htmlFor="content"
-              className="block text-sm md:text-base font-medium text-gray-700 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700 md:text-base"
             >
               내용
             </label>
@@ -95,18 +95,18 @@ export default function PostNew() {
               required
               rows={12}
               placeholder="내용을 입력하세요"
-              className="w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+              className="w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-4 md:py-3 md:text-base"
             />
           </div>
 
           {/* File Upload (Optional) */}
           <div>
-            <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-gray-700 md:text-base">
               첨부 파일 (선택사항)
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 md:p-8 text-center hover:border-blue-500 transition-colors cursor-pointer">
+            <div className="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-blue-500 md:p-8">
               <svg
-                className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 text-gray-400"
+                className="mx-auto mb-3 h-10 w-10 text-gray-400 md:h-12 md:w-12"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -116,10 +116,10 @@ export default function PostNew() {
               >
                 <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              <p className="text-sm md:text-base text-gray-600 mb-1">
+              <p className="mb-1 text-sm text-gray-600 md:text-base">
                 클릭하거나 파일을 드래그하세요
               </p>
-              <p className="text-xs md:text-sm text-gray-500">
+              <p className="text-xs text-gray-500 md:text-sm">
                 PNG, JPG, GIF 최대 10MB
               </p>
             </div>
@@ -127,17 +127,17 @@ export default function PostNew() {
         </div>
 
         {/* Footer Actions */}
-        <div className="px-4 py-4 md:px-6 md:py-5 bg-gray-50 border-t border-gray-200 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+        <div className="flex flex-col-reverse gap-3 border-t border-gray-200 bg-gray-50 px-4 py-4 sm:flex-row sm:justify-end md:px-6 md:py-5">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="w-full sm:w-auto px-4 py-2.5 md:px-6 md:py-3 text-sm md:text-base text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto md:px-6 md:py-3 md:text-base"
           >
             취소
           </button>
           <button
             type="submit"
-            className="w-full sm:w-auto px-4 py-2.5 md:px-6 md:py-3 text-sm md:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md hover:shadow-lg"
+            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg sm:w-auto md:px-6 md:py-3 md:text-base"
           >
             게시하기
           </button>

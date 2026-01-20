@@ -1,7 +1,10 @@
+import { ContentFormat } from './content-format.enum';
+
 export class PostResponseDto {
   id!: string;
   title!: string;
   content!: string;
+  contentFormat!: ContentFormat;
   published!: boolean;
   authorId!: string;
   boardId!: string;

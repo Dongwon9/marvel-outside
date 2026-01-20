@@ -1,4 +1,5 @@
 import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
+
 import { ContentFormat } from './content-format.enum';
 
 export class UpdatePostDto {

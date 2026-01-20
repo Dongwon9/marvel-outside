@@ -103,14 +103,16 @@ describe('PostService', () => {
         data: {
           title: dto.title,
           content: dto.content,
+          contentFormat: dto.contentFormat || 'markdown',
           author: { connect: { id: dto.authorId } },
+          board: { connect: { id: dto.boardId } },
         },
       });
       expect(result).toMatchObject(created);
     });
 
     it('fills empty content when missing', async () => {
-      const dto = { title: 'no content', authorId: 'a1' } as CreatePostDto;
+      const dto = { title: 'no content', authorId: 'a1', boardId: 'b1' } as CreatePostDto;
       const created = { id: '2', title: dto.title, content: '', authorId: dto.authorId };
       prismaMock.post.create = jest.fn().mockResolvedValue(created);
 
@@ -120,7 +122,9 @@ describe('PostService', () => {
         data: {
           title: dto.title,
           content: '',
+          contentFormat: 'markdown',
           author: { connect: { id: dto.authorId } },
+          board: { connect: { id: dto.boardId } },
         },
       });
       expect(result).toMatchObject(created);

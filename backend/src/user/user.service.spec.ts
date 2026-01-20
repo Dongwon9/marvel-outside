@@ -20,6 +20,7 @@ describe('UserService', () => {
     email: 'test@example.com',
     name: 'Test User',
     passwordHashed: 'hashedpassword',
+    refreshToken: null,
     registeredAt: new Date(),
     deletedAt: null,
   };

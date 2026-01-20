@@ -61,6 +61,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        refreshToken: null,
       };
 
       mockUserService.createUser.mockResolvedValue(userResponseDto);
@@ -103,6 +104,7 @@ describe('UserController', () => {
         registeredAt: new Date('2024-01-01'),
         deletedAt: null,
         passwordHashed: '',
+        refreshToken: null,
       };
 
       mockUserService.createUser.mockResolvedValue(userResponseDto);
@@ -158,6 +160,7 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
+          refreshToken: null,
         },
         {
           id: '2',
@@ -166,6 +169,7 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
+          refreshToken: null,
         },
       ];
 
@@ -223,6 +227,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        refreshToken: null,
       };
 
       mockUserService.getUserById.mockResolvedValue(userResponseDto);
@@ -277,6 +282,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        refreshToken: null,
       };
 
       mockUserService.updateUser.mockResolvedValue(updatedUser);
@@ -296,6 +302,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        refreshToken: null,
       };
 
       mockUserService.updateUser.mockResolvedValue(updatedUser);

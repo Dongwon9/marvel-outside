@@ -35,7 +35,7 @@ export default function BoardView() {
   return (
     <section className="space-y-4 md:space-y-6">
       {/* Board Header */}
-      <div className="rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white shadow-lg md:rounded-xl md:p-8">
+      <div className="rounded-lg bg-linear-to-r from-purple-500 to-pink-500 p-6 text-white shadow-lg md:rounded-xl md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <h1 className="mb-2 text-2xl font-bold md:text-3xl">

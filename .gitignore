@@ -21,10 +21,15 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # dotenv environment variable files
 **/.env
-**/.env.development.local
-**/.env.test.local
-**/.env.production.local
 **/.env.local
+**/.env.*.local
+
+# Environment-specific files (never commit)
+**/env.production
+backend/.env.production
+
+# Development/test env files are NOT committed (use .env.example as template)
+# backend/.env.development and backend/.env.test are local only
 
 # Tests
 **/coverage

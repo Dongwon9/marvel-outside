@@ -57,7 +57,7 @@ export default [
 
   /* Jest 전용 */
   {
-    files: ['**/*.spec.ts', '**/*.e2e-spec.ts'],
+    files: ['**/*.spec.ts', '**/*.e2e-spec.ts', '**/test/**/*.ts'],
     plugins: { jest },
     rules: {
       ...jest.configs.recommended.rules,

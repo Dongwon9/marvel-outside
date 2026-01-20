@@ -37,6 +37,9 @@ export class PostService {
         author: {
           connect: { id: createPostDto.authorId },
         },
+        board: {
+          connect: { id: createPostDto.boardId },
+        },
       },
     });
     return plainToInstance(PostResponseDto, post);

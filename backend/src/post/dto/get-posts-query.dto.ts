@@ -16,4 +16,10 @@ export class GetPostsQueryDto {
 
   @IsOptional()
   orderBy?: string; // 'id' | 'title' | 'createdAt'
+
+  @IsOptional()
+  authorId?: string;
+
+  @IsOptional()
+  boardId?: string;
 }

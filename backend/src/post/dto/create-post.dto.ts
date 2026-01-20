@@ -10,4 +10,7 @@ export class CreatePostDto {
 
   @IsString()
   authorId!: string;
+
+  @IsString()
+  boardId!: string;
 }

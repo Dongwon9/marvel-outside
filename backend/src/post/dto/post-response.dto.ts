@@ -4,7 +4,9 @@ export class PostResponseDto {
   content!: string;
   published!: boolean;
   authorId!: string;
-
+  boardId!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
   constructor(partial: Partial<PostResponseDto> = {}) {
     Object.assign(this, partial);
   }

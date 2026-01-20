@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:integration": "NODE_ENV=test jest --config jest.integration.cjs",
+    "test:integration:watch": "NODE_ENV=test jest --config jest.integration.cjs --watch",
+    "test:all": "pnpm test && pnpm test:integration",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db:push:dev": "NODE_ENV=development prisma db push",
+    "db:reset:dev": "NODE_ENV=development prisma migrate reset --force"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.12",
@@ -53,8 +58,10 @@
     "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jest": "^29.12.1",
     "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "globals": "^17.0.0",
     "jest": "^30.2.0",
     "prettier": "^3.8.0",

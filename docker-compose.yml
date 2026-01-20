@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: marvel_postgres_dev
+    environment:
+      POSTGRES_USER: marvel
+      POSTGRES_PASSWORD: marvel_password
+      POSTGRES_DB: marvel_dev # 자동으로 생성됨
+      POSTGRES_INITDB_ARGS: "-U marvel"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      # init script 제거 또는 수정
+      # - ./backend/scripts/db-init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marvel -d marvel_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - marvel_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.dev
+    container_name: marvel_backend_dev
+    working_dir: /workspace/backend
+    command: pnpm run start:dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env.development
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - DATABASE_URL=postgresql://marvel:marvel_password@postgres:5432/marvel_dev
+    volumes:
+      - ./backend:/workspace/backend
+      - backend_node_modules:/workspace/backend/node_modules
+      - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
+      - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
+      - ./backend/scripts/docker-entrypoint.sh:/workspace/docker-entrypoint.sh
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - marvel_network
+    entrypoint: ["/workspace/docker-entrypoint.sh"]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.dev
+    container_name: marvel_frontend_dev
+    working_dir: /workspace/frontend
+    command: pnpm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_PORT=5173
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/workspace/frontend
+      - frontend_node_modules:/workspace/frontend/node_modules
+      - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
+      - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
+    depends_on:
+      - backend
+    networks:
+      - marvel_network
+
+volumes:
+  postgres_data:
+  backend_node_modules:
+  frontend_node_modules:
+
+networks:
+  marvel_network:
+    driver: bridge

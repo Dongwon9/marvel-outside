@@ -40,6 +40,14 @@ model Follow {
   @@index([followingId])
 }
 
+model Board {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  posts       Post[]
+}
+
 model Post {
   id        String   @id @default(uuid())
   title     String
@@ -50,7 +58,9 @@ model Post {
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
 
-  rates Rate[]
+  rates   Rate[]
+  board   Board? @relation(fields: [boardId], references: [id])
+  boardId String
 }
 
 model Rate {

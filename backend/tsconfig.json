@@ -4,9 +4,14 @@
     "moduleResolution": "Node",
     "target": "ES2022",
     "strict": true,
+    "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ],
     "paths": {
       "@/*": [
         "src/*"

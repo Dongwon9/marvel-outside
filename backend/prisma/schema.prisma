@@ -18,7 +18,6 @@ model User {
   email          String    @unique
   name           String    @unique
   passwordHashed String    @db.Text
-  refreshToken   String?   @db.Text
   registeredAt   DateTime  @default(now())
   deletedAt      DateTime?
   following      Follow[]  @relation("UserFollowing")
@@ -62,6 +61,7 @@ model Post {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   published     Boolean       @default(false)
+  hits          Int           @default(0)
   author        User          @relation(fields: [authorId], references: [id])
   authorId      String
 

@@ -770,8 +770,10 @@ export default function PostCard({ title, content, author }: PostCardProps) {
 - 컴포넌트에서 React를 임포트하지 마세요 (자동 JSX 런타임)
 - 인라인 스타일을 사용하지 마세요 (Tailwind 유틸리티 선호)
 - 코드 빌드하지 말 것
+
 ### 기타 주의 사항
 
 - 모든 코드 파일의 인덴트는 스페이스 2칸
+- Plan모드에서, 사용자의 피드백이 더이상 필요없으면 응답 맨 아래에 '구현을 시작할까요?'를 넣을것
 
 ---

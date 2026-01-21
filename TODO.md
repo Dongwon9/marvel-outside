@@ -4,26 +4,26 @@
 
 ### Backend
 
-- [ ] AuthModule 생성 및 설정
-  - [ ] JWT 전략 구현 (passport-jwt)
+- [x] AuthModule 생성 및 설정
+  - [x] JWT 전략 구현 (passport-jwt)
   - [ ] Local 전략 구현 (로그인용)
-  - [ ] JWT 토큰 발급/검증 서비스
+  - [x] JWT 토큰 발급/검증 서비스
   - [ ] AuthGuard 구현 (protected routes)
-  - [ ] DTO: LoginDto, TokenResponseDto
-- [ ] User 비밀번호 검증 로직 (bcrypt)
-- [ ] Refresh Token 구현
+  - [x] DTO: LoginDto, TokenResponseDto
+- [x] User 비밀번호 검증 로직 (bcrypt)
+- [x] Refresh Token 구현
 - [ ] 로그아웃 엔드포인트
 
 ### Frontend
 
-- [ ] **로그인 페이지 만들기**
-  - [ ] 로그인 폼 컴포넌트 (email, password)
-  - [ ] Tailwind CSS 스타일링
+- [x] **로그인 페이지 만들기**
+  - [x] 로그인 폼 컴포넌트 (email, password)
+  - [x] Tailwind CSS 스타일링
   - [ ] 폼 validation
   - [ ] 에러 메시지 표시
-- [ ] 회원가입 페이지
-- [ ] JWT 토큰 관리 (localStorage/sessionStorage)
-- [ ] API client 인증 헤더 설정
+- [x] 회원가입 페이지
+- [ ] JWT 토큰 관리 (localStorage/sessionStorage) 🔥
+- [ ] API client 인증 헤더 설정 🔥
 - [ ] Protected Route 컴포넌트
 - [ ] 로그아웃 기능
 
@@ -32,17 +32,18 @@
 ## 📱 Frontend Pages
 
 ### Core Pages
-- [ ] 홈 페이지 (게시글 목록)
-- [ ] 게시판 목록 페이지
-- [ ] 게시판별 게시글 목록
-- [ ] 게시글 상세 페이지
-- [ ] 게시글 작성/수정 페이지
-- [ ] 사용자 프로필 페이지
-- [ ] 사용자 설정 페이지
+
+- [x] 홈 페이지 (게시글 목록)
+- [x] 게시판 목록 페이지
+- [x] 게시판별 게시글 목록
+- [x] 게시글 상세 페이지
+- [x] 게시글 작성/수정 페이지
+- [x] 사용자 프로필 페이지
+- [x] 사용자 설정 페이지
 
 ### Components
 
-- [ ] Navigation Bar (로그인 상태 표시)
+- [ ] Navigation Bar (로그인 상태 표시) 🔥
 - [ ] Post Card 컴포넌트
 - [ ] Comment 컴포넌트
 - [ ] Like/Dislike 버튼
@@ -93,12 +94,12 @@
 
 ### Backend
 
-- [ ] User Service 통합 테스트 완료 ✅
+- [x] User Service 통합 테스트 완료 ✅
 - [ ] Post Service 통합 테스트
 - [ ] Follow Service 통합 테스트
 - [ ] Rate Service 통합 테스트
 - [ ] Board Service 통합 테스트
-- [ ] Auth Service 통합 테스트
+- [ ] Auth Service 통합 테스트 🔥
 - [ ] E2E 테스트 (주요 플로우)
 
 ### Frontend
@@ -111,6 +112,11 @@
 
 ## 🗄️ Database & Schema
 
+- [x] User 모델 (완료)
+- [x] Post 모델 (완료)
+- [x] Board 모델 (완료)
+- [x] Follow 모델 (완료)
+- [x] Rate 모델 (완료)
 - [ ] Comment 모델 추가 (댓글 기능)
 - [ ] Image/Media 모델 추가 (첨부파일)
 - [ ] Notification 모델 추가 (알림)
@@ -194,11 +200,20 @@
 
 ## 🎯 Current Priority
 
-1. **로그인 페이지 및 인증 시스템 구현** 🔥
-2. Frontend 핵심 페이지 구현
-3. API 연동 완성
-4. 테스트 커버리지 향상
-5. 문서화
+1. **JWT 토큰 관리 및 API 인증 헤더 설정** 🔥🔥
+   - localStorage/sessionStorage에 토큰 저장
+   - API client에 Authorization 헤더 자동 추가
+   - 토큰 만료 시 refresh 로직
+2. **Navigation Bar 구현** 🔥
+   - 로그인 상태 표시
+   - 로그아웃 버튼
+   - 사용자 프로필 링크
+3. **Local 전략 및 AuthGuard 완성**
+   - 백엔드 로그인 엔드포인트 보호
+   - Protected routes 구현
+4. **Auth Service 통합 테스트**
+5. API 연동 완성
+6. 테스트 커버리지 향상
 
 ---
 
@@ -210,4 +225,25 @@
 
 ---
 
-**Last Updated**: 2026년 1월 20일
+## 🎉 Recent Progress
+
+### 완료된 작업 (2026년 1월 21일)
+
+- ✅ AuthModule 생성 및 JWT 전략 구현
+- ✅ Refresh Token 기능 추가
+- ✅ 로그인/회원가입 페이지 UI 완성
+- ✅ 모든 핵심 페이지 컴포넌트 생성
+- ✅ bcrypt를 사용한 비밀번호 해싱
+
+### 다음 단계
+
+현재 인증 시스템의 프론트엔드 통합이 필요합니다:
+
+1. JWT 토큰을 localStorage에 저장
+2. API 호출 시 Authorization 헤더에 토큰 자동 포함
+3. Navigation Bar에서 로그인 상태 표시
+4. Protected Route 컴포넌트로 인증 필요 페이지 보호
+
+---
+
+**Last Updated**: 2026년 1월 21일

@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
 
 import { UserService } from '../../user/user.service';
-import { User } from '../../generated/prisma/client';
+import { UserResponseDto } from '../../user/dto/user-response.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -23,11 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { userId: string }): Promise<User> {
+  async validate(payload: { userId: string }): Promise<UserResponseDto> {
     const user = await this.userService.getUserById(payload.userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    return user as User;
+    // DTO로 변환하여 비밀번호/리프레시 토큰이 응답 객체에 실리지 않도록 강제한다
+    return plainToInstance(UserResponseDto, user);
   }
 }

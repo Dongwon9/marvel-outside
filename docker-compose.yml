@@ -21,6 +21,22 @@ services:
     networks:
       - marvel_network
 
+  redis:
+    image: redis:6.2-alpine
+    container_name: marvel_redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - marvel_network
+
   backend:
     build:
       context: .
@@ -36,6 +52,7 @@ services:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgresql://marvel:marvel_password@postgres:5432/marvel_dev
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./backend:/workspace/backend
       - backend_node_modules:/workspace/backend/node_modules
@@ -44,6 +61,8 @@ services:
       - ./backend/scripts/docker-entrypoint.sh:/workspace/docker-entrypoint.sh
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - marvel_network
@@ -74,6 +93,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
   backend_node_modules:
   frontend_node_modules:
 

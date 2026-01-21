@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
-import * as passport from 'passport';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 async function bootstrap() {
@@ -14,9 +15,12 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('PORT') ?? 3000;
+  app.use(cookieParser());
   app.use(
     session({
-      secret: 'very-important-secret-key',
+      secret: configService.get<string>('SESSION_SECRET') || 'very-important-secret-key',
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 3600000 }, // TODO: HTTPS 적용 시 true로 변경
@@ -24,8 +28,7 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT') ?? 3000;
+
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
 }

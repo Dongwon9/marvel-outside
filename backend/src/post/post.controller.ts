@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -49,6 +50,11 @@ export class PostController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePost(@Param('id') id: string): Promise<void> {
     await this.postService.deletePost(id);
+  }
+
+  @Patch(':id/hits')
+  async incrementPostHits(@Param('id') id: string): Promise<PostResponseDto> {
+    return this.postService.incrementHits(id);
   }
 
   @Get('rating/:id')

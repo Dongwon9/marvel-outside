@@ -61,6 +61,14 @@ export class PostService {
     });
     return plainToInstance(PostResponseDto, post);
   }
+
+  async incrementHits(id: string): Promise<PostResponseDto> {
+    const post = await this.prisma.post.update({
+      where: { id },
+      data: { hits: { increment: 1 } },
+    });
+    return plainToInstance(PostResponseDto, post);
+  }
   //id로 게시물의 좋아요와 싫어요 수를 가져온다
   async getPostRatings(id: string): Promise<{ likeCount: number; dislikeCount: number }> {
     const post = await this.prisma.post.findUnique({

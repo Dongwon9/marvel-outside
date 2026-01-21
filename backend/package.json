@@ -36,11 +36,13 @@
     "@prisma/client": "^7.2.0",
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "express-session": "^1.18.2",
+    "ioredis": "^5.9.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "pg": "^8.17.1",
+    "pg": "^8.17.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
@@ -52,6 +54,7 @@
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.12",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.18.2",
     "@types/jest": "^30.0.0",
@@ -60,8 +63,8 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.53.0",
-    "@typescript-eslint/parser": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
     "babel-jest": "^30.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -83,6 +86,6 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.0"
+    "typescript-eslint": "^8.53.1"
   }
 }

@@ -6,6 +6,7 @@ export class PostResponseDto {
   content!: string;
   contentFormat!: ContentFormat;
   published!: boolean;
+  hits!: number;
   authorId!: string;
   boardId!: string;
   createdAt!: Date;

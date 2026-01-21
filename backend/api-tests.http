@@ -48,6 +48,16 @@ Content-Type: {{contentType}}
   "password": "password123"
 }
 
+###Log In
+# @name loginUser
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "different@gmail.com", 
+  "password": "password123" 
+}
+
 ### Update user (partial)
 PUT {{baseUrl}}/users/{{userId}}
 Content-Type: {{contentType}}

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -13,7 +13,14 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [
     ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({}),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        // JWT 기본 시크릿/만료값을 모듈 레벨에서 주입해 AuthService가 동일한 설정을 재사용하도록 한다
+        secret: configService.get<string>('JWT_SECRET'),
+      }),
+    }),
     UserModule,
     PrismaModule,
   ],

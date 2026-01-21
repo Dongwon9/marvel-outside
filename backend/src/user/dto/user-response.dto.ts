@@ -10,9 +10,6 @@ export class UserResponseDto {
   @Exclude()
   passwordHashed!: string;
 
-  @Exclude()
-  refreshToken!: string | null;
-
   constructor(partial: Partial<UserResponseDto> = {}) {
     Object.assign(this, partial);
   }

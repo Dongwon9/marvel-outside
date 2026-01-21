@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PostController } from './post.controller';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostController } from './post.controller';
 import { PostService } from './post.service';
 
 describe('PostController', () => {

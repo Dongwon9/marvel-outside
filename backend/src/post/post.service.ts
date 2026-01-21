@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { ContentFormat } from './dto/content-format.enum';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
-import { ContentFormat } from './dto/content-format.enum';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {

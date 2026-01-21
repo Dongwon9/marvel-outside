@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { UserController } from './user.controller';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserResponseDto } from './dto/user-response.dto';
-import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponseDto } from './dto/user-response.dto';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -61,7 +61,6 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
-        refreshToken: null,
       };
 
       mockUserService.createUser.mockResolvedValue(userResponseDto);
@@ -104,7 +103,6 @@ describe('UserController', () => {
         registeredAt: new Date('2024-01-01'),
         deletedAt: null,
         passwordHashed: '',
-        refreshToken: null,
       };
 
       mockUserService.createUser.mockResolvedValue(userResponseDto);
@@ -160,7 +158,6 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
-          refreshToken: null,
         },
         {
           id: '2',
@@ -169,7 +166,6 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
-          refreshToken: null,
         },
       ];
 
@@ -227,7 +223,6 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
-        refreshToken: null,
       };
 
       mockUserService.getUserById.mockResolvedValue(userResponseDto);
@@ -282,7 +277,6 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
-        refreshToken: null,
       };
 
       mockUserService.updateUser.mockResolvedValue(updatedUser);
@@ -302,7 +296,6 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
-        refreshToken: null,
       };
 
       mockUserService.updateUser.mockResolvedValue(updatedUser);

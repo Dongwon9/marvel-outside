@@ -1,12 +1,12 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
 
-import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../generated/prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Prisma } from '../generated/prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import { UserResponseDto } from './dto/user-response.dto';
 @Injectable()
 export class UserService {
@@ -77,12 +77,19 @@ export class UserService {
     if (password) {
       data.passwordHashed = await bcrypt.hash(password, 10);
     }
-
-    const user = await this.prisma.user.update({
-      where: { id },
-      data,
-    });
-    return plainToInstance(UserResponseDto, user);
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data,
+      });
+      return plainToInstance(UserResponseDto, user);
+    } catch (e) {
+      // Handle unique constraint violations (e.g., email or name collisions)
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException('User update violates unique constraint (email or name)');
+      }
+      throw e;
+    }
   }
 
   async deleteUser(id: string): Promise<UserResponseDto> {

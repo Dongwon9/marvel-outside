@@ -10,10 +10,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { FollowService } from './follow.service';
 import { CreateFollowDto } from './dto/create-follow.dto';
-import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
 import { FollowResponseDto } from './dto/follow-response.dto';
+import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
+import { FollowService } from './follow.service';
 
 import { UserResponseDto } from '@/user/dto/user-response.dto';
 

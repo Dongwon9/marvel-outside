@@ -1,12 +1,12 @@
-import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 import { TokenResponseDto } from './dto/token-response.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserService } from '../user/user.service';
 import { RedisService } from '../redis/redis.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +16,17 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private redisService: RedisService,
-  ) {}
+  ) {
+    const jwtSecret = configService.get<string>('JWT_SECRET');
+    const jwtRefreshSecret = configService.get<string>('JWT_REFRESH_SECRET');
+
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined');
+    }
+    if (!jwtRefreshSecret) {
+      throw new Error('JWT_REFRESH_SECRET is not defined');
+    }
+  }
 
   async validateUser(email: string, password: string): Promise<string | null> {
     const user = await this.prisma.user.findUnique({
@@ -36,9 +46,9 @@ export class AuthService {
 
   generateTokens(userId: string): TokenResponseDto {
     const payload = { userId };
-    const jwtSecret = this.configService.get<string>('JWT_SECRET') ?? '';
+    const jwtSecret = this.configService.get<string>('JWT_SECRET');
     const jwtExpiresIn = this.configService.get<string>('JWT_EXPIRES_IN') ?? '15m';
-    const jwtRefreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET') ?? '';
+    const jwtRefreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
     const jwtRefreshExpiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') ?? '7d';
 
     // @ts-expect-error - JwtService.sign type definition issue with expiresIn as string

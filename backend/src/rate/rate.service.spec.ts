@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 
-import { RateService } from './rate.service';
-import { RateResponseDto } from './dto/rate-response.dto';
 import { CreateRateDto } from './dto/create-rate.dto';
 import { GetRatesQueryDto } from './dto/get-rates-query.dto';
+import { RateResponseDto } from './dto/rate-response.dto';
 import { UpdateRateDto } from './dto/update-rate.dto';
+import { RateService } from './rate.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 describe('RateService', () => {

@@ -25,6 +25,8 @@ model User {
   posts          Post[]
 
   rates Rate[]
+
+  @@index([deletedAt])
 }
 
 model Follow {
@@ -68,6 +70,10 @@ model Post {
   rates   Rate[]
   board   Board? @relation(fields: [boardId], references: [id])
   boardId String
+
+  @@index([createdAt])
+  @@index([authorId])
+  @@index([boardId])
 }
 
 model Rate {
@@ -79,4 +85,5 @@ model Rate {
   createdAt DateTime @default(now())
 
   @@id([userId, postId])
+  @@index([createdAt])
 }

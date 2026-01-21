@@ -7,16 +7,16 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import type { CookieOptions, Request, Response as ExpressResponse } from 'express';
 
+import { JwtAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { CurrentUser } from './decorators/current-user.decorator';
-import type { User } from '../generated/prisma/client';
 import { AccessTokenResponseDto } from './dto/token-response.dto';
+import type { User } from '../generated/prisma/client';
 
 interface RequestWithCookies extends Request {
   cookies: Record<string, string | undefined>;
@@ -57,12 +57,11 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async logout(
     @CurrentUser() user: User,
     @Response({ passthrough: true }) res: ExpressResponse,
   ): Promise<{ message: string }> {
-    // 로그아웃 시 서버 저장 리프레시 토큰 제거 및 쿠키 만료
     await this.authService.logout(user.id);
     res.clearCookie('refreshToken', this.buildCookieOptions());
     return { message: 'Logout successful' };

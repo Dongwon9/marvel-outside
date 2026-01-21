@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { Reflector, NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
-import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 async function bootstrap() {
@@ -15,6 +15,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') ?? 3000;
   app.use(cookieParser());
@@ -23,7 +24,12 @@ async function bootstrap() {
       secret: configService.get<string>('SESSION_SECRET') || 'very-important-secret-key',
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 3600000 }, // TODO: HTTPS 적용 시 true로 변경
+      cookie: {
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: (configService.get<string>('NODE_ENV') || 'development') === 'production',
+      },
     }),
   );
   app.use(passport.initialize());

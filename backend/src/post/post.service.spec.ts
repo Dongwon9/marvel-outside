@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { PostService } from './post.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 describe('PostService', () => {
   let service: PostService;

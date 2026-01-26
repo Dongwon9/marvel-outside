@@ -1,14 +1,18 @@
 import { useState } from "react";
 
+import { login } from "../api/auth";
+
 interface LoginFormData {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export default function Login() {
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
+    rememberMe: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,41 +32,17 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      await login({
+        email: formData.email,
+        password: formData.password,
       });
 
-      if (!response.ok) {
-        const errorBody: unknown = await response.json();
-        let errorMessage = "로그인 실패";
-        if (
-          errorBody &&
-          typeof errorBody === "object" &&
-          "message" in errorBody
-        ) {
-          const maybeMessage = (errorBody as Record<string, unknown>).message;
-          if (typeof maybeMessage === "string") {
-            errorMessage = maybeMessage;
-          }
-        }
-        throw new Error(errorMessage);
-      }
-
-      const data: unknown = await response.json();
       setSuccess(true);
       setFormData({ email: "", password: "" });
-
-      // 로그인 성공 처리 (토큰 저장, 리다이렉트 등)
-      console.log("로그인 성공:", data);
-      // TODO: 토큰 저장 및 페이지 리다이렉트
+      window.location.href = "/";
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다",
-      );
+      const errorMessage = err instanceof Error ? err.message : "로그인 실패";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -78,15 +58,6 @@ export default function Login() {
           </h1>
           <p className="text-gray-600">로그인하여 시작하세요</p>
         </div>
-
-        {/* Success Message */}
-        {success && (
-          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
-            <p className="text-sm font-medium text-green-800">
-              로그인이 완료되었습니다!
-            </p>
-          </div>
-        )}
 
         {/* Error Message */}
         {error && (
@@ -136,7 +107,23 @@ export default function Login() {
               className="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:border-transparent focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
-
+          {/* Remember Me Checkbox */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleChange}
+              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label
+              htmlFor="rememberMe"
+              className="ml-2 block text-sm text-gray-900"
+            >
+              로그인 상태 유지
+            </label>
+          </div>
           {/* Submit Button */}
           <button
             type="submit"

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import type { Request } from 'express';
 
 import { UserResponseDto } from '../../user/dto/user-response.dto';
 import { UserService } from '../../user/user.service';
@@ -18,7 +19,15 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new Error('JWT_SECRET is not defined in environment variables');
     }
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        // 1순위: httpOnly 쿠키에서 추출
+        (request: Request) => {
+          const token = request?.cookies?.accessToken;
+          return token || null;
+        },
+        // 2순위: Authorization 헤더에서 추출 (하위 호환성)
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: secret,
     });

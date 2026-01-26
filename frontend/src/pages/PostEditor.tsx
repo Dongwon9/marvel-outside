@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import { getPostById, createPost, updatePost } from "../api/posts";
+import { getBoards } from "../api/boards";
 import MarkdownEditor from "../components/MarkdownEditor";
 
 interface PostForm {
@@ -8,19 +10,12 @@ interface PostForm {
   content: string;
   boardId: string;
   contentFormat: "markdown" | "plaintext";
+  authorId?: string;
 }
 
 interface Board {
   id: string;
   name: string;
-}
-
-interface PostResponse {
-  id: string;
-  title: string;
-  content: string;
-  boardId: string;
-  contentFormat: string;
 }
 
 export default function PostEditor() {
@@ -40,9 +35,8 @@ export default function PostEditor() {
   // 편집 모드일 때 기존 게시글 불러오기
   useEffect(() => {
     if (isEditMode && postId) {
-      fetch(`/api/posts/${postId}`)
-        .then((res) => res.json())
-        .then((data: PostResponse) => {
+      void getPostById(postId)
+        .then((data) => {
           setForm({
             title: data.title,
             content: data.content,
@@ -57,9 +51,8 @@ export default function PostEditor() {
 
   // 게시판 목록 불러오기
   useEffect(() => {
-    fetch("/api/boards")
-      .then((res) => res.json())
-      .then((data: Board[]) => setBoards(data))
+    void getBoards()
+      .then((data) => setBoards(data))
       .catch((err) => console.error("Failed to load boards:", err));
   }, []);
 
@@ -68,20 +61,12 @@ export default function PostEditor() {
     setLoading(true);
 
     try {
-      const url = isEditMode ? `/api/posts/${postId}` : "/api/posts";
-      const method = isEditMode ? "PATCH" : "POST";
+      const data = isEditMode ? form : { ...form, authorId: "current-user-id" }; // TODO: 실제 사용자 ID로 교체
 
-      const body = isEditMode ? form : { ...form, authorId: "current-user-id" }; // TODO: 실제 사용자 ID로 교체
+      const saved = isEditMode
+        ? await updatePost(postId!, data)
+        : await createPost(data);
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) throw new Error("Failed to save post");
-
-      const saved = (await response.json()) as PostResponse;
       void navigate(`/post/${saved.id}`);
     } catch (err) {
       console.error("Save error:", err);

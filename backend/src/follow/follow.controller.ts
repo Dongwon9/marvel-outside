@@ -14,8 +14,9 @@ import { CreateFollowDto } from './dto/create-follow.dto';
 import { FollowResponseDto } from './dto/follow-response.dto';
 import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
 import { FollowService } from './follow.service';
-
 import { UserResponseDto } from '@/user/dto/user-response.dto';
+
+import { Public } from '@/auth/decorators/public.decorator';
 
 @Controller('follows')
 export class FollowController {
@@ -43,6 +44,7 @@ export class FollowController {
 
   // 특정 사용자의 팔로워 목록
   @Get('users/:userId/followers')
+  @Public()
   async getFollowers(
     @Param('userId') userId: string,
     @Query() queryDto: GetFollowersQueryDto,
@@ -57,6 +59,7 @@ export class FollowController {
 
   // 특정 사용자가 팔로우하는 목록
   @Get('users/:userId/following')
+  @Public()
   async getFollowing(
     @Param('userId') userId: string,
     @Query() queryDto: GetFollowersQueryDto,
@@ -71,6 +74,7 @@ export class FollowController {
 
   // 팔로우 통계 (팔로워 수, 팔로잉 수)
   @Get('users/:userId/stats')
+  @Public()
   async getFollowStats(
     @Param('userId') userId: string,
   ): Promise<{ followersCount: number; followingCount: number }> {
@@ -79,6 +83,7 @@ export class FollowController {
 
   // 팔로우 여부 확인
   @Get('users/:followerId/is-following/:followingId')
+  @Public()
   async isFollowing(
     @Param('followerId') followerId: string,
     @Param('followingId') followingId: string,

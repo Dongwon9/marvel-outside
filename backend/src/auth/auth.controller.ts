@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Response,
@@ -13,9 +14,9 @@ import type { CookieOptions, Request, Response as ExpressResponse } from 'expres
 import { JwtAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { Public } from './decorators/public.decorator';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { AccessTokenResponseDto } from './dto/token-response.dto';
 import type { User } from '../generated/prisma/client';
 
 interface RequestWithCookies extends Request {
@@ -30,22 +31,25 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @Public()
   async login(
     @Body() body: AuthDto,
     @Response({ passthrough: true }) res: ExpressResponse,
-  ): Promise<AccessTokenResponseDto> {
-    // 로그인 시 액세스/리프레시 토큰을 발급하고, 리프레시 토큰은 httpOnly 쿠키에만 저장한다
+  ): Promise<{ message: string }> {
+    // 로그인 시 액세스/리프레시 토큰을 발급하고, 둘 다 httpOnly 쿠키에 저장한다
     const tokens = await this.authService.login(body.email, body.password);
     this.setRefreshCookie(res, tokens.refreshToken);
-    return { accessToken: tokens.accessToken };
+    this.setAccessCookie(res, tokens.accessToken);
+    return { message: 'Login successful' };
   }
 
   @Post('refresh')
+  @Public()
   async refresh(
     @Req() req: RequestWithCookies,
     @Body() body: RefreshTokenDto,
     @Response({ passthrough: true }) res: ExpressResponse,
-  ): Promise<AccessTokenResponseDto> {
+  ): Promise<{ message: string }> {
     // 쿠키 우선, 없을 때만 바디에서 리프레시 토큰을 읽어 리프레시한다
     const refreshToken = req.cookies?.refreshToken ?? body.refreshToken;
     if (!refreshToken) {
@@ -53,7 +57,8 @@ export class AuthController {
     }
     const tokens = await this.authService.refresh(refreshToken);
     this.setRefreshCookie(res, tokens.refreshToken);
-    return { accessToken: tokens.accessToken };
+    this.setAccessCookie(res, tokens.accessToken);
+    return { message: 'Token refreshed' };
   }
 
   @Post('logout')
@@ -64,7 +69,23 @@ export class AuthController {
   ): Promise<{ message: string }> {
     await this.authService.logout(user.id);
     res.clearCookie('refreshToken', this.buildCookieOptions());
+    res.clearCookie('accessToken', this.buildCookieOptions());
     return { message: 'Logout successful' };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getMe(@CurrentUser() user: User): { id: string; email: string; name: string } {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    };
+  }
+
+  private setAccessCookie(res: ExpressResponse, accessToken: string): void {
+    // 액세스 토큰을 httpOnly 쿠키로 저장 (XSS 공격 방지)
+    res.cookie('accessToken', accessToken, this.buildCookieOptions());
   }
 
   private setRefreshCookie(res: ExpressResponse, refreshToken: string): void {

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nestjs/mapped-types": "*"
+    "@nestjs/mapped-types": "^2.1.0"
   },
   "name": "marvel-outside",
   "version": "1.0.0",
@@ -8,5 +8,19 @@
   "workspaces": [
     "frontend",
     "backend"
-  ]
+  ],
+  "scripts": {
+    "dev": "docker compose up",
+    "down": "docker compose down",
+    "start:dev:be": "pnpm -F backend start:dev",
+    "start:dev:fe": "pnpm -F frontend start:dev",
+    "start:dev": "pnpm -r start:dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -F backend test",
+    "test:integration": "pnpm -F backend test:integration",
+    "test:all": "pnpm -F backend test:all",
+    "db:push:dev": "pnpm -F backend db:push:dev",
+    "db:reset:dev": "pnpm -F backend db:reset:dev"
+  }
 }

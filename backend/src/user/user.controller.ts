@@ -17,6 +17,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserService } from './user.service';
 
+import { Public } from '@/auth/decorators/public.decorator';
+
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -27,11 +29,13 @@ export class UserController {
   }
 
   @Get(':id')
+  @Public()
   async getUserById(@Param('id') id: string): Promise<UserResponseDto | null> {
     return this.userService.getUserById(id);
   }
 
   @Post()
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
     return this.userService.createUser(createUserDto);

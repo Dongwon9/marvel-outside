@@ -119,6 +119,7 @@ export class FollowService {
       user: plainToInstance(UserResponseDto, follower),
     }));
   }
+  
   async getFollowing(
     userId: string,
     query: GetFollowersQueryDto,

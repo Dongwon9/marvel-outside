@@ -4,6 +4,8 @@ import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
+import { Public } from '@/auth/decorators/public.decorator';
+
 @Controller('boards')
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
@@ -14,11 +16,13 @@ export class BoardController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.boardService.findAll();
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.boardService.findOne(id);
   }

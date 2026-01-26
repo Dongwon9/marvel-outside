@@ -74,7 +74,7 @@ services:
       dockerfile: frontend/Dockerfile.dev
     container_name: marvel_frontend_dev
     working_dir: /workspace/frontend
-    command: pnpm run dev -- --host 0.0.0.0
+    command: pnpm run start:dev
     ports:
       - "5173:5173"
     environment:

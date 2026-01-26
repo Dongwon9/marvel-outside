@@ -1,10 +1,12 @@
 import { resolve } from 'path';
 
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
 import { FollowModule } from './follow/follow.module';
@@ -35,6 +37,12 @@ import { UserModule } from './user/user.module';
     BoardModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

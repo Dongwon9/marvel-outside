@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signup, autoLogin } from "../api/auth";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -16,8 +17,27 @@ export default function Signup() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: API 연동
-    console.log("회원가입 데이터:", formData);
+    void (async () => {
+      let redirectTo = "/";
+      const { confirmPassword, ...userData } = formData;
+      if (userData.password !== confirmPassword) {
+        alert("비밀번호를 확인하세요.");
+        return;
+      }
+      console.log("회원가입 데이터:", formData);
+      try {
+        await signup(userData);
+        await autoLogin(userData);
+        alert("회원가입 및 로그인 성공!");
+      } catch (error) {
+        alert(
+          error instanceof Error
+            ? error.message
+            : "알 수 없는 오류가 발생했습니다",
+        );
+      }
+      window.location.href = redirectTo;
+    })();
   };
 
   return (

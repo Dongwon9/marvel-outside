@@ -18,16 +18,20 @@ import { PostResponseDto } from './dto/post-response.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
 
+import { Public } from '@/auth/decorators/public.decorator';
+
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
+  @Public()
   async getPosts(@Query() queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {
     return this.postService.posts(queryDto);
   }
 
   @Get(':id')
+  @Public()
   async getPostById(@Param('id') id: string): Promise<PostResponseDto | null> {
     return this.postService.post(id);
   }

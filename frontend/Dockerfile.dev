@@ -22,4 +22,4 @@ WORKDIR /workspace/frontend
 EXPOSE 5173
 
 # Run Vite dev server
-CMD ["pnpm", "run", "dev"]
+CMD ["pnpm", "run", "start:dev"]

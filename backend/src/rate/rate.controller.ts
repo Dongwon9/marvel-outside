@@ -6,6 +6,8 @@ import { RateResponseDto } from './dto/rate-response.dto';
 import { UpdateRateDto } from './dto/update-rate.dto';
 import { RateService } from './rate.service';
 
+import { Public } from '@/auth/decorators/public.decorator';
+
 @Controller('rates')
 export class RateController {
   constructor(private readonly rateService: RateService) {}
@@ -16,11 +18,13 @@ export class RateController {
   }
 
   @Get()
+  @Public()
   async findAll(@Query() queryDto: GetRatesQueryDto): Promise<RateResponseDto[]> {
     return this.rateService.findAll(queryDto);
   }
 
   @Get(':userId/:postId')
+  @Public()
   async findOne(
     @Param('userId') userId: string,
     @Param('postId') postId: string,

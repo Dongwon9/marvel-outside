@@ -15,6 +15,7 @@ export default function Home() {
           onClick={async () => {
             const text = await getHello();
             alert(text);
+            console.log(text);
           }}
           className="mb-6 rounded-lg bg-white px-4 py-2 text-blue-600 hover:bg-gray-100"
         >

@@ -3,11 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector, NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { Logger } from 'nestjs-pino';
 import passport from 'passport';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { HttpLoggingInterceptor } from './common/interceptors/http-logging.interceptor';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const configService = app.get(ConfigService);
   const nodeEnv = configService.get<string>('NODE_ENV') || 'development';
 
@@ -32,8 +35,13 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  // app.useGlobalFilters(app.get(HttpExceptionFilter));
+  //  app.useGlobalInterceptors(
+  //   new ClassSerializerInterceptor(app.get(Reflector)),
+  //   app.get(HttpLoggingInterceptor),
+  // );
   const port = configService.get<number>('PORT') ?? 3000;
+  app.useLogger(app.get(Logger));
   app.use(cookieParser());
   app.use(
     session({
@@ -52,7 +60,5 @@ async function bootstrap() {
   app.use(passport.session());
 
   await app.listen(port);
-  // eslint-disable-next-line no-console
-  console.log(`Application is running on: http://localhost:${port}`);
 }
 void bootstrap();

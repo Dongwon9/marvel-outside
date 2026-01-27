@@ -1,42 +1,6 @@
+include:
+  - redis+db.yml
 services:
-  postgres:
-    image: postgres:18
-    container_name: marvel_postgres_dev
-    environment:
-      POSTGRES_USER: marvel
-      POSTGRES_PASSWORD: marvel_password
-      POSTGRES_DB: marvel_dev # 자동으로 생성됨
-      POSTGRES_INITDB_ARGS: "-U marvel"
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql
-      # init script 제거 또는 수정
-      # - ./backend/scripts/db-init.sql:/docker-entrypoint-initdb.d/01-init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U marvel -d marvel_dev"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - marvel_network
-
-  redis:
-    image: redis:6.2-alpine
-    container_name: marvel_redis_dev
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    networks:
-      - marvel_network
-
   backend:
     build:
       context: .
@@ -53,6 +17,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgresql://marvel:marvel_password@postgres:5432/marvel_dev
       - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=debug
+      - HTTP_LOG_ENABLED=true
     volumes:
       - ./backend:/workspace/backend
       - backend_node_modules:/workspace/backend/node_modules
@@ -81,6 +47,7 @@ services:
       - NODE_ENV=development
       - VITE_PORT=5173
       - CHOKIDAR_USEPOLLING=true
+      - VITE_API_URL=http://backend:3000
     volumes:
       - ./frontend:/workspace/frontend
       - frontend_node_modules:/workspace/frontend/node_modules

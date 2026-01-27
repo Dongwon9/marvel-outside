@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signup, autoLogin } from "../api/auth";
+
+import { signup, login } from "../api/auth";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ export default function Signup() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     void (async () => {
-      let redirectTo = "/";
+      const redirectTo = "/";
       const { confirmPassword, ...userData } = formData;
       if (userData.password !== confirmPassword) {
         alert("비밀번호를 확인하세요.");
@@ -27,16 +28,22 @@ export default function Signup() {
       console.log("회원가입 데이터:", formData);
       try {
         await signup(userData);
-        await autoLogin(userData);
-        alert("회원가입 및 로그인 성공!");
+        const { name, ...loginData } = userData;
+        await login(loginData);
+        window.location.href = redirectTo;
       } catch (error) {
-        alert(
-          error instanceof Error
-            ? error.message
-            : "알 수 없는 오류가 발생했습니다",
-        );
+        console.error(error);
+        if (error instanceof Response) {
+          const errorData: { message?: string } = await error.json();
+          alert(errorData.message || "알 수 없는 오류가 발생했습니다");
+        } else {
+          alert(
+            error instanceof Error
+              ? error.message
+              : "알 수 없는 오류가 발생했습니다",
+          );
+        }
       }
-      window.location.href = redirectTo;
     })();
   };
 
@@ -111,7 +118,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-4 md:py-3 md:text-base"
-              placeholder="8자 이상"
+              placeholder=""
             />
           </div>
 

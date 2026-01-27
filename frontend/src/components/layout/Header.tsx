@@ -35,19 +35,7 @@ export default function Header() {
             >
               게시글
             </Link>
-            {/*로그인 되어있지 않을때 */}
-            <Link
-              to="/login"
-              className="rounded-lg border border-blue-600 px-4 py-2 text-blue-600 transition-colors hover:bg-blue-50"
-            >
-              로그인
-            </Link>
-            <Link
-              to="/signup"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-            >
-              가입
-            </Link>
+            <HeaderRight />
           </nav>
 
           {/* Mobile menu button */}

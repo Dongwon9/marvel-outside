@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // /api로 시작하는 모든 요청을 백엔드로 자동 전달
       "/api": {
-        target: process.env.VITE_API_URL || "http://backend:3000",
+        target: process.env.VITE_API_URL || "http://localhost:3000",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

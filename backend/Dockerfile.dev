@@ -1,24 +1,21 @@
 # syntax=docker/dockerfile:1
-FROM node:24-bookworm
+FROM node:24
 
 WORKDIR /workspace
 
 # Use root for setup then switch to non-root
 USER root
-RUN corepack enable && mkdir -p /workspace && chown -R node:node /workspace
 
 # Install PostgreSQL client tools for health checks and migrations
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
-# Copy workspace configuration and lock file from root
-COPY --chown=node:node pnpm-workspace.yaml pnpm-lock.yaml ./
 
 # Copy backend package.json
 COPY --chown=node:node backend/package.json ./backend/
 
 # Install dependencies using frozen lockfile
 USER node
-RUN pnpm install --frozen-lockfile --filter backend
+RUN npm install
 
 WORKDIR /workspace/backend
 

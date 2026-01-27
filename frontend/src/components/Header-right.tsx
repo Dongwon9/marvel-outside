@@ -1,30 +1,35 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { logout } from "../api/auth";
+
+import { logout, getMe } from "../api/auth";
 
 export default function HeaderRight() {
-  // 로그인 상태 확인 (서버에서 확인 필요)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log("🔵 HeaderRight 렌더링");
+
+  const [user, setUser] = useState(
+    null as null | { id: string; email: string; name: string },
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 서버에 현재 인증 상태 확인 요청
-    fetch("/api/auth/me", { credentials: "include" })
-      .then((res) => {
-        if (res.ok) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
-      })
-      .catch(() => setIsLoggedIn(false))
-      .finally(() => setLoading(false));
+    async function fetchMe() {
+      try {
+        const userData = await getMe();
+        setUser(userData);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void fetchMe();
   }, []);
 
   const handleLogout = async () => {
     try {
       await logout();
-      setIsLoggedIn(false);
+      setUser(null);
       window.location.href = "/";
     } catch (error) {
       console.error("로그아웃 실패:", error);
@@ -37,8 +42,9 @@ export default function HeaderRight() {
 
   return (
     <div className="flex items-center gap-4">
-      {isLoggedIn ? (
+      {user ? (
         <>
+          {user.name}
           <Link
             to="/settings"
             className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"

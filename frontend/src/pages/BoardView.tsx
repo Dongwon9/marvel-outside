@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { ClipboardList, Users, FileText } from "lucide-react";
 
 export default function BoardView() {
   const { id } = useParams();
@@ -54,22 +55,13 @@ export default function BoardView() {
         </div>
         <div className="mt-4 flex items-center gap-4 border-t border-purple-400 pt-4 md:gap-6">
           <div className="flex items-center gap-2">
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-              <path
-                fillRule="evenodd"
-                d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ClipboardList className="h-5 w-5" />
             <span className="text-sm md:text-base">
               게시글 {boardData.postCount}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-            </svg>
+            <Users className="h-5 w-5" />
             <span className="text-sm md:text-base">
               멤버 {boardData.memberCount}
             </span>
@@ -79,13 +71,7 @@ export default function BoardView() {
 
       {/* Board ID Badge */}
       <div className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-600">
-        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <FileText className="h-4 w-4" />
         보드 ID: {id}
       </div>
 

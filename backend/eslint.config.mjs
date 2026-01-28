@@ -1,9 +1,9 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import prettier from 'eslint-plugin-prettier';
 import importPlugin from 'eslint-plugin-import';
-import unusedImports from 'eslint-plugin-unused-imports';
 import jest from 'eslint-plugin-jest';
+import prettier from 'eslint-plugin-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
+import tseslint from 'typescript-eslint';
 
 export default [
   {
@@ -71,7 +71,6 @@ export default [
       'unused-imports/no-unused-imports': 'error',
 
       /* Code quality */
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
 
       /* NestJS 스타일 */

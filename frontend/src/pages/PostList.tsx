@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import { FileText } from "lucide-react";
+
+import PostCard from "../components/PostCard";
 
 export default function PostList() {
   // Mock data for demonstration
@@ -61,51 +64,16 @@ export default function PostList() {
       {/* Posts Grid */}
       <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
         {mockPosts.map((post) => (
-          <Link
+          <PostCard
             key={post.id}
-            to={`/post/${post.id}`}
-            className="block rounded-lg bg-white p-4 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl md:rounded-xl md:p-6"
-          >
-            <h2 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900 md:text-xl">
-              {post.title}
-            </h2>
-            <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:text-base">
-              {post.content}
-            </p>
-            <div className="flex items-center justify-between text-xs text-gray-500 md:text-sm">
-              <div className="flex items-center gap-2 md:gap-3">
-                <span className="font-medium text-gray-700">{post.author}</span>
-                <span>·</span>
-                <span>{post.createdAt}</span>
-              </div>
-              <div className="flex items-center gap-3 md:gap-4">
-                <span className="flex items-center gap-1">
-                  <svg
-                    className="h-4 w-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                  </svg>
-                  {post.likes}
-                </span>
-                <span className="flex items-center gap-1">
-                  <svg
-                    className="h-4 w-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {post.comments}
-                </span>
-              </div>
-            </div>
-          </Link>
+            id={post.id}
+            title={post.title}
+            content={post.content}
+            author={post.author}
+            createdAt={post.createdAt}
+            likes={post.likes}
+            comments={post.comments}
+          />
         ))}
       </div>
 
@@ -113,17 +81,7 @@ export default function PostList() {
       {mockPosts.length === 0 && (
         <div className="rounded-lg bg-white p-8 text-center shadow-md md:rounded-xl md:p-12">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 md:h-20 md:w-20">
-            <svg
-              className="h-8 w-8 text-gray-400 md:h-10 md:w-10"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+            <FileText className="h-8 w-8 text-gray-400 md:h-10 md:w-10" />
           </div>
           <h3 className="mb-2 text-lg font-semibold md:text-xl">
             게시글이 없습니다

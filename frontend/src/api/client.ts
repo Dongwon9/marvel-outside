@@ -14,4 +14,16 @@ client.interceptors.request.use(
   (error: Error) => Promise.reject(error),
 );
 
+// 응답 인터셉터: 오류 처리
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // 네트워크 오류 또는 서버 응답 없음
+    if (!error.response) {
+      console.error("네트워크 오류:", error.message);
+    }
+    return Promise.reject(error);
+  },
+);
+
 export default client;

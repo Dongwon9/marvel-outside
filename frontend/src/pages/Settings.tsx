@@ -1,3 +1,7 @@
+import { ChevronRight } from "lucide-react";
+
+import { Button, Card, Section } from "../components/ui";
+
 export default function Settings() {
   const settingsSections = [
     {
@@ -27,7 +31,7 @@ export default function Settings() {
   ];
 
   return (
-    <section className="space-y-4 md:space-y-6">
+    <Section>
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -41,9 +45,11 @@ export default function Settings() {
       {/* Settings Sections */}
       <div className="space-y-4 md:space-y-6">
         {settingsSections.map((section, idx) => (
-          <div
+          <Card
             key={idx}
-            className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl"
+            variant="default"
+            padding="sm"
+            className="overflow-hidden"
           >
             <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 md:px-6 md:py-4">
               <h2 className="text-base font-semibold text-gray-900 md:text-lg">
@@ -62,26 +68,20 @@ export default function Settings() {
                       {item.label}
                     </span>
                   </div>
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ChevronRight className="h-5 w-5 text-gray-400" />
                 </button>
               ))}
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
       {/* Danger Zone */}
-      <div className="overflow-hidden rounded-lg border border-red-200 bg-white shadow-md md:rounded-xl">
+      <Card
+        variant="outlined"
+        padding="sm"
+        className="overflow-hidden border-red-200"
+      >
         <div className="border-b border-red-200 bg-red-50 px-4 py-3 md:px-6 md:py-4">
           <h2 className="text-base font-semibold text-red-900 md:text-lg">
             위험 지역
@@ -97,12 +97,12 @@ export default function Settings() {
                 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
               </p>
             </div>
-            <button className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-red-700 active:bg-red-800 md:px-5 md:py-2.5 md:text-base">
+            <Button variant="danger" size="md" className="whitespace-nowrap">
               계정 삭제
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
-    </section>
+      </Card>
+    </Section>
   );
 }

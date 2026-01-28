@@ -7,16 +7,26 @@ export interface PostForm {
   contentFormat: "markdown" | "plaintext";
   authorId?: string;
 }
-
+export interface PostsQueryForm {
+  boardId?: string;
+  authorId?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+  orderBy?: { field: string; direction: "asc" | "desc" };
+}
 export interface PostResponse {
+  authorAvatar: string | undefined;
   id: string;
   title: string;
   content: string;
   boardId: string;
   contentFormat: string;
-  authorId?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
+  likes: number
+  dislikes:number
 }
 
 export async function getPostById(id: string): Promise<PostResponse> {
@@ -37,7 +47,11 @@ export async function updatePost(
   return response.data;
 }
 
-export async function getPosts(): Promise<PostResponse[]> {
-  const response = await client.get<PostResponse[]>("/posts");
+export async function getPosts(
+  query?: PostsQueryForm,
+): Promise<PostResponse[]> {
+  const response = await client.get<PostResponse[]>("/posts", {
+    params: query,
+  });
   return response.data;
 }

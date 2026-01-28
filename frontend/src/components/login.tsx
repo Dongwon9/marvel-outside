@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { login } from "../api/auth";
+import { getErrorMessage } from "../api/errors";
 
 interface LoginFormData {
   email: string;
@@ -41,8 +42,7 @@ export default function Login() {
       setFormData({ email: "", password: "" });
       window.location.href = "/";
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "로그인 실패";
-      setError(errorMessage);
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

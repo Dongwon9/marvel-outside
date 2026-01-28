@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { logout, getMe } from "../api/auth";
+import { Button } from "./ui";
 
 export default function HeaderRight() {
-  console.log("🔵 HeaderRight 렌더링");
-
   const [user, setUser] = useState(
     null as null | { id: string; email: string; name: string },
   );
@@ -45,32 +44,30 @@ export default function HeaderRight() {
       {user ? (
         <>
           {user.name}
-          <Link
-            to="/settings"
-            className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
-          >
-            설정
+          <Link to="/settings">
+            <Button variant="secondary" size="md">
+              설정
+            </Button>
           </Link>
-          <button
+          <Button
             onClick={() => void handleLogout()}
-            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+            variant="danger"
+            size="md"
           >
             로그아웃
-          </button>
+          </Button>
         </>
       ) : (
         <>
-          <a
-            href="/login"
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-          >
-            로그인
+          <a href="/login">
+            <Button variant="primary" size="md">
+              로그인
+            </Button>
           </a>
-          <a
-            href="/signup"
-            className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-          >
-            회원가입
+          <a href="/signup">
+            <Button variant="success" size="md">
+              회원가입
+            </Button>
           </a>
         </>
       )}

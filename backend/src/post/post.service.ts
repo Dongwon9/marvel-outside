@@ -26,8 +26,18 @@ export class PostService {
       skip,
       take,
       orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
+      include: {
+        rates: true,
+      },
     });
-    return plainToInstance(PostResponseDto, posts);
+
+    const postsWithLikeCount = posts.map(post => {
+      const { rates, ...postData } = post;
+      const likeCount = post.rates.filter(rate => rate.isLike).length;
+      const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
+      return { ...postData, likeCount, dislikeCount };
+    });
+    return plainToInstance(PostResponseDto, postsWithLikeCount);
   }
 
   async createPost(createPostDto: CreatePostDto): Promise<PostResponseDto> {

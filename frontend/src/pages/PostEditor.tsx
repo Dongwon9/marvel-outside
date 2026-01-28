@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPostById, createPost, updatePost } from "../api/posts";
 import { getBoards } from "../api/boards";
 import MarkdownEditor from "../components/MarkdownEditor";
+import { Button, Input } from "../components/ui";
 
 interface PostForm {
   title: string;
@@ -105,20 +106,15 @@ export default function PostEditor() {
         </div>
 
         {/* 제목 */}
-        <div>
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            제목
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2"
-            placeholder="게시글 제목을 입력하세요"
-          />
-        </div>
+        <Input
+          type="text"
+          id="title"
+          label="제목"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          required
+          placeholder="게시글 제목을 입력하세요"
+        />
 
         {/* 포맷 선택 */}
         <div>
@@ -178,20 +174,17 @@ export default function PostEditor() {
 
         {/* 버튼 */}
         <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-md bg-blue-500 px-6 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400"
-          >
+          <Button type="submit" disabled={loading} variant="primary" size="lg">
             {loading ? "저장 중..." : isEditMode ? "수정" : "작성"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => void navigate(-1)}
-            className="rounded-md bg-gray-200 px-6 py-2 text-gray-700 hover:bg-gray-300"
+            variant="secondary"
+            size="lg"
           >
             취소
-          </button>
+          </Button>
         </div>
       </form>
     </div>

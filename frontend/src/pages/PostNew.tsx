@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Upload } from "lucide-react";
 
 export default function PostNew() {
   const navigate = useNavigate();
@@ -105,17 +106,7 @@ export default function PostNew() {
               첨부 파일 (선택사항)
             </label>
             <div className="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-blue-500 md:p-8">
-              <svg
-                className="mx-auto mb-3 h-10 w-10 text-gray-400 md:h-12 md:w-12"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
+              <Upload className="mx-auto mb-3 h-10 w-10 text-gray-400 md:h-12 md:w-12" />
               <p className="mb-1 text-sm text-gray-600 md:text-base">
                 클릭하거나 파일을 드래그하세요
               </p>

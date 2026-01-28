@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { signup, login } from "../api/auth";
+import { getErrorMessage } from "../api/errors";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -33,16 +34,7 @@ export default function Signup() {
         window.location.href = redirectTo;
       } catch (error) {
         console.error(error);
-        if (error instanceof Response) {
-          const errorData: { message?: string } = await error.json();
-          alert(errorData.message || "알 수 없는 오류가 발생했습니다");
-        } else {
-          alert(
-            error instanceof Error
-              ? error.message
-              : "알 수 없는 오류가 발생했습니다",
-          );
-        }
+        alert(getErrorMessage(error));
       }
     })();
   };

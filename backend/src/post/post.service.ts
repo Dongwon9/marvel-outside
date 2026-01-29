@@ -45,7 +45,6 @@ export class PostService {
       data: {
         title: createPostDto.title,
         content: createPostDto.content || '',
-        contentFormat: createPostDto.contentFormat || ContentFormat.Markdown,
         author: {
           connect: { id: createPostDto.authorId },
         },

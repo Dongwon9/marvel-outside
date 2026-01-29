@@ -13,10 +13,11 @@ services:
     env_file:
       - ./backend/.env.development
     environment:
+      - TZ=Asia/Seoul
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgresql://marvel:marvel_password@postgres:5432/marvel_dev
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:marvel_redis_password@redis:6379
       - LOG_LEVEL=debug
       - HTTP_LOG_ENABLED=true
     volumes:
@@ -44,6 +45,7 @@ services:
     ports:
       - "5173:5173"
     environment:
+      - TZ=Asia/Seoul
       - NODE_ENV=development
       - VITE_PORT=5173
       - CHOKIDAR_USEPOLLING=true

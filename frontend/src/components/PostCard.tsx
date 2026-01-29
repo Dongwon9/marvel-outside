@@ -29,11 +29,11 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
         {/* Author Info */}
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg md:h-12 md:w-12 md:text-xl">
-            {item.authorAvatar || "👤"}
+            {authorAvatar || "👤"}
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-sm font-semibold text-gray-900 md:text-base">
-              {item.authorId}
+              {author}
             </h3>
             <p className="text-xs text-gray-500 md:text-sm">
               {item.updatedAt || item.createdAt}

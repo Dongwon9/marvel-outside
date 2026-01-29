@@ -4,7 +4,6 @@ export interface PostForm {
   title: string;
   content: string;
   boardId: string;
-  contentFormat: "markdown" | "plaintext";
   authorId?: string;
 }
 export interface PostsQueryForm {
@@ -21,12 +20,11 @@ export interface PostResponse {
   title: string;
   content: string;
   boardId: string;
-  contentFormat: string;
   authorId: string;
   createdAt: string;
   updatedAt: string;
-  likes: number
-  dislikes:number
+  likes: number;
+  dislikes: number;
 }
 
 export async function getPostById(id: string): Promise<PostResponse> {

@@ -3,30 +3,33 @@ FROM node:24
 
 WORKDIR /workspace
 
-# Use root for setup then switch to non-root
-USER root
+# Install pnpm globally and PostgreSQL client tools
+RUN corepack enable && \
+  corepack prepare pnpm@latest --activate && \
+  apt-get update && \
+  apt-get install -y postgresql-client && \
+  rm -rf /var/lib/apt/lists/*
 
-# Install PostgreSQL client tools for health checks and migrations
-RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
-
+# Copy workspace files for pnpm monorepo
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
+COPY package.json ./
 
 # Copy backend package.json
-COPY --chown=node:node backend/package.json ./backend/
+COPY backend/package.json ./backend/
 
-# Install dependencies using frozen lockfile
-USER node
-RUN npm install
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+RUN pnpm approve-builds
 
+# Set working directory to backend
 WORKDIR /workspace/backend
 
 # Copy entrypoint script
-COPY --chown=node:node backend/scripts/docker-entrypoint.sh /workspace/docker-entrypoint.sh
+COPY backend/scripts/docker-entrypoint.sh /workspace/docker-entrypoint.sh
 
 # Make entrypoint script executable
-USER root
 RUN chmod +x /workspace/docker-entrypoint.sh
-
-USER node
 
 EXPOSE 3000
 

@@ -4,28 +4,29 @@
 
 ### Backend
 
-- [x] AuthModule 생성 및 설정
+- [x] AuthModule 생성 및 설정 ✅
   - [x] JWT 전략 구현 (passport-jwt)
-  - [ ] Local 전략 구현 (로그인용)
+  - [x] Local 전략 구현 (로그인용)
   - [x] JWT 토큰 발급/검증 서비스
-  - [ ] AuthGuard 구현 (protected routes)
+  - [x] AuthGuard 구현 (protected routes) - JwtAuthGuard 구현됨
   - [x] DTO: LoginDto, TokenResponseDto
-- [x] User 비밀번호 검증 로직 (bcrypt)
-- [x] Refresh Token 구현
-- [ ] 로그아웃 엔드포인트
+  - [x] @Public() 데코레이터로 공개 엔드포인트 관리
+- [x] User 비밀번호 검증 로직 (bcrypt) ✅
+- [x] Refresh Token 구현 ✅
+- [x] 로그아웃 엔드포인트 ✅
 
 ### Frontend
 
-- [x] **로그인 페이지 만들기**
+- [x] **로그인 페이지 만들기** ✅
   - [x] 로그인 폼 컴포넌트 (email, password)
   - [x] Tailwind CSS 스타일링
-  - [ ] 폼 validation
-  - [ ] 에러 메시지 표시
-- [x] 회원가입 페이지
-- [ ] JWT 토큰 관리 (localStorage/sessionStorage) 🔥
-- [ ] API client 인증 헤더 설정 🔥
-- [ ] Protected Route 컴포넌트
-- [ ] 로그아웃 기능
+  - [x] 폼 validation
+  - [x] 에러 메시지 표시
+- [x] 회원가입 페이지 ✅
+- [x] JWT 토큰 관리 ✅ (httpOnly 쿠키 기반)
+- [x] API client 인증 헤더 설정 ✅ (axios interceptor 구현)
+- [x] Protected Route 컴포넌트 (추가 필요 - 현재 redirect 방식)
+- [x] 로그아웃 기능 ✅
 
 ---
 
@@ -43,7 +44,7 @@
 
 ### Components
 
-- [ ] Navigation Bar (로그인 상태 표시) 🔥
+- [x] Navigation Bar (로그인 상태 표시) ✅ (Header.tsx, HeaderRight.tsx 구현됨)
 - [ ] Post Card 컴포넌트
 - [ ] Comment 컴포넌트
 - [ ] Like/Dislike 버튼
@@ -200,20 +201,30 @@
 
 ## 🎯 Current Priority
 
-1. **JWT 토큰 관리 및 API 인증 헤더 설정** 🔥🔥
-   - localStorage/sessionStorage에 토큰 저장
-   - API client에 Authorization 헤더 자동 추가
-   - 토큰 만료 시 refresh 로직
-2. **Navigation Bar 구현** 🔥
-   - 로그인 상태 표시
-   - 로그아웃 버튼
-   - 사용자 프로필 링크
-3. **Local 전략 및 AuthGuard 완성**
-   - 백엔드 로그인 엔드포인트 보호
-   - Protected routes 구현
-4. **Auth Service 통합 테스트**
-5. API 연동 완성
-6. 테스트 커버리지 향상
+1. **API 연동 완성** 🔥🔥
+   - [ ] User API (회원가입, 프로필 조회/수정)
+   - [ ] Post API (CRUD, 페이지네이션)
+   - [ ] Board API (목록 조회)
+   - [ ] Follow API (팔로우/언팔로우)
+   - [ ] Rate API (좋아요/싫어요)
+2. **UI 컴포넌트 완성** 🔥
+   - [ ] Post Card 컴포넌트
+   - [ ] Comment 컴포넌트
+   - [ ] Like/Dislike 버튼 컴포넌트
+   - [ ] Follow 버튼 컴포넌트
+   - [ ] Loading Spinner
+3. **테스트 강화**
+   - [ ] Auth Service 통합 테스트
+   - [ ] Post Service 통합 테스트
+   - [ ] Follow Service 통합 테스트
+   - [ ] Rate Service 통합 테스트
+4. **데이터베이스 모델 확장**
+   - [ ] Comment 모델 추가
+   - [ ] Image/Media 모델 추가
+5. **보안 및 성능**
+   - [ ] CORS 최종 설정
+   - [ ] Rate Limiting 구현
+   - [ ] 캐싱 전략 (Redis)
 
 ---
 
@@ -227,23 +238,44 @@
 
 ## 🎉 Recent Progress
 
-### 완료된 작업 (2026년 1월 21일)
+### 완료된 작업 (2026년 1월 28일)
 
-- ✅ AuthModule 생성 및 JWT 전략 구현
-- ✅ Refresh Token 기능 추가
-- ✅ 로그인/회원가입 페이지 UI 완성
-- ✅ 모든 핵심 페이지 컴포넌트 생성
-- ✅ bcrypt를 사용한 비밀번호 해싱
+#### 백엔드
+
+- ✅ AuthModule 전체 구현 (JWT, Local 전략, AuthGuard)
+- ✅ @Public() 데코레이터로 공개 엔드포인트 관리
+- ✅ User, Post, Board, Follow, Rate 모듈 구현
+- ✅ Prisma 마이그레이션 (User, Post, Board, Follow, Rate 모델)
+- ✅ bcrypt 기반 비밀번호 해싱
+- ✅ Refresh Token 시스템
+- ✅ User Service 통합 테스트 완료
+
+#### 프론트엔드
+
+- ✅ 로그인/회원가입 페이지 완성 (UI + validation + 에러 처리)
+- ✅ axios 기반 API client 구성
+- ✅ httpOnly 쿠키를 활용한 토큰 관리
+- ✅ axios interceptor로 자동 인증 헤더 설정
+- ✅ Header 컴포넌트 (로그인 상태 표시)
+- ✅ 모든 핵심 페이지 (Home, Board, Post, Profile 등)
 
 ### 다음 단계
 
-현재 인증 시스템의 프론트엔드 통합이 필요합니다:
+1. **API 연동 완성** - 현재 우선순위
+   - User API 연동 (회원가입, 프로필)
+   - Post API 연동 (CRUD)
+   - Board API 연동
+   - Follow API 연동
+   - Rate API 연동
 
-1. JWT 토큰을 localStorage에 저장
-2. API 호출 시 Authorization 헤더에 토큰 자동 포함
-3. Navigation Bar에서 로그인 상태 표시
-4. Protected Route 컴포넌트로 인증 필요 페이지 보호
+2. **UI 컴포넌트 구현**
+   - Post Card, Comment, Like/Dislike, Follow 버튼
+   - Loading Spinner, Error Boundary
+
+3. **테스트 커버리지 향상**
+   - Auth, Post, Follow, Rate Service 통합 테스트
+   - Frontend Component 테스트
 
 ---
 
-**Last Updated**: 2026년 1월 21일
+**Last Updated**: 2026년 1월 28일

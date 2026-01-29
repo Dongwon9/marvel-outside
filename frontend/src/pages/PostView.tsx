@@ -20,7 +20,6 @@ export default function PostView() {
     title: "첫 번째 게시글",
     content:
       "Marvel Outside에 오신 것을 환영합니다! 이것은 데모 게시글입니다. 실제 데이터는 API 연동 후 표시됩니다. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    contentFormat: "markdown", // 추가
     author: "김철수",
     authorId: "user123",
     createdAt: "2026-01-20 14:30",
@@ -102,13 +101,7 @@ export default function PostView() {
         {/* Content */}
         <div className="p-4 md:p-6 lg:p-8">
           <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none">
-            {post.contentFormat === "markdown" ? (
-              <MarkdownRenderer content={post.content} />
-            ) : (
-              <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 md:text-base">
-                {post.content}
-              </p>
-            )}
+            <MarkdownRenderer content={post.content} />
           </div>
         </div>
 

@@ -3,6 +3,7 @@ services:
     image: postgres:18
     container_name: marvel_postgres_dev
     environment:
+      TZ: Asia/Seoul
       POSTGRES_USER: marvel
       POSTGRES_PASSWORD: marvel_password
       POSTGRES_DB: marvel_dev
@@ -20,15 +21,29 @@ services:
       - marvel_network
 
   redis:
-    image: redis:6.2-alpine
+    image: redis:8-alpine
     container_name: marvel_redis_dev
+    environment:
+      TZ: Asia/Seoul
+      REDIS_PASSWORD: marvel_redis_password
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass marvel_redis_password
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "--no-auth-warning",
+          "-a",
+          "marvel_redis_password",
+          "ping",
+        ]
       interval: 5s
       timeout: 3s
       retries: 5

@@ -13,3 +13,5 @@ onlyBuiltDependencies:
 overrides:
   diff@<8.0.3: '>=8.0.3'
   hono@<4.11.4: '>=4.11.4'
+  hono@<4.11.7: '>=4.11.7'
+  lodash@>=4.0.0 <=4.17.22: '>=4.17.23'

@@ -3,18 +3,16 @@ FROM node:24
 
 WORKDIR /workspace
 
-# Use root for setup then switch to non-root
-USER root
-RUN corepack enable && mkdir -p /workspace && chown -R node:node /workspace
+# Install pnpm globally
+RUN corepack enable && mkdir -p /workspace
 
 # Copy workspace configuration and lock file from root
-COPY --chown=node:node pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 
 # Copy frontend package.json
-COPY --chown=node:node frontend/package.json ./frontend/
+COPY frontend/package.json ./frontend/
 
 # Install dependencies using frozen lockfile
-USER node
 RUN pnpm install --frozen-lockfile --filter frontend
 
 WORKDIR /workspace/frontend

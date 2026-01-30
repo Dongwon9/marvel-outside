@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { signup, login } from "../api/auth";
 import { getErrorMessage } from "../api/errors";
+import { useAuth } from "../hooks/useAuth";
+
+interface LocationState {
+  from?: { pathname: string };
+}
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -11,6 +16,10 @@ export default function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
+  const { refetchUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,22 +28,27 @@ export default function Signup() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     void (async () => {
-      const redirectTo = "/";
       const { confirmPassword, ...userData } = formData;
       if (userData.password !== confirmPassword) {
         alert("비밀번호를 확인하세요.");
+        setLoading(false);
         return;
       }
-      console.log("회원가입 데이터:", formData);
       try {
         await signup(userData);
         const { name, ...loginData } = userData;
         await login(loginData);
-        window.location.href = redirectTo;
+        await refetchUser();
+
+        const state = location.state as LocationState | null;
+        const from = state?.from?.pathname ?? "/";
+        void navigate(from);
       } catch (error) {
         console.error(error);
         alert(getErrorMessage(error));
+        setLoading(false);
       }
     })();
   };
@@ -137,9 +151,10 @@ export default function Signup() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg active:bg-blue-800 md:py-3.5 md:text-base"
+            disabled={loading}
+            className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg active:bg-blue-800 disabled:bg-blue-400 md:py-3.5 md:text-base"
           >
-            가입하기
+            {loading ? "가입 중..." : "가입하기"}
           </button>
         </form>
 

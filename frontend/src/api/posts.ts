@@ -1,4 +1,5 @@
 import client from "./client";
+import { ApiError, getErrorMessage } from "./errors";
 
 export interface PostForm {
   title: string;
@@ -10,7 +11,7 @@ export interface PostsQueryForm {
   boardId?: string;
   authorId?: string;
   search?: string;
-  limit?: number;
+  take?: number;
   offset?: number;
   orderBy?: { field: string; direction: "asc" | "desc" };
 }
@@ -27,29 +28,84 @@ export interface PostResponse {
   dislikes: number;
 }
 
+export interface PostStatsResponse {
+  postId: string;
+  likes: number;
+  dislikes: number;
+}
+
 export async function getPostById(id: string): Promise<PostResponse> {
-  const response = await client.get<PostResponse>(`/posts/${id}`);
-  return response.data;
+  try {
+    const response = await client.get<PostResponse>(`/posts/${id}`);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
 }
 
 export async function createPost(data: PostForm): Promise<PostResponse> {
-  const response = await client.post<PostResponse>("/posts", data);
-  return response.data;
+  try {
+    const response = await client.post<PostResponse>("/posts", data);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
 }
 
 export async function updatePost(
   id: string,
   data: PostForm,
 ): Promise<PostResponse> {
-  const response = await client.patch<PostResponse>(`/posts/${id}`, data);
-  return response.data;
+  try {
+    const response = await client.patch<PostResponse>(`/posts/${id}`, data);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
+}
+
+export async function deletePost(id: string): Promise<void> {
+  try {
+    await client.delete(`/posts/${id}`);
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
+}
+
+export async function increasePostViews(id: string): Promise<PostResponse> {
+  try {
+    const response = await client.patch<PostResponse>(`/posts/${id}/views`);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
+}
+
+export async function getPostStats(id: string): Promise<PostStatsResponse> {
+  try {
+    const response = await client.get<PostStatsResponse>(`/posts/${id}/stats`);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
 }
 
 export async function getPosts(
   query?: PostsQueryForm,
 ): Promise<PostResponse[]> {
-  const response = await client.get<PostResponse[]>("/posts", {
-    params: query,
-  });
-  return response.data;
+  try {
+    const response = await client.get<PostResponse[]>("/posts", {
+      params: query,
+    });
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError((error as any)?.response?.status || 500, message, error);
+  }
 }

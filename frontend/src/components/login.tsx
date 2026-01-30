@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { login } from "../api/auth";
 import { getErrorMessage } from "../api/errors";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginFormData {
   email: string;
   password: string;
   rememberMe?: boolean;
+}
+
+interface LocationState {
+  from?: { pathname: string };
 }
 
 export default function Login() {
@@ -17,8 +23,16 @@ export default function Login() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { isLoggedIn, refetchUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      alert("이미 로그인된 상태입니다.");
+      void navigate(-1);
+    }
+  }, [isLoggedIn, navigate]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setFormData((prev) => ({
@@ -38,9 +52,12 @@ export default function Login() {
         password: formData.password,
       });
 
-      setSuccess(true);
+      await refetchUser();
       setFormData({ email: "", password: "" });
-      window.location.href = "/";
+
+      const state = location.state as LocationState | null;
+      const from = state?.from?.pathname ?? "/";
+      void navigate(from);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

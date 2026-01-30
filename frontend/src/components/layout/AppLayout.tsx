@@ -1,9 +1,17 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
+import { LoadingSkeleton } from "../LoadingSkeleton";
 import Header from "./Header";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function AppLayout() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <Header />

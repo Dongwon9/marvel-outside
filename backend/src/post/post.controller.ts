@@ -10,6 +10,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,7 +19,10 @@ import { PostResponseDto } from './dto/post-response.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
 
+import { JwtAuthGuard } from '@/auth/auth.guard';
+import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { Public } from '@/auth/decorators/public.decorator';
+import type { User } from '@/generated/prisma/client';
 
 @Controller('posts')
 export class PostController {
@@ -37,9 +41,13 @@ export class PostController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async createPost(@Body() createPostDto: CreatePostDto): Promise<PostResponseDto> {
-    return this.postService.createPost(createPostDto);
+  async createPost(
+    @Body() createPostDto: CreatePostDto,
+    @CurrentUser() user: User,
+  ): Promise<PostResponseDto> {
+    return this.postService.createPost({ ...createPostDto, authorId: user.id });
   }
 
   @Put(':id')

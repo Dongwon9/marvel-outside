@@ -1,34 +1,93 @@
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
   MoreVertical,
   User,
-  Eye,
-  ThumbsUp,
-  ThumbsDown,
   Share2,
   FileText,
 } from "lucide-react";
 
 import MarkdownRenderer from "../components/MarkdownRenderer";
+import RateButtons from "../components/RateButtons";
+import {
+  getPostById,
+  deletePost,
+  increasePostViews,
+  type PostResponse,
+} from "../api/posts";
+import { getRates, type RateResponse } from "../api/rates";
 
 export default function PostView() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState<PostResponse | null>(null);
+  const [userRate, setUserRate] = useState<RateResponse | undefined>();
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [isPending, setIsPending] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Mock post data
-  const post = {
-    title: "첫 번째 게시글",
-    content:
-      "Marvel Outside에 오신 것을 환영합니다! 이것은 데모 게시글입니다. 실제 데이터는 API 연동 후 표시됩니다. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    author: "김철수",
-    authorId: "user123",
-    createdAt: "2026-01-20 14:30",
-    views: 234,
-    likes: 45,
-    dislikes: 3,
-    board: "자유 게시판",
-    boardId: "board1",
+  const handleDeletePost = async () => {
+    if (!id || !post) return;
+
+    if (!confirm("정말 삭제하시겠습니까?")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await deletePost(id);
+      alert("게시글이 삭제되었습니다.");
+      navigate("/post");
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert("게시글을 삭제할 수 없습니다.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
+
+  useEffect(() => {
+    if (!id) {
+      alert("잘못된 접근입니다.");
+      navigate("/post");
+      return;
+    }
+
+    async function fetchPost() {
+      try {
+        const data = await getPostById(id as string);
+        setPost(data);
+        setLikes(data.likes);
+        setDislikes(data.dislikes);
+
+        // 조회수 증가
+        try {
+          await increasePostViews(id as string);
+        } catch {
+          // 조회수 증가 실패는 무시
+        }
+
+        // 사용자의 평가 조회 (현재 사용자가 로그인했다면)
+        try {
+          const rates = await getRates(id);
+          const currentUserRate = rates.find((r) => r.postId === id);
+          setUserRate(currentUserRate);
+        } catch {
+          // 평가가 없으면 무시
+        }
+      } catch (err) {
+        console.error("Failed to fetch post:", err);
+        alert("게시글을 불러올 수 없습니다.");
+        navigate("/post");
+      } finally {
+        setIsPending(false);
+      }
+    }
+
+    void fetchPost();
+  }, [id, navigate]);
 
   const comments = [
     {
@@ -46,6 +105,38 @@ export default function PostView() {
       likes: 3,
     },
   ];
+
+  if (isPending) {
+    return (
+      <section className="flex items-center justify-center rounded-lg bg-white p-8 shadow-md md:rounded-xl md:p-12">
+        <div className="text-center">
+          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+          <p className="text-sm text-gray-600 md:text-base">
+            게시글을 불러오는 중...
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!post) {
+    return (
+      <section className="space-y-4 md:space-y-6">
+        <Link
+          to="/post"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 md:text-base"
+        >
+          <ChevronLeft className="h-5 w-5" />
+          목록으로
+        </Link>
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 md:p-6">
+          <p className="text-sm text-red-700 md:text-base">
+            게시글을 찾을 수 없습니다.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-4 md:space-y-6">
@@ -66,9 +157,15 @@ export default function PostView() {
             <h1 className="flex-1 text-xl font-bold text-gray-900 md:text-2xl lg:text-3xl">
               {post.title}
             </h1>
-            <button className="text-gray-400 transition-colors hover:text-gray-600">
-              <MoreVertical className="h-6 w-6" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDeletePost}
+                disabled={isDeleting}
+                className="rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
+              >
+                <MoreVertical className="h-6 w-6" />
+              </button>
+            </div>
           </div>
 
           {/* Meta Info */}
@@ -77,7 +174,7 @@ export default function PostView() {
               to={`/board/${post.boardId}`}
               className="rounded bg-blue-100 px-2 py-1 font-medium text-blue-700 transition-colors hover:bg-blue-200"
             >
-              {post.board}
+              {post.boardId}
             </Link>
             <span className="flex items-center gap-1.5">
               <User className="h-4 w-4" />
@@ -85,16 +182,11 @@ export default function PostView() {
                 to={`/user/${post.authorId}`}
                 className="font-medium transition-colors hover:text-blue-600"
               >
-                {post.author}
+                {post.authorId}
               </Link>
             </span>
             <span>·</span>
             <span>{post.createdAt}</span>
-            <span>·</span>
-            <span className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              {post.views}
-            </span>
           </div>
         </div>
 
@@ -108,20 +200,16 @@ export default function PostView() {
         {/* Actions */}
         <div className="border-t border-gray-200 p-4 md:p-6">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 md:gap-3">
-              <button className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2 text-blue-600 transition-colors hover:bg-blue-100 md:gap-2 md:px-4 md:py-2.5">
-                <ThumbsUp className="h-5 w-5" />
-                <span className="text-sm font-medium md:text-base">
-                  {post.likes}
-                </span>
-              </button>
-              <button className="flex items-center gap-1.5 rounded-lg bg-gray-50 px-3 py-2 text-gray-600 transition-colors hover:bg-gray-100 md:gap-2 md:px-4 md:py-2.5">
-                <ThumbsDown className="h-5 w-5" />
-                <span className="text-sm font-medium md:text-base">
-                  {post.dislikes}
-                </span>
-              </button>
-            </div>
+            <RateButtons
+              postId={id!}
+              initialLikes={likes}
+              initialDislikes={dislikes}
+              userRate={userRate}
+              onRateChange={(newLikes, newDislikes) => {
+                setLikes(newLikes);
+                setDislikes(newDislikes);
+              }}
+            />
             <button className="flex items-center gap-1.5 px-3 py-2 text-gray-600 transition-colors hover:text-gray-900 md:gap-2 md:px-4 md:py-2.5">
               <Share2 className="h-5 w-5" />
               <span className="hidden text-sm sm:inline md:text-base">

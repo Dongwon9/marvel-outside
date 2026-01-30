@@ -10,8 +10,6 @@ interface PostForm {
   title: string;
   content: string;
   boardId: string;
-  contentFormat: "markdown" | "plaintext";
-  authorId?: string;
 }
 
 interface Board {
@@ -28,7 +26,6 @@ export default function PostEditor() {
     title: "",
     content: "",
     boardId: "",
-    contentFormat: "markdown",
   });
   const [loading, setLoading] = useState(false);
   const [boards, setBoards] = useState<Board[]>([]);
@@ -42,8 +39,6 @@ export default function PostEditor() {
             title: data.title,
             content: data.content,
             boardId: data.boardId,
-            contentFormat:
-              (data.contentFormat as "markdown" | "plaintext") || "markdown",
           });
         })
         .catch((err) => console.error("Failed to load post:", err));
@@ -62,11 +57,9 @@ export default function PostEditor() {
     setLoading(true);
 
     try {
-      const data = isEditMode ? form : { ...form, authorId: "current-user-id" }; // TODO: 실제 사용자 ID로 교체
-
       const saved = isEditMode
-        ? await updatePost(postId!, data)
-        : await createPost(data);
+        ? await updatePost(postId!, form)
+        : await createPost(form);
 
       void navigate(`/post/${saved.id}`);
     } catch (err) {
@@ -116,60 +109,13 @@ export default function PostEditor() {
           placeholder="게시글 제목을 입력하세요"
         />
 
-        {/* 포맷 선택 */}
-        <div>
-          <label className="mb-2 block text-sm font-medium">콘텐츠 형식</label>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                value="markdown"
-                checked={form.contentFormat === "markdown"}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    contentFormat: e.target.value as "markdown",
-                  })
-                }
-                className="mr-2"
-              />
-              마크다운
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                value="plaintext"
-                checked={form.contentFormat === "plaintext"}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    contentFormat: e.target.value as "plaintext",
-                  })
-                }
-                className="mr-2"
-              />
-              일반 텍스트
-            </label>
-          </div>
-        </div>
-
         {/* 내용 */}
         <div>
           <label className="mb-2 block text-sm font-medium">내용</label>
-          {form.contentFormat === "markdown" ? (
-            <MarkdownEditor
-              value={form.content}
-              onChange={(value) => setForm({ ...form, content: value })}
-            />
-          ) : (
-            <textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              rows={15}
-              className="w-full rounded-md border border-gray-300 px-3 py-2"
-              placeholder="내용을 입력하세요"
-            />
-          )}
+          <MarkdownEditor
+            value={form.content}
+            onChange={(value) => setForm({ ...form, content: value })}
+          />
         </div>
 
         {/* 버튼 */}

@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import AppLayout from "../components/layout/AppLayout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/Login"));
@@ -22,14 +23,26 @@ export const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/feed", element: <Feed /> },
-      { path: "/post", element: <PostList /> },
-      { path: "/post/new", element: <PostEditor /> },
+      { path: "/feed", element: <ProtectedRoute element={<Feed />} /> },
+      { path: "/post", element: <ProtectedRoute element={<PostList />} /> },
+      {
+        path: "/post/new",
+        element: <ProtectedRoute element={<PostEditor />} />,
+      },
       { path: "/post/:id", element: <PostView /> },
-      { path: "/post/:id/edit", element: <PostEditor /> },
-      { path: "/user/:id", element: <UserProfile /> },
-      { path: "/settings", element: <Settings /> },
-      { path: "/board/:id", element: <BoardView /> },
+      {
+        path: "/post/:id/edit",
+        element: <ProtectedRoute element={<PostEditor />} />,
+      },
+      {
+        path: "/user/:id",
+        element: <ProtectedRoute element={<UserProfile />} />,
+      },
+      { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
+      {
+        path: "/board/:id",
+        element: <ProtectedRoute element={<BoardView />} />,
+      },
       { path: "*", element: <NotFound /> },
     ],
   },

@@ -51,15 +51,15 @@ model Board {
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  hits      Int      @default(0)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
+  id          String    @id @default(uuid())
+  title       String
+  content     String    @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  hits        Int       @default(0)
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
 
   rates   Rate[]
   board   Board? @relation(fields: [boardId], references: [id])

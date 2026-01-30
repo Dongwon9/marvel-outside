@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { ContentFormat } from './dto/content-format.enum';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
@@ -28,11 +27,21 @@ export class PostService {
       orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
       include: {
         rates: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        board: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     const postsWithLikeCount = posts.map(post => {
-      const { rates, ...postData } = post;
+      const { rates, author, board, ...postData } = post;
       const likeCount = post.rates.filter(rate => rate.isLike).length;
       const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
       return { ...postData, likeCount, dislikeCount };
@@ -40,7 +49,7 @@ export class PostService {
     return plainToInstance(PostResponseDto, postsWithLikeCount);
   }
 
-  async createPost(createPostDto: CreatePostDto): Promise<PostResponseDto> {
+  async createPost(createPostDto: CreatePostDto & { authorId: string }): Promise<PostResponseDto> {
     const post = await this.prisma.post.create({
       data: {
         title: createPostDto.title,

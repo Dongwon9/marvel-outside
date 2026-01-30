@@ -142,7 +142,6 @@ async function main() {
   console.log('📝 게시글 생성 중...');
   const posts = await Promise.all([
     prisma.post.create({
-    prisma.post.create({
       data: {
         title: 'Marvel Outside에 오신 것을 환영합니다!',
         content:

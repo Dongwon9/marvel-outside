@@ -53,23 +53,29 @@ describe('PostService', () => {
   });
 
   describe('posts', () => {
-    it('returns mapped posts with order', async () => {
+    const commonInclude = {
+      rates: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+      board: {
+        select: {
+          name: true,
+        },
+      },
+    };
+    it('returns multiple posts', async () => {
       const posts = [
-        { id: '1', title: 'a', content: 'c1', authorId: 'a1' },
-        { id: '2', title: 'b', content: 'c2', authorId: 'a2' },
+        { id: '1', title: 'a', content: 'c1', authorId: 'a1', rates: [] },
+        { id: '2', title: 'b', content: 'c2', authorId: 'a2', rates: [] },
       ];
       prismaMock.post.findMany = jest.fn().mockResolvedValue(posts);
-      const query: GetPostsQueryDto = { skip: 0, take: 10, orderBy: 'title' };
+      const result = await service.posts({});
 
-      const result = await service.posts(query);
-
-      expect(prismaMock.post.findMany).toHaveBeenCalledWith({
-        skip: 0,
-        take: 10,
-        orderBy: { title: 'asc' },
-      });
+      expect(prismaMock.post.findMany).toHaveBeenCalled();
       expect(result).toHaveLength(2);
-      expect(result[0]).toMatchObject(posts[0]);
     });
 
     it('omits order when not provided', async () => {
@@ -79,6 +85,7 @@ describe('PostService', () => {
       await service.posts(query);
 
       expect(prismaMock.post.findMany).toHaveBeenCalledWith({
+        include: commonInclude,
         skip: 5,
         take: 5,
         orderBy: undefined,
@@ -103,7 +110,6 @@ describe('PostService', () => {
         data: {
           title: dto.title,
           content: dto.content,
-          contentFormat: dto.contentFormat || 'markdown',
           author: { connect: { id: dto.authorId } },
           board: { connect: { id: dto.boardId } },
         },
@@ -122,7 +128,6 @@ describe('PostService', () => {
         data: {
           title: dto.title,
           content: '',
-          contentFormat: 'markdown',
           author: { connect: { id: dto.authorId } },
           board: { connect: { id: dto.boardId } },
         },

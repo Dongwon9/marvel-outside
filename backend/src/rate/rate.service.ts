@@ -25,10 +25,15 @@ export class RateService {
   }
 
   async findAll(queryDto: GetRatesQueryDto): Promise<RateResponseDto[]> {
-    const { skip, take } = queryDto;
+    const { skip, take, userId, postId, isLike } = queryDto;
     const rates = await this.prisma.rate.findMany({
       skip,
       take,
+      where: {
+        userId,
+        postId,
+        isLike,
+      },
     });
     return plainToInstance(RateResponseDto, rates);
   }

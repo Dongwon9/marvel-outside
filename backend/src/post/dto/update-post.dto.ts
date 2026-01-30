@@ -1,6 +1,4 @@
-import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
-
-import { ContentFormat } from './content-format.enum';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdatePostDto {
   @IsString()
@@ -14,8 +12,4 @@ export class UpdatePostDto {
   @IsBoolean()
   @IsOptional()
   published?: boolean;
-
-  @IsEnum(ContentFormat)
-  @IsOptional()
-  contentFormat?: ContentFormat;
 }

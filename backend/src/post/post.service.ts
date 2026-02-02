@@ -20,11 +20,20 @@ export class PostService {
   }
 
   async posts(queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {
-    const { skip, take, orderBy } = queryDto;
+    const { skip, take, orderBy, authorId, boardId } = queryDto;
+    const validOrderByFields = ['id', 'title', 'createdAt', 'updatedAt', 'hits'];
+
     const posts = await this.prisma.post.findMany({
+      where: {
+        ...(authorId && { authorId }),
+        ...(boardId && { boardId }),
+      },
       skip,
       take,
-      orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
+      orderBy:
+        orderBy && validOrderByFields.includes(orderBy)
+          ? { [orderBy]: 'asc' }
+          : { createdAt: 'desc' },
       include: {
         rates: true,
         author: {
@@ -44,7 +53,9 @@ export class PostService {
       const { rates, author, board, ...postData } = post;
       const likeCount = post.rates.filter(rate => rate.isLike).length;
       const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
-      return { ...postData, likeCount, dislikeCount };
+      const authorName = author.name;
+      const boardName = board.name;
+      return { ...postData, likeCount, dislikeCount, authorName, boardName };
     });
     return plainToInstance(PostResponseDto, postsWithLikeCount);
   }

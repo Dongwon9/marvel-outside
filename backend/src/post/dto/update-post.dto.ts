@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsISO8601 } from 'class-validator';
 
 export class UpdatePostDto {
   @IsString()
@@ -9,7 +9,7 @@ export class UpdatePostDto {
   @IsOptional()
   content?: string;
 
-  @IsBoolean()
+  @IsISO8601()
   @IsOptional()
-  published?: boolean;
+  publishedAt?: string;
 }

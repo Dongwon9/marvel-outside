@@ -16,12 +16,12 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
     authorAvatar,
     createdAt,
     updatedAt,
+    authorName,
     likes,
   } = item;
 
   // comments는 PostResponse에 없으므로 임시값 사용
   const comments = 0;
-  const author = authorId;
 
   if (variant === "feed") {
     return (
@@ -33,7 +33,7 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-sm font-semibold text-gray-900 md:text-base">
-              {author}
+              {authorName}
             </h3>
             <p className="text-xs text-gray-500 md:text-sm">
               {item.updatedAt || item.createdAt}

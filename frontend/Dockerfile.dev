@@ -4,7 +4,8 @@ FROM node:24
 WORKDIR /workspace
 
 # Install pnpm globally
-RUN corepack enable && mkdir -p /workspace
+RUN corepack enable && \
+  mkdir -p /workspace
 
 # Copy workspace configuration and lock file from root
 COPY pnpm-workspace.yaml pnpm-lock.yaml ./

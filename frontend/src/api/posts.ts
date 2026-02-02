@@ -21,9 +21,12 @@ export interface PostResponse {
   title: string;
   content: string;
   boardId: string;
+  boardName: string;
   authorId: string;
+  authorName: string;
   createdAt: string;
   updatedAt: string;
+  publishedAt?: string | null;
   likes: number;
   dislikes: number;
 }

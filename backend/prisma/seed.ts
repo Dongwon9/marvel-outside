@@ -146,7 +146,6 @@ async function main() {
         title: 'Marvel Outside에 오신 것을 환영합니다!',
         content:
           '# 환영합니다!\n\n새로운 커뮤니티 플랫폼 Marvel Outside가 오픈했습니다.\n\n다양한 이야기를 자유롭게 나누어 보세요!',
-        published: true,
         authorId: users[4].id,
         boardId: boards[1].id,
         hits: 45,
@@ -157,7 +156,6 @@ async function main() {
         title: '첫 번째 게시글',
         content:
           '안녕하세요! 첫 게시글을 작성해봅니다.\n\nMarkdown 형식으로 작성할 수 있어서 편리하네요.',
-        published: true,
         authorId: users[0].id,
         boardId: boards[0].id,
         hits: 23,
@@ -168,7 +166,7 @@ async function main() {
         title: 'React 19 새로운 기능 소개',
         content:
           '# React 19의 주요 변경사항\n\n## 1. 자동 JSX 런타임\n- 더 이상 React를 import할 필요가 없습니다.\n\n## 2. 성능 개선\n- 렌더링 성능이 대폭 향상되었습니다.',
-        published: true,
+         
         authorId: users[1].id,
         boardId: boards[2].id,
         hits: 67,
@@ -178,7 +176,7 @@ async function main() {
       data: {
         title: '오늘의 일상',
         content: '오늘 날씨가 정말 좋네요! 산책하기 딱 좋은 날입니다.',
-        published: true,
+         
         authorId: users[0].id,
         boardId: boards[3].id,
         hits: 15,
@@ -189,7 +187,7 @@ async function main() {
         title: 'Tailwind CSS v4 사용 후기',
         content:
           '# Tailwind CSS v4\n\nVite 플러그인을 사용하면 설정이 정말 간단합니다!\n\n유틸리티 클래스로 빠르게 UI를 구성할 수 있어서 생산성이 높아졌어요.',
-        published: true,
+         
         authorId: users[2].id,
         boardId: boards[2].id,
         hits: 42,
@@ -200,7 +198,7 @@ async function main() {
         title: 'NestJS로 백엔드 개발하기',
         content:
           '# NestJS 소개\n\nTypeScript 기반의 Node.js 프레임워크입니다.\n\n## 장점\n- 강력한 타입 시스템\n- 모듈화된 구조\n- 다양한 내장 기능',
-        published: true,
+         
         authorId: users[3].id,
         boardId: boards[2].id,
         hits: 38,
@@ -210,7 +208,7 @@ async function main() {
       data: {
         title: '새로운 프로젝트 시작',
         content: '드디어 새로운 프로젝트를 시작했습니다. 열심히 해보겠습니다!',
-        published: true,
+         
         authorId: users[1].id,
         boardId: boards[3].id,
         hits: 18,
@@ -221,7 +219,7 @@ async function main() {
         title: 'Docker로 개발 환경 구성하기',
         content:
           '# Docker 개발 환경\n\n```bash\ndocker compose up --build\n```\n\n위 명령어로 간단하게 전체 환경을 구성할 수 있습니다.',
-        published: true,
+         
         authorId: users[0].id,
         boardId: boards[2].id,
         hits: 52,

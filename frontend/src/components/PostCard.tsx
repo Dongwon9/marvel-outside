@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MoreVertical, ThumbsUp, MessageCircle, Share2 } from "lucide-react";
 
 import type { PostResponse } from "../api/posts";
+import { formatRelativeTime } from "../utils/time";
 
 interface PostCardProps extends PostResponse {
   variant?: "card" | "feed";
@@ -12,13 +13,16 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
     id,
     title,
     content,
-    authorId,
     authorAvatar,
     createdAt,
     updatedAt,
     authorName,
     likes,
+    boardName,
   } = item;
+
+  const relativeUpdatedAt = formatRelativeTime(updatedAt || createdAt);
+  const relativeCreatedAt = formatRelativeTime(createdAt);
 
   // comments는 PostResponse에 없으므로 임시값 사용
   const comments = 0;
@@ -36,7 +40,7 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
               {authorName}
             </h3>
             <p className="text-xs text-gray-500 md:text-sm">
-              {item.updatedAt || item.createdAt}
+              {boardName}, {relativeUpdatedAt}
             </p>
           </div>
           <button className="text-gray-400 hover:text-gray-600">
@@ -84,9 +88,9 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
       </p>
       <div className="flex items-center justify-between text-xs text-gray-500 md:text-sm">
         <div className="flex items-center gap-2 md:gap-3">
-          <span className="font-medium text-gray-700">{author}</span>
+          <span className="font-medium text-gray-700">{authorName}</span>
           <span>·</span>
-          <span>{createdAt}</span>
+          <span>{relativeCreatedAt}</span>
         </div>
         <div className="flex items-center gap-3 md:gap-4">
           <span className="flex items-center gap-1">

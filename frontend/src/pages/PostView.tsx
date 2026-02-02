@@ -17,6 +17,7 @@ import {
   type PostResponse,
 } from "../api/posts";
 import { getRates, type RateResponse } from "../api/rates";
+import { formatRelativeTime } from "../utils/time";
 
 export default function PostView() {
   const { id } = useParams();
@@ -89,19 +90,20 @@ export default function PostView() {
     void fetchPost();
   }, [id, navigate]);
 
+  const now = Date.now();
   const comments = [
     {
       id: "1",
       author: "이영희",
       content: "좋은 글 감사합니다!",
-      createdAt: "1시간 전",
+      createdAt: new Date(now - 45 * 1000).toISOString(),
       likes: 5,
     },
     {
       id: "2",
       author: "박민수",
       content: "정말 유익한 정보네요. 많은 도움이 되었습니다.",
-      createdAt: "2시간 전",
+      createdAt: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
       likes: 3,
     },
   ];
@@ -186,7 +188,7 @@ export default function PostView() {
               </Link>
             </span>
             <span>·</span>
-            <span>{post.createdAt}</span>
+            <span>{formatRelativeTime(post.createdAt)}</span>
           </div>
         </div>
 
@@ -257,7 +259,7 @@ export default function PostView() {
                       {comment.author}
                     </span>
                     <span className="text-xs text-gray-500 md:text-sm">
-                      {comment.createdAt}
+                      {formatRelativeTime(comment.createdAt)}
                     </span>
                   </div>
                   <p className="mb-2 text-sm text-gray-700 md:text-base">

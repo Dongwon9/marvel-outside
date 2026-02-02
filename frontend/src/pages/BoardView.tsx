@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { ClipboardList, Users, FileText } from "lucide-react";
 
+import { formatRelativeTime } from "../utils/time";
+
 export default function BoardView() {
   const { id } = useParams();
 
@@ -17,7 +19,7 @@ export default function BoardView() {
       id: "1",
       title: "보드에 오신 것을 환영합니다",
       author: "관리자",
-      createdAt: "2026-01-20",
+      createdAt: "2026-01-20T10:15:30.000Z",
       views: 145,
       likes: 23,
       comments: 12,
@@ -26,7 +28,7 @@ export default function BoardView() {
       id: "2",
       title: "자유 게시판 이용 안내",
       author: "운영자",
-      createdAt: "2026-01-19",
+      createdAt: "2026-01-19T08:03:12.000Z",
       views: 98,
       likes: 15,
       comments: 8,
@@ -114,14 +116,14 @@ export default function BoardView() {
                     <div className="mt-1 flex items-center gap-2 text-xs text-gray-500 sm:hidden">
                       <span>{post.author}</span>
                       <span>·</span>
-                      <span>{post.createdAt}</span>
+                      <span>{formatRelativeTime(post.createdAt)}</span>
                     </div>
                   </td>
                   <td className="hidden px-4 py-4 text-sm text-gray-600 sm:table-cell">
                     {post.author}
                   </td>
                   <td className="hidden px-4 py-4 text-sm text-gray-600 md:table-cell">
-                    {post.createdAt}
+                    {formatRelativeTime(post.createdAt)}
                   </td>
                   <td className="px-4 py-4 text-center text-sm text-gray-600">
                     {post.views}

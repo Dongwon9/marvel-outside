@@ -50,6 +50,7 @@ export default function Login() {
       await login({
         email: formData.email,
         password: formData.password,
+        rememberMe: formData.rememberMe || false,
       });
 
       await refetchUser();

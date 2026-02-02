@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { ThumbsUp, MessageCircle } from "lucide-react";
+import { formatRelativeTime } from "../utils/time";
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -9,7 +10,7 @@ export default function UserProfile() {
     name: "김철수",
     email: "user@example.com",
     bio: "안녕하세요! Marvel Outside에서 활동하고 있는 개발자입니다.",
-    joinedAt: "2026년 1월",
+    joinedAt: "2026-01-02T09:45:20.000Z",
     followers: 128,
     following: 256,
     posts: 42,
@@ -19,21 +20,21 @@ export default function UserProfile() {
     {
       id: "1",
       title: "첫 번째 게시글",
-      createdAt: "2026-01-20",
+      createdAt: "2026-01-20T14:12:05.000Z",
       likes: 24,
       comments: 8,
     },
     {
       id: "2",
       title: "두 번째 게시글",
-      createdAt: "2026-01-19",
+      createdAt: "2026-01-19T11:03:40.000Z",
       likes: 18,
       comments: 5,
     },
     {
       id: "3",
       title: "세 번째 게시글",
-      createdAt: "2026-01-18",
+      createdAt: "2026-01-18T07:30:18.000Z",
       likes: 32,
       comments: 12,
     },
@@ -58,7 +59,7 @@ export default function UserProfile() {
               {userData.bio}
             </p>
             <div className="flex flex-wrap items-center gap-4 text-sm md:text-base">
-              <span>가입: {userData.joinedAt}</span>
+              <span>가입: {formatRelativeTime(userData.joinedAt)}</span>
               <span>·</span>
               <span>ID: {id}</span>
             </div>
@@ -124,7 +125,7 @@ export default function UserProfile() {
                 {post.title}
               </h3>
               <div className="flex items-center justify-between text-xs text-gray-600 md:text-sm">
-                <span>{post.createdAt}</span>
+                <span>{formatRelativeTime(post.createdAt)}</span>
                 <div className="flex items-center gap-3 md:gap-4">
                   <span className="flex items-center gap-1">
                     <ThumbsUp className="h-4 w-4" />

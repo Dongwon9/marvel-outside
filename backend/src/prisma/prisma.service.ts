@@ -2,9 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
-
 import { RequestContext } from '../common/request-context/request-context';
 import { PrismaClient } from '../generated/prisma/client';
+
+interface PrismaQueryEvent {
+  duration: number;
+  query: string;
+  params: string;
+  target: string;
+}
+
+interface PrismaWarnEvent {
+  message: string;
+  target: string;
+}
+
+interface PrismaErrorEvent {
+  message: string;
+  target: string;
+}
 
 @Injectable()
 export class PrismaService extends PrismaClient {
@@ -28,26 +44,26 @@ export class PrismaService extends PrismaClient {
       ],
     });
 
-    (this as any).$on('query', (e: any) => {
+    (this.$on as (event: 'query', callback: (e: PrismaQueryEvent) => void) => void)('query', e => {
       const ctx = RequestContext.get();
       this.logger.debug({
         msg: 'prisma.query',
         reqId: ctx?.reqId,
         userId: ctx?.userId,
-        durationMs: e?.duration,
-        query: e?.query,
-        params: e?.params,
+        durationMs: e.duration,
+        query: e.query,
+        params: e.params,
       });
     });
 
-    (this as any).$on('warn', (e: any) => {
+    (this.$on as (event: 'warn', callback: (e: PrismaWarnEvent) => void) => void)('warn', e => {
       const ctx = RequestContext.get();
-      this.logger.warn({ msg: 'prisma.warn', reqId: ctx?.reqId, message: e?.message });
+      this.logger.warn({ msg: 'prisma.warn', reqId: ctx?.reqId, message: e.message });
     });
 
-    (this as any).$on('error', (e: any) => {
+    (this.$on as (event: 'error', callback: (e: PrismaErrorEvent) => void) => void)('error', e => {
       const ctx = RequestContext.get();
-      this.logger.error({ msg: 'prisma.error', reqId: ctx?.reqId, message: e?.message });
+      this.logger.error({ msg: 'prisma.error', reqId: ctx?.reqId, message: e.message });
     });
   }
 }

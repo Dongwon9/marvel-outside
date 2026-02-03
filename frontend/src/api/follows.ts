@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import client from "./client";
 import { ApiError, getErrorMessage } from "./errors";
 
@@ -20,6 +21,13 @@ export interface UserBasicInfo {
   avatar?: string;
 }
 
+function getStatusCode(error: unknown): number {
+  if (error instanceof AxiosError) {
+    return error.response?.status || 500;
+  }
+  return 500;
+}
+
 /**
  * 사용자 팔로우
  */
@@ -31,9 +39,7 @@ export async function followUser(userId: string): Promise<FollowResponse> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -45,9 +51,7 @@ export async function unfollowUser(userId: string): Promise<void> {
     await client.delete(`/follows/${userId}`);
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -62,9 +66,7 @@ export async function getFollowers(userId: string): Promise<UserBasicInfo[]> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -79,9 +81,7 @@ export async function getFollowing(userId: string): Promise<UserBasicInfo[]> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -98,9 +98,7 @@ export async function getFollowStats(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -115,8 +113,6 @@ export async function isFollowing(userId: string): Promise<boolean> {
     return response.data.isFollowing;
   } catch (error) {
     const message = getErrorMessage(error);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const status = (error as any)?.response?.status || 500;
-    throw new ApiError(status as number, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }

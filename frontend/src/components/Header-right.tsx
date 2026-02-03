@@ -9,7 +9,7 @@ export default function HeaderRight() {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
+    void navigate("/");
   };
 
   return (

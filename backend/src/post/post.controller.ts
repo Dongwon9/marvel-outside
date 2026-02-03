@@ -12,13 +12,11 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
-
 import { JwtAuthGuard } from '@/auth/auth.guard';
 import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { Public } from '@/auth/decorators/public.decorator';

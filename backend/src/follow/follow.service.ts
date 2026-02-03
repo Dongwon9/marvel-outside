@@ -5,12 +5,11 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-
 import { PrismaService } from '../prisma/prisma.service';
+import { UserResponseDto } from '../user/dto/user-response.dto';
 import { CreateFollowDto } from './dto/create-follow.dto';
 import { FollowResponseDto } from './dto/follow-response.dto';
 import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
-import { UserResponseDto } from '../user/dto/user-response.dto';
 
 @Injectable()
 export class FollowService {
@@ -119,7 +118,7 @@ export class FollowService {
       user: plainToInstance(UserResponseDto, follower),
     }));
   }
-  
+
   async getFollowing(
     userId: string,
     query: GetFollowersQueryDto,

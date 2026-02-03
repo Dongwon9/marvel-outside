@@ -1,16 +1,15 @@
 import crypto from 'crypto';
 import { resolve } from 'path';
-
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
+import { CommentModule } from './comment/comment.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { RequestContextMiddleware } from './common/request-context/request-context.middleware';
 import { FollowModule } from './follow/follow.module';
@@ -72,6 +71,7 @@ import { UserModule } from './user/user.module';
     FollowModule,
     RateModule,
     BoardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,11 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-
 import { CreateRateDto } from './dto/create-rate.dto';
 import { GetRatesQueryDto } from './dto/get-rates-query.dto';
 import { RateResponseDto } from './dto/rate-response.dto';
 import { UpdateRateDto } from './dto/update-rate.dto';
 import { RateService } from './rate.service';
-
 import { Public } from '@/auth/decorators/public.decorator';
 
 @Controller('rates')

@@ -70,7 +70,6 @@ export default [
             "internal",
             ["parent", "sibling", "index"],
           ],
-          "newlines-between": "always",
         },
       ],
 

@@ -1,5 +1,13 @@
+import { AxiosError } from "axios";
 import client from "./client";
 import { ApiError, getErrorMessage } from "./errors";
+
+function getStatusCode(error: unknown): number {
+  if (error instanceof AxiosError) {
+    return error.response?.status || 500;
+  }
+  return 500;
+}
 
 export interface PostForm {
   title: string;
@@ -43,7 +51,7 @@ export async function getPostById(id: string): Promise<PostResponse> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -53,7 +61,7 @@ export async function createPost(data: PostForm): Promise<PostResponse> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -66,7 +74,7 @@ export async function updatePost(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -75,7 +83,7 @@ export async function deletePost(id: string): Promise<void> {
     await client.delete(`/posts/${id}`);
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -85,7 +93,7 @@ export async function increasePostViews(id: string): Promise<PostResponse> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -95,7 +103,7 @@ export async function getPostStats(id: string): Promise<PostStatsResponse> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -109,6 +117,6 @@ export async function getPosts(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }

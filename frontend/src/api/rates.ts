@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import client from "./client";
 import { ApiError, getErrorMessage } from "./errors";
 
@@ -17,6 +18,13 @@ export interface UpdateRateRequest {
   isLike?: boolean;
 }
 
+function getStatusCode(error: unknown): number {
+  if (error instanceof AxiosError) {
+    return error.response?.status || 500;
+  }
+  return 500;
+}
+
 /**
  * 게시글에 좋아요/싫어요 추가
  */
@@ -28,7 +36,7 @@ export async function createRate(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -43,7 +51,7 @@ export async function getRates(postId?: string): Promise<RateResponse[]> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -61,7 +69,7 @@ export async function getRateByPostAndUserId(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -81,7 +89,7 @@ export async function updateRate(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -99,6 +107,6 @@ export async function deleteRate(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }

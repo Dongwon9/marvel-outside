@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-
 import { CreateRateDto } from './dto/create-rate.dto';
 import { GetRatesQueryDto } from './dto/get-rates-query.dto';
 import { RateResponseDto } from './dto/rate-response.dto';
 import { UpdateRateDto } from './dto/update-rate.dto';
-
 import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()

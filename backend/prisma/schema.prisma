@@ -24,7 +24,8 @@ model User {
   followers      Follow[]  @relation("UserFollowers")
   posts          Post[]
 
-  rates Rate[]
+  rates    Rate[]
+  comments Comment[]
 
   @@index([deletedAt])
 }
@@ -61,9 +62,10 @@ model Post {
   author      User      @relation(fields: [authorId], references: [id])
   authorId    String
 
-  rates   Rate[]
-  board   Board  @relation(fields: [boardId], references: [id])
-  boardId String
+  rates    Rate[]
+  board    Board     @relation(fields: [boardId], references: [id])
+  boardId  String
+  comments Comment[]
 
   @@index([createdAt])
   @@index([authorId])
@@ -80,4 +82,19 @@ model Rate {
 
   @@id([userId, postId])
   @@index([createdAt])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+
+  @@index([createdAt])
+  @@index([authorId])
+  @@index([postId])
 }

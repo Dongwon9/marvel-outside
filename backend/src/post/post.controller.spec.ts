@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
@@ -42,8 +41,32 @@ describe('PostController', () => {
     it('should return an array of posts', async () => {
       const queryDto: GetPostsQueryDto = {};
       const expectedResult: PostResponseDto[] = [
-        { id: '1', title: 'Post 1', content: 'Content 1' },
-        { id: '2', title: 'Post 2', content: 'Content 2' },
+        {
+          id: '1',
+          title: 'Post 1',
+          content: 'Content 1',
+          hits: 10,
+          authorId: 'user-1',
+          authorName: 'User 1',
+          boardId: 'board-1',
+          boardName: 'Board 1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+        },
+        {
+          id: '2',
+          title: 'Post 2',
+          content: 'Content 2',
+          hits: 5,
+          authorId: 'user-2',
+          authorName: 'User 2',
+          boardId: 'board-1',
+          boardName: 'Board 1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+        },
       ] as PostResponseDto[];
 
       mockPostService.posts.mockResolvedValue(expectedResult);
@@ -63,6 +86,14 @@ describe('PostController', () => {
         id: postId,
         title: 'Post 1',
         content: 'Content 1',
+        hits: 10,
+        authorId: 'user-1',
+        authorName: 'User 1',
+        boardId: 'board-1',
+        boardName: 'Board 1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null,
       } as PostResponseDto;
 
       mockPostService.post.mockResolvedValue(expectedResult);
@@ -94,15 +125,27 @@ describe('PostController', () => {
       } as CreatePostDto;
       const expectedResult: PostResponseDto = {
         id: '1',
-        ...createPostDto,
+        title: 'New Post',
+        content: 'New Content',
+        hits: 0,
+        authorId: 'user-1',
+        authorName: 'Test User',
+        boardId: 'board-1',
+        boardName: 'Test Board',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null,
       } as PostResponseDto;
 
       mockPostService.createPost.mockResolvedValue(expectedResult);
 
-      const result = await controller.createPost(createPostDto);
+      const result = await controller.createPost(createPostDto, { id: 'user-1' } as any);
 
       expect(result).toEqual(expectedResult);
-      expect(service.createPost).toHaveBeenCalledWith(createPostDto);
+      expect(service.createPost).toHaveBeenCalledWith({
+        ...createPostDto,
+        authorId: 'user-1',
+      });
       expect(service.createPost).toHaveBeenCalledTimes(1);
     });
   });
@@ -116,7 +159,16 @@ describe('PostController', () => {
       } as UpdatePostDto;
       const expectedResult: PostResponseDto = {
         id: postId,
-        ...updatePostDto,
+        title: 'Updated Post',
+        content: 'Updated Content',
+        hits: 5,
+        authorId: 'user-1',
+        authorName: 'Test User',
+        boardId: 'board-1',
+        boardName: 'Test Board',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null,
       } as PostResponseDto;
 
       mockPostService.updatePost.mockResolvedValue(expectedResult);

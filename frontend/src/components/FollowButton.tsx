@@ -62,7 +62,7 @@ export function FollowButton({ userId, onFollowChange }: FollowButtonProps) {
   return (
     <div className="space-y-1">
       <button
-        onClick={handleFollow}
+        onClick={() => void handleFollow()}
         disabled={isLoading}
         className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-colors ${
           isFollowed
@@ -162,7 +162,7 @@ export function FollowList({ userId, type }: FollowListProps) {
   if (isPending) {
     return (
       <div className="space-y-2">
-        {[...Array(3)].map((_, i) => (
+        {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
         ))}
       </div>

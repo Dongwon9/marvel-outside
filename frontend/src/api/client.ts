@@ -17,12 +17,19 @@ client.interceptors.request.use(
 // 응답 인터셉터: 오류 처리
 client.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: unknown) => {
     // 네트워크 오류 또는 서버 응답 없음
-    if (!error.response) {
-      console.error("네트워크 오류:", error.message);
+    if (axios.isAxiosError(error)) {
+      if (!error.response) {
+        const message = error.message || "네트워크 오류";
+        console.error("네트워크 오류:", message);
+      }
+    } else if (error instanceof Error) {
+      console.error("오류:", error.message);
     }
-    return Promise.reject(error);
+    return Promise.reject(
+      error instanceof Error ? error : new Error(String(error)),
+    );
   },
 );
 

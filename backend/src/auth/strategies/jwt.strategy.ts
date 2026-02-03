@@ -2,9 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Request } from 'express';
-
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserResponseDto } from '../../user/dto/user-response.dto';
 import { UserService } from '../../user/user.service';
 

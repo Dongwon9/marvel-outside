@@ -1,11 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { PostService } from './post.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostService } from './post.service';
 
 describe('PostService', () => {
   let service: PostService;
@@ -34,13 +32,42 @@ describe('PostService', () => {
 
   describe('post', () => {
     it('returns mapped post when found', async () => {
-      const post = { id: '1', title: 't', content: 'c', authorId: 'a' };
+      const post = {
+        id: '1',
+        title: 't',
+        content: 'c',
+        authorId: 'a',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null,
+        hits: 0,
+        boardId: 'b',
+        rates: [
+          { userId: 'u1', isLike: true },
+          { userId: 'u2', isLike: false },
+        ],
+        author: { name: 'author-name' },
+        board: { name: 'board-name' },
+      };
       prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
 
       const result = await service.post('1');
 
-      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
-      expect(result).toMatchObject(post);
+      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
+        where: { id: '1' },
+        include: {
+          rates: { omit: { postId: true } },
+          author: { select: { name: true } },
+          board: { select: { name: true } },
+        },
+      });
+      expect(result).toMatchObject({
+        id: '1',
+        title: 't',
+        content: 'c',
+        likeCount: 1,
+        dislikeCount: 1,
+      });
     });
 
     it('returns null when not found', async () => {
@@ -68,8 +95,34 @@ describe('PostService', () => {
     };
     it('returns multiple posts', async () => {
       const posts = [
-        { id: '1', title: 'a', content: 'c1', authorId: 'a1', rates: [] },
-        { id: '2', title: 'b', content: 'c2', authorId: 'a2', rates: [] },
+        {
+          id: '1',
+          title: 'a',
+          content: 'c1',
+          authorId: 'a1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+          hits: 0,
+          boardId: 'b1',
+          rates: [],
+          author: { name: 'author1' },
+          board: { name: 'board1' },
+        },
+        {
+          id: '2',
+          title: 'b',
+          content: 'c2',
+          authorId: 'a2',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+          hits: 0,
+          boardId: 'b2',
+          rates: [],
+          author: { name: 'author2' },
+          board: { name: 'board2' },
+        },
       ];
       prismaMock.post.findMany = jest.fn().mockResolvedValue(posts);
       const result = await service.posts({});
@@ -88,18 +141,19 @@ describe('PostService', () => {
         include: commonInclude,
         skip: 5,
         take: 5,
-        orderBy: undefined,
+        orderBy: { createdAt: 'desc' },
+        where: {},
       });
     });
   });
 
   describe('createPost', () => {
     it('creates and returns mapped post', async () => {
-      const dto: CreatePostDto = {
+      const dto = {
         title: 'new',
         content: 'body',
-        authorId: 'author-1',
         boardId: 'board-2',
+        authorId: 'author-1',
       };
       const created = { id: '1', ...dto };
       prismaMock.post.create = jest.fn().mockResolvedValue(created);
@@ -118,7 +172,7 @@ describe('PostService', () => {
     });
 
     it('fills empty content when missing', async () => {
-      const dto = { title: 'no content', authorId: 'a1', boardId: 'b1' } as CreatePostDto;
+      const dto = { title: 'no content', authorId: 'a1', boardId: 'b1' };
       const created = { id: '2', title: dto.title, content: '', authorId: dto.authorId };
       prismaMock.post.create = jest.fn().mockResolvedValue(created);
 

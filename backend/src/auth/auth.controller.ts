@@ -10,14 +10,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { CookieOptions, Request, Response as ExpressResponse } from 'express';
-
+import type { User } from '../generated/prisma/client';
 import { JwtAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import type { User } from '../generated/prisma/client';
 
 interface RequestWithCookies extends Request {
   cookies: Record<string, string | undefined>;

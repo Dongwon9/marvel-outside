@@ -1,12 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateRateDto } from './dto/create-rate.dto';
 import { GetRatesQueryDto } from './dto/get-rates-query.dto';
 import { RateResponseDto } from './dto/rate-response.dto';
 import { UpdateRateDto } from './dto/update-rate.dto';
 import { RateService } from './rate.service';
-import { PrismaService } from '../prisma/prisma.service';
 
 describe('RateService', () => {
   let service: RateService;
@@ -229,6 +228,11 @@ describe('RateService', () => {
   });
 
   describe('findAll', () => {
+    const commonWhere = {
+      isLike: undefined,
+      postId: undefined,
+      userId: undefined,
+    };
     it('should return array of RateResponseDto', async () => {
       const queryDto: GetRatesQueryDto = { skip: 0, take: 10 };
       const mockRates = [
@@ -253,6 +257,7 @@ describe('RateService', () => {
       expect(prisma.rate.findMany).toHaveBeenCalledWith({
         skip: 0,
         take: 10,
+        where: commonWhere,
       });
       expect(result).toHaveLength(2);
       expect(result[0]).toBeInstanceOf(RateResponseDto);
@@ -281,6 +286,7 @@ describe('RateService', () => {
       expect(prisma.rate.findMany).toHaveBeenCalledWith({
         skip: 5,
         take: 20,
+        where: commonWhere,
       });
     });
 

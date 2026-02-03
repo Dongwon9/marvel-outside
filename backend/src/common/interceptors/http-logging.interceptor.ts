@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
 import { RequestContext } from '../request-context/request-context';
 
 @Injectable()

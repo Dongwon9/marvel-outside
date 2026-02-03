@@ -14,6 +14,8 @@
     "start:dev": "pnpm -r start:dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
+    "lint:fe": "pnpm -F frontend lint",
+    "lint:be": "pnpm -F backend lint",
     "test": "pnpm -F backend test",
     "test:integration": "pnpm -F backend test:integration",
     "test:all": "pnpm -F backend test:all",

@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-
 import { CreateRateDto } from './dto/create-rate.dto';
 import { GetRatesQueryDto } from './dto/get-rates-query.dto';
 import { RateResponseDto } from './dto/rate-response.dto';

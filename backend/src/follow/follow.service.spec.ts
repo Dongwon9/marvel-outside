@@ -1,8 +1,7 @@
 import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { FollowService } from './follow.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { FollowService } from './follow.service';
 
 describe('FollowService', () => {
   let service: FollowService;

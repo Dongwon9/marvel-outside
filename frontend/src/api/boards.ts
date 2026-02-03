@@ -1,5 +1,13 @@
+import axios from "axios";
 import client from "./client";
 import { ApiError, getErrorMessage } from "./errors";
+
+function getStatusCode(error: unknown): number {
+  if (axios.isAxiosError(error)) {
+    return error.response?.status ?? 500;
+  }
+  return 500;
+}
 
 export interface Board {
   id: string;
@@ -13,7 +21,7 @@ export async function getBoards(): Promise<Board[]> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -23,7 +31,7 @@ export async function getBoardById(id: string): Promise<Board> {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -36,7 +44,7 @@ export async function createBoard(data: {
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -49,7 +57,7 @@ export async function updateBoard(
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }
 
@@ -58,6 +66,6 @@ export async function deleteBoard(id: string): Promise<void> {
     await client.delete(`/boards/${id}`);
   } catch (error) {
     const message = getErrorMessage(error);
-    throw new ApiError((error as any)?.response?.status || 500, message, error);
+    throw new ApiError(getStatusCode(error), message, error);
   }
 }

@@ -22,7 +22,7 @@ export function BoardEditModal({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -48,14 +48,19 @@ export function BoardEditModal({
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">게시판 수정</h2>
           <button
-            onClick={onClose}
+            onClick={() => onClose()}
             className="text-gray-500 hover:text-gray-700"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          className="space-y-4"
+        >
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               게시판 이름
@@ -101,7 +106,7 @@ export function BoardEditModal({
             </button>
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => onClose()}
               className="flex-1 rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
             >
               취소
@@ -141,6 +146,10 @@ export function BoardActions({ board, onDeleted }: BoardActionsProps) {
     }
   };
 
+  const onDeleteWrapper = () => {
+    void handleDelete();
+  };
+
   return (
     <>
       <div className="flex gap-2">
@@ -152,7 +161,7 @@ export function BoardActions({ board, onDeleted }: BoardActionsProps) {
           수정
         </button>
         <button
-          onClick={handleDelete}
+          onClick={onDeleteWrapper}
           disabled={isDeleting}
           className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"
         >

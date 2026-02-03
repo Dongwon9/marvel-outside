@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Linting:fe",
+      "type": "npm",
+      "script": "lint:fe",
+      "problemMatcher": "$eslint-stylish",
+      "group": "build"
+    },
+    {
+      "label": "Linting:be",
+      "type": "npm",
+      "script": "lint:be",
+      "problemMatcher": "$eslint-stylish",
+      "group": "build"
+    }
+  ]
+}

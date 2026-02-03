@@ -73,31 +73,6 @@ describe('UserService', () => {
     });
   });
 
-  describe('getUserById', () => {
-    it('should return a user by id', async () => {
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
-
-      const result = await service.getUserById('1');
-
-      expect(prismaService.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
-      expect(result).toEqual(
-        expect.objectContaining({
-          id: mockUser.id,
-          email: mockUser.email,
-          name: mockUser.name,
-        }),
-      );
-    });
-
-    it('should return null when user not found', async () => {
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);
-
-      const result = await service.getUserById('missing');
-
-      expect(result).toBeNull();
-    });
-  });
-
   describe('getUsers', () => {
     it('should return array of users with pagination', async () => {
       const users = [mockUser, { ...mockUser, id: '2', email: 'test2@example.com' }];

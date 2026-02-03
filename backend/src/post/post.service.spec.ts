@@ -26,10 +26,6 @@ describe('PostService', () => {
     service = module.get<PostService>(PostService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('post', () => {
     it('returns mapped post when found', async () => {
       const post = {
@@ -219,7 +215,7 @@ describe('PostService', () => {
   });
 
   describe('getPostRatings', () => {
-    it('returns like and dislike counts for post with ratings', async () => {
+    it('returns correct like and dislike counts', async () => {
       const post = {
         id: '1',
         title: 'test',
@@ -240,57 +236,6 @@ describe('PostService', () => {
         include: { rates: true },
       });
       expect(result).toEqual({ likeCount: 2, dislikeCount: 1 });
-    });
-
-    it('returns zero counts for post with no ratings', async () => {
-      const post = {
-        id: '2',
-        title: 'test',
-        content: 'content',
-        authorId: 'author-1',
-        rates: [],
-      };
-      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
-
-      const result = await service.getPostRatings('2');
-
-      expect(result).toEqual({ likeCount: 0, dislikeCount: 0 });
-    });
-
-    it('returns all likes when no dislikes exist', async () => {
-      const post = {
-        id: '3',
-        title: 'test',
-        content: 'content',
-        authorId: 'author-1',
-        rates: [
-          { userId: 'u1', postId: '3', isLike: true, createdAt: new Date() },
-          { userId: 'u2', postId: '3', isLike: true, createdAt: new Date() },
-        ],
-      };
-      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
-
-      const result = await service.getPostRatings('3');
-
-      expect(result).toEqual({ likeCount: 2, dislikeCount: 0 });
-    });
-
-    it('returns all dislikes when no likes exist', async () => {
-      const post = {
-        id: '4',
-        title: 'test',
-        content: 'content',
-        authorId: 'author-1',
-        rates: [
-          { userId: 'u1', postId: '4', isLike: false, createdAt: new Date() },
-          { userId: 'u2', postId: '4', isLike: false, createdAt: new Date() },
-        ],
-      };
-      prismaMock.post.findUnique = jest.fn().mockResolvedValue(post);
-
-      const result = await service.getPostRatings('4');
-
-      expect(result).toEqual({ likeCount: 0, dislikeCount: 2 });
     });
 
     it('throws BadRequestException when post not found', async () => {

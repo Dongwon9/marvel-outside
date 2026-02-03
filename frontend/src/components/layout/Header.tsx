@@ -24,6 +24,12 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-6 text-base md:flex">
             <Link
+              to="/board"
+              className="font-medium transition-colors hover:text-blue-600"
+            >
+              게시판 목록
+            </Link>
+            <Link
               to="/feed"
               className="font-medium transition-colors hover:text-blue-600"
             >

@@ -14,9 +14,28 @@ export class PostService {
   async post(id: string): Promise<PostResponseDto | null> {
     const post = await this.prisma.post.findUnique({
       where: { id },
+      include: {
+        rates: { omit: { postId: true } },
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        board: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
     if (!post) return null;
-    return plainToInstance(PostResponseDto, post);
+    const { rates, author, board, ...postData } = post;
+    const likeCount = post.rates.filter(rate => rate.isLike).length;
+    const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
+    const authorName = author.name;
+    const boardName = board.name;
+    const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
+    return plainToInstance(PostResponseDto, postWithCounts);
   }
 
   async posts(queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {

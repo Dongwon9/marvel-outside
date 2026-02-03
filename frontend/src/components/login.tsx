@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 interface LoginFormData {
   email: string;
   password: string;
-  rememberMe?: boolean;
+  rememberMe: boolean;
 }
 
 interface LocationState {
@@ -33,15 +33,18 @@ export default function Login() {
       void navigate(-1);
     }
   }, [isLoggedIn, navigate]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
+    const { name, type, value, checked } = e.currentTarget;
+    const inputValue = type === "checkbox" ? checked : value;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: inputValue,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(formData);
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -50,11 +53,11 @@ export default function Login() {
       await login({
         email: formData.email,
         password: formData.password,
-        rememberMe: formData.rememberMe || false,
+        rememberMe: formData.rememberMe,
       });
 
       await refetchUser();
-      setFormData({ email: "", password: "" });
+      setFormData({ email: "", password: "", rememberMe: false });
 
       const state = location.state as LocationState | null;
       const from = state?.from?.pathname ?? "/";
@@ -67,7 +70,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
         {/* Header */}
         <div className="mb-8 text-center">

@@ -6,6 +6,7 @@ import {
   User,
   Share2,
   FileText,
+  ThumbsUp,
 } from "lucide-react";
 
 import MarkdownRenderer from "../components/MarkdownRenderer";
@@ -16,11 +17,13 @@ import {
   increasePostViews,
   type PostResponse,
 } from "../api/posts";
-import { getRates, type RateResponse } from "../api/rates";
+import { getRateByPostAndUserId, type RateResponse } from "../api/rates";
 import { formatRelativeTime } from "../utils/time";
+import { useAuth } from "../hooks/useAuth";
 
 export default function PostView() {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState<PostResponse | null>(null);
   const [userRate, setUserRate] = useState<RateResponse | undefined>();
@@ -40,7 +43,7 @@ export default function PostView() {
     try {
       await deletePost(id);
       alert("게시글이 삭제되었습니다.");
-      navigate("/post");
+      void navigate("/post");
     } catch (err) {
       console.error("Failed to delete post:", err);
       alert("게시글을 삭제할 수 없습니다.");
@@ -52,7 +55,7 @@ export default function PostView() {
   useEffect(() => {
     if (!id) {
       alert("잘못된 접근입니다.");
-      navigate("/post");
+      void navigate("/post");
       return;
     }
 
@@ -72,23 +75,27 @@ export default function PostView() {
 
         // 사용자의 평가 조회 (현재 사용자가 로그인했다면)
         try {
-          const rates = await getRates(id);
-          const currentUserRate = rates.find((r) => r.postId === id);
-          setUserRate(currentUserRate);
+          if (user?.id) {
+            const currentUserRate = await getRateByPostAndUserId(
+              id as string,
+              user.id,
+            );
+            setUserRate(currentUserRate);
+          }
         } catch {
           // 평가가 없으면 무시
         }
       } catch (err) {
         console.error("Failed to fetch post:", err);
         alert("게시글을 불러올 수 없습니다.");
-        navigate("/post");
+        void navigate("/post");
       } finally {
         setIsPending(false);
       }
     }
 
     void fetchPost();
-  }, [id, navigate]);
+  }, [id, navigate, user?.id]);
 
   const now = Date.now();
   const comments = [
@@ -161,7 +168,7 @@ export default function PostView() {
             </h1>
             <div className="flex items-center gap-2">
               <button
-                onClick={handleDeletePost}
+                onClick={() => void handleDeletePost()}
                 disabled={isDeleting}
                 className="rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
               >
@@ -176,7 +183,7 @@ export default function PostView() {
               to={`/board/${post.boardId}`}
               className="rounded bg-blue-100 px-2 py-1 font-medium text-blue-700 transition-colors hover:bg-blue-200"
             >
-              {post.boardId}
+              {post.boardName}
             </Link>
             <span className="flex items-center gap-1.5">
               <User className="h-4 w-4" />
@@ -184,7 +191,7 @@ export default function PostView() {
                 to={`/user/${post.authorId}`}
                 className="font-medium transition-colors hover:text-blue-600"
               >
-                {post.authorId}
+                {post.authorName}
               </Link>
             </span>
             <span>·</span>

@@ -1,26 +1,28 @@
 import client from "./client";
 import { ApiError, getErrorMessage } from "./errors";
 
-export type RateType = "LIKE" | "DISLIKE";
-
-export interface RateForm {
+export interface RateResponse {
+  userId: string;
   postId: string;
-  type: RateType;
+  isLike: boolean;
 }
 
-export interface RateResponse {
-  id: string;
-  postId: string;
+export interface CreateRateRequest {
   userId: string;
-  type: RateType;
-  createdAt: string;
-  updatedAt: string;
+  postId: string;
+  isLike: boolean;
+}
+
+export interface UpdateRateRequest {
+  isLike?: boolean;
 }
 
 /**
  * 게시글에 좋아요/싫어요 추가
  */
-export async function createRate(data: RateForm): Promise<RateResponse> {
+export async function createRate(
+  data: CreateRateRequest,
+): Promise<RateResponse> {
   try {
     const response = await client.post<RateResponse>("/rates", data);
     return response.data;
@@ -46,11 +48,16 @@ export async function getRates(postId?: string): Promise<RateResponse[]> {
 }
 
 /**
- * 특정 평가 조회
+ * 특정 사용자의 게시글 평가 조회
  */
-export async function getRateById(id: string): Promise<RateResponse> {
+export async function getRateByPostAndUserId(
+  postId: string,
+  userId: string,
+): Promise<RateResponse> {
   try {
-    const response = await client.get<RateResponse>(`/rates/${id}`);
+    const response = await client.get<RateResponse>(
+      `/rates/${userId}/${postId}`,
+    );
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
@@ -62,11 +69,15 @@ export async function getRateById(id: string): Promise<RateResponse> {
  * 평가 수정 (좋아요 ↔ 싫어요 변경)
  */
 export async function updateRate(
-  id: string,
-  data: { type: RateType },
+  userId: string,
+  postId: string,
+  data: UpdateRateRequest,
 ): Promise<RateResponse> {
   try {
-    const response = await client.patch<RateResponse>(`/rates/${id}`, data);
+    const response = await client.patch<RateResponse>(
+      `/rates/${userId}/${postId}`,
+      data,
+    );
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
@@ -77,9 +88,15 @@ export async function updateRate(
 /**
  * 평가 삭제 (좋아요/싫어요 제거)
  */
-export async function deleteRate(id: string): Promise<void> {
+export async function deleteRate(
+  userId: string,
+  postId: string,
+): Promise<RateResponse> {
   try {
-    await client.delete(`/rates/${id}`);
+    const response = await client.delete<RateResponse>(
+      `/rates/${userId}/${postId}`,
+    );
+    return response.data;
   } catch (error) {
     const message = getErrorMessage(error);
     throw new ApiError((error as any)?.response?.status || 500, message, error);

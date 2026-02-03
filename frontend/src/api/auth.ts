@@ -29,11 +29,6 @@ export async function signup(data: SignupRequest): Promise<void> {
   await client.post("/users", data);
 }
 
-export async function autoLogin(data: LoginRequest): Promise<LoginResponse> {
-  const response = await client.post<LoginResponse>("/auth/login", data);
-  return response.data;
-}
-
 export async function logout(): Promise<void> {
   await client.post("/auth/logout");
 }

@@ -62,7 +62,7 @@ model Post {
   authorId    String
 
   rates   Rate[]
-  board   Board @relation(fields: [boardId], references: [id])
+  board   Board  @relation(fields: [boardId], references: [id])
   boardId String
 
   @@index([createdAt])

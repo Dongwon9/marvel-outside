@@ -6,9 +6,9 @@ import {
   deleteRate,
   updateRate,
   type RateResponse,
-  type RateType,
 } from "../api/rates";
 import { ApiError } from "../api/errors";
+import { useAuth } from "../hooks/useAuth";
 
 interface RateButtonsProps {
   postId: string;
@@ -25,6 +25,7 @@ export default function RateButtons({
   userRate,
   onRateChange,
 }: RateButtonsProps) {
+  const { user } = useAuth();
   const [likes, setLikes] = useState(initialLikes);
   const [dislikes, setDislikes] = useState(initialDislikes);
   const [currentRate, setCurrentRate] = useState<RateResponse | undefined>(
@@ -33,57 +34,68 @@ export default function RateButtons({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleRate = async (type: RateType) => {
+  const handleRate = async (isLike: boolean) => {
+    if (!user?.id) {
+      setError("로그인이 필요합니다.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
       // 이미 같은 타입의 평가가 있으면 삭제
-      if (currentRate && currentRate.type === type) {
-        await deleteRate(currentRate.id);
+      if (currentRate && currentRate.isLike === isLike) {
+        await deleteRate(currentRate.userId, currentRate.postId);
         setCurrentRate(undefined);
-        if (type === "LIKE") {
+        if (isLike) {
           setLikes(likes - 1);
         } else {
           setDislikes(dislikes - 1);
         }
         onRateChange?.(
-          type === "LIKE" ? likes - 1 : likes,
-          type === "DISLIKE" ? dislikes - 1 : dislikes,
+          isLike ? likes - 1 : likes,
+          !isLike ? dislikes - 1 : dislikes,
         );
         return;
       }
 
       // 다른 타입의 평가가 있으면 수정
       if (currentRate) {
-        const oldType = currentRate.type;
-        const updatedRate = await updateRate(currentRate.id, { type });
+        const oldIsLike: boolean = currentRate.isLike;
+        const updatedRate = await updateRate(currentRate.userId, postId, {
+          isLike,
+        });
         setCurrentRate(updatedRate);
 
-        if (oldType === "LIKE") {
+        if (oldIsLike) {
           setLikes(likes - 1);
         } else {
           setDislikes(dislikes - 1);
         }
 
-        if (type === "LIKE") {
+        if (isLike) {
           setLikes(likes + 1);
         } else {
           setDislikes(dislikes + 1);
         }
 
         onRateChange?.(
-          type === "LIKE" ? likes - 1 + 1 : likes - 1,
-          type === "DISLIKE" ? dislikes - 1 + 1 : dislikes - 1,
+          isLike ? likes - 1 + 1 : likes - 1,
+          !isLike ? dislikes - 1 + 1 : dislikes - 1,
         );
         return;
       }
 
       // 새로운 평가 생성
-      const newRate = await createRate({ postId, type });
+      const newRate = await createRate({
+        userId: user.id,
+        postId,
+        isLike,
+      });
       setCurrentRate(newRate);
 
-      if (type === "LIKE") {
+      if (isLike) {
         setLikes(likes + 1);
         onRateChange?.(likes + 1, dislikes);
       } else {
@@ -104,10 +116,10 @@ export default function RateButtons({
     <div className="space-y-2">
       <div className="flex items-center gap-2 md:gap-3">
         <button
-          onClick={() => handleRate("LIKE")}
+          onClick={() => void handleRate(true)}
           disabled={isLoading}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5 ${
-            currentRate?.type === "LIKE"
+            currentRate?.isLike === true
               ? "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-600"
               : "bg-blue-50 text-blue-600 hover:bg-blue-100 disabled:bg-blue-50"
           }`}
@@ -116,10 +128,10 @@ export default function RateButtons({
           <span className="text-sm font-medium md:text-base">{likes}</span>
         </button>
         <button
-          onClick={() => handleRate("DISLIKE")}
+          onClick={() => void handleRate(false)}
           disabled={isLoading}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5 ${
-            currentRate?.type === "DISLIKE"
+            currentRate?.isLike === false
               ? "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600"
               : "bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:bg-gray-50"
           }`}

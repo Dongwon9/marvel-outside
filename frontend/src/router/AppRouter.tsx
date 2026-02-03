@@ -23,8 +23,8 @@ export const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/feed", element: <ProtectedRoute element={<Feed />} /> },
-      { path: "/post", element: <ProtectedRoute element={<PostList />} /> },
+      { path: "/feed", element: <Feed /> },
+      { path: "/post", element: <PostList /> },
       {
         path: "/post/new",
         element: <ProtectedRoute element={<PostEditor />} />,
@@ -32,13 +32,21 @@ export const router = createBrowserRouter([
       { path: "/post/:id", element: <PostView /> },
       {
         path: "/post/:id/edit",
-        element: <ProtectedRoute element={<PostEditor />} />,
+        element: (
+          <ProtectedRoute element={<PostEditor />} kickOnAuthFail={true} />
+        ),
       },
       {
         path: "/user/:id",
         element: <ProtectedRoute element={<UserProfile />} />,
       },
-      { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
+      {
+        path: "/settings",
+        element: (
+          <ProtectedRoute element={<Settings />} kickOnAuthFail={true} />
+        ),
+      },
+      { path: "/board", element: <BoardView /> },
       {
         path: "/board/:id",
         element: <ProtectedRoute element={<BoardView />} />,

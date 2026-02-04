@@ -324,3 +324,38 @@ DELETE {{baseUrl}}/users/{{userBId}}
 ###
 DELETE {{baseUrl}}/users/{{userCId}}
 
+################################################################################
+# Comment API Tests
+################################################################################
+
+### Create a comment on a post
+# @name createComment
+POST {{baseUrl}}/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+Authorization: Bearer {{loginUser.response.body.access_token}}
+
+{
+  "content": "This is a great post!"
+}
+
+### Get all comments for a post
+GET {{baseUrl}}/posts/{{postId}}/comments
+
+### Get my comment on a post
+# @name getMyComment
+GET {{baseUrl}}/posts/{{postId}}/comments/me
+Authorization: Bearer {{loginUser.response.body.access_token}}
+
+### Update my comment
+PATCH {{baseUrl}}/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+Authorization: Bearer {{loginUser.response.body.access_token}}
+
+{
+  "content": "This is an updated comment!"
+}
+
+### Delete my comment
+DELETE {{baseUrl}}/posts/{{postId}}/comments
+Authorization: Bearer {{loginUser.response.body.access_token}}
+

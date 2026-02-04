@@ -11,6 +11,7 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
+  '@isaacs/brace-expansion@<=5.0.0': '>=5.0.1'
   diff@<8.0.3: '>=8.0.3'
   hono@<4.11.4: '>=4.11.4'
   hono@<4.11.7: '>=4.11.7'

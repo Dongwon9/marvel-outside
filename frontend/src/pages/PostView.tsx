@@ -6,11 +6,11 @@ import {
   User,
   Share2,
   FileText,
-  ThumbsUp,
 } from "lucide-react";
 
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import RateButtons from "../components/RateButtons";
+import CommentList from "../components/CommentList";
 import {
   getPostById,
   deletePost,
@@ -96,24 +96,6 @@ export default function PostView() {
 
     void fetchPost();
   }, [id, navigate, user?.id]);
-
-  const now = Date.now();
-  const comments = [
-    {
-      id: "1",
-      author: "이영희",
-      content: "좋은 글 감사합니다!",
-      createdAt: new Date(now - 45 * 1000).toISOString(),
-      likes: 5,
-    },
-    {
-      id: "2",
-      author: "박민수",
-      content: "정말 유익한 정보네요. 많은 도움이 되었습니다.",
-      createdAt: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
-      likes: 3,
-    },
-  ];
 
   if (isPending) {
     return (
@@ -231,67 +213,7 @@ export default function PostView() {
 
       {/* Comments Section */}
       <div className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl">
-        <div className="border-b border-gray-200 p-4 md:p-6">
-          <h2 className="text-lg font-bold md:text-xl">
-            댓글 {comments.length}
-          </h2>
-        </div>
-
-        {/* Comment Form */}
-        <div className="border-b border-gray-200 bg-gray-50 p-4 md:p-6">
-          <textarea
-            placeholder="댓글을 입력하세요..."
-            rows={3}
-            className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-4 md:py-3 md:text-base"
-          />
-          <div className="mt-3 flex justify-end">
-            <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 md:px-6 md:py-2.5 md:text-base">
-              댓글 작성
-            </button>
-          </div>
-        </div>
-
-        {/* Comments List */}
-        <div className="divide-y divide-gray-200">
-          {comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="p-4 transition-colors hover:bg-gray-50 md:p-6"
-            >
-              <div className="flex items-start gap-3">
-                <div className="h-8 w-8 shrink-0 rounded-full bg-gray-200 md:h-10 md:w-10" />
-                <div className="min-w-0 flex-1">
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-900 md:text-base">
-                      {comment.author}
-                    </span>
-                    <span className="text-xs text-gray-500 md:text-sm">
-                      {formatRelativeTime(comment.createdAt)}
-                    </span>
-                  </div>
-                  <p className="mb-2 text-sm text-gray-700 md:text-base">
-                    {comment.content}
-                  </p>
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <button className="flex items-center gap-1 text-xs text-gray-500 transition-colors hover:text-blue-600 md:text-sm">
-                      <ThumbsUp className="h-4 w-4" />
-                      {comment.likes}
-                    </button>
-                    <button className="text-xs text-gray-500 transition-colors hover:text-blue-600 md:text-sm">
-                      답글
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Post ID Badge (for development) */}
-      <div className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 text-xs text-gray-600 md:text-sm">
-        <FileText className="h-4 w-4" />
-        게시글 ID: {id}
+        <div className="p-4 md:p-6">{id && <CommentList postId={id} />}</div>
       </div>
     </section>
   );

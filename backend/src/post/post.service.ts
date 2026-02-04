@@ -102,6 +102,7 @@ export class PostService {
 
     return posts.map(post => this.transformPostToDto(post));
   }
+
   async createPost(createPostDto: CreatePostDto & { authorId: string }): Promise<PostResponseDto> {
     const post = await this.prisma.post.create({
       data: {

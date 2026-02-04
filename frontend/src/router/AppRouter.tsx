@@ -14,6 +14,7 @@ const PostEditor = lazy(() => import("../pages/PostEditor"));
 const PostView = lazy(() => import("../pages/PostView"));
 const UserProfile = lazy(() => import("../pages/UserProfile"));
 const Settings = lazy(() => import("../pages/Settings"));
+const BoardList = lazy(() => import("../pages/BoardList"));
 const BoardView = lazy(() => import("../pages/BoardView"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
@@ -47,10 +48,10 @@ export const router = createBrowserRouter([
           <ProtectedRoute element={<Settings />} kickOnAuthFail={true} />
         ),
       },
-      { path: "/board", element: <BoardView /> },
+      { path: "/boards", element: <BoardList /> },
       {
         path: "/board/:id",
-        element: <ProtectedRoute element={<BoardView />} />,
+        element: <BoardView />,
       },
       { path: "*", element: <NotFound /> },
     ],

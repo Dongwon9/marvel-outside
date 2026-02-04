@@ -100,15 +100,15 @@ export default function UserProfile() {
       </div>
 
       {/* Tabs */}
-      <div className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl">
+      <div className="card-default overflow-hidden">
         <div className="flex border-b border-gray-200">
           <button className="flex-1 border-b-2 border-blue-600 px-4 py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-gray-50 md:py-4 md:text-base">
             게시글
           </button>
-          <button className="flex-1 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 md:py-4 md:text-base">
+          <button className="text-tertiary flex-1 px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-50 md:py-4 md:text-base">
             좋아요
           </button>
-          <button className="flex-1 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 md:py-4 md:text-base">
+          <button className="text-tertiary flex-1 px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-50 md:py-4 md:text-base">
             저장
           </button>
         </div>
@@ -121,10 +121,10 @@ export default function UserProfile() {
               to={`/post/${post.id}`}
               className="block p-4 transition-colors hover:bg-gray-50 md:p-6"
             >
-              <h3 className="mb-2 text-base font-semibold text-gray-900 md:text-lg">
+              <h3 className="text-primary mb-2 text-base font-semibold md:text-lg">
                 {post.title}
               </h3>
-              <div className="flex items-center justify-between text-xs text-gray-600 md:text-sm">
+              <div className="text-muted flex items-center justify-between text-xs md:text-sm">
                 <span>{formatRelativeTime(post.createdAt)}</span>
                 <div className="flex items-center gap-3 md:gap-4">
                   <span className="flex items-center gap-1">

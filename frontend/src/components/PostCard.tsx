@@ -25,21 +25,16 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
   const relativeCreatedAt = formatRelativeTime(createdAt);
 
   // comments는 PostResponse에 없으므로 임시값 사용
-  const comments = 0;
 
   if (variant === "feed") {
     return (
-      <article className="rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg md:rounded-xl md:p-6">
+      <article className="card-elevated card-padding-md">
         {/* Author Info */}
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg md:h-12 md:w-12 md:text-xl">
-            {authorAvatar || "👤"}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate text-sm font-semibold text-gray-900 md:text-base">
-              {authorName}
-            </h3>
-            <p className="text-xs text-gray-500 md:text-sm">
+        <div className="author-section">
+          <div className="author-avatar">{authorAvatar || "👤"}</div>
+          <div className="author-info">
+            <h3 className="author-name">{authorName}</h3>
+            <p className="author-meta">
               {boardName}, {relativeUpdatedAt}
             </p>
           </div>
@@ -52,21 +47,18 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
         <h4 className="mb-2 text-base font-semibold md:text-lg">
           {item.title}
         </h4>
-        <p className="mb-4 text-sm text-gray-600 md:text-base">
-          {item.content}
-        </p>
+        <p className="text-tertiary mb-4 md:text-base">{item.content}</p>
 
         {/* Actions */}
-        <div className="flex items-center gap-4 border-t border-gray-100 pt-4 md:gap-6">
-          <button className="flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
+        <div className="border-top-light flex items-center gap-4 pt-4 md:gap-6">
+          <button className="action-icon-button">
             <ThumbsUp className="h-5 w-5" />
             <span>{item.likes}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
+          <button className="action-icon-button">
             <MessageCircle className="h-5 w-5" />
-            <span>{comments}</span>
           </button>
-          <button className="ml-auto flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base">
+          <button className="action-icon-button ml-auto">
             <Share2 className="h-5 w-5" />
             <span className="hidden sm:inline">공유</span>
           </button>
@@ -78,17 +70,15 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
   return (
     <Link
       to={`/post/${id}`}
-      className="block rounded-lg bg-white p-4 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl md:rounded-xl md:p-6"
+      className="card-elevated card-padding-md block transition-all hover:-translate-y-1"
     >
-      <h2 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900 md:text-xl">
+      <h2 className="text-primary mb-2 line-clamp-1 text-lg font-semibold md:text-xl">
         {title}
       </h2>
-      <p className="mb-4 line-clamp-2 text-sm text-gray-600 md:text-base">
-        {content}
-      </p>
-      <div className="flex items-center justify-between text-xs text-gray-500 md:text-sm">
+      <p className="text-tertiary mb-4 line-clamp-2 md:text-base">{content}</p>
+      <div className="text-muted flex items-center justify-between text-xs md:text-sm">
         <div className="flex items-center gap-2 md:gap-3">
-          <span className="font-medium text-gray-700">{authorName}</span>
+          <span className="text-secondary font-medium">{authorName}</span>
           <span>·</span>
           <span>{relativeCreatedAt}</span>
         </div>
@@ -99,7 +89,6 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
           </span>
           <span className="flex items-center gap-1">
             <MessageCircle className="h-4 w-4" />
-            {comments}
           </span>
         </div>
       </div>

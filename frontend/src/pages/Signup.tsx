@@ -39,7 +39,7 @@ export default function Signup() {
       try {
         await signup(userData);
         const { name, ...loginData } = userData;
-        await login(loginData);
+        await login({ ...loginData, rememberMe: false });
         await refetchUser();
 
         const state = location.state as LocationState | null;

@@ -16,6 +16,7 @@ describe('PostController', () => {
     createPost: jest.fn(),
     updatePost: jest.fn(),
     deletePost: jest.fn(),
+    postsForFeed: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -192,6 +193,68 @@ describe('PostController', () => {
       expect(result).toBeUndefined();
       expect(service.deletePost).toHaveBeenCalledWith(postId);
       expect(service.deletePost).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('getPostsForFeed', () => {
+    it('should return an array of posts for a specific user', async () => {
+      const userId = 'user-1';
+      const expectedResult: PostResponseDto[] = [
+        {
+          id: '1',
+          title: 'User Post 1',
+          content: 'Content 1',
+          hits: 15,
+          authorId: userId,
+          authorName: 'Test User',
+          boardId: 'board-1',
+          boardName: 'Test Board',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+        },
+        {
+          id: '2',
+          title: 'User Post 2',
+          content: 'Content 2',
+          hits: 8,
+          authorId: userId,
+          authorName: 'Test User',
+          boardId: 'board-2',
+          boardName: 'Another Board',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+        },
+      ] as PostResponseDto[];
+
+      mockPostService.postsForFeed = jest.fn().mockResolvedValue(expectedResult);
+
+      const result = await controller.getPostsForFeed(userId);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockPostService.postsForFeed).toHaveBeenCalledWith(userId);
+      expect(mockPostService.postsForFeed).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return an empty array when user has no posts', async () => {
+      const userId = 'user-no-posts';
+
+      mockPostService.postsForFeed = jest.fn().mockResolvedValue([]);
+
+      const result = await controller.getPostsForFeed(userId);
+
+      expect(result).toEqual([]);
+      expect(mockPostService.postsForFeed).toHaveBeenCalledWith(userId);
+      expect(mockPostService.postsForFeed).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call postsForFeed service with correct userId parameter', async () => {
+      const userId = 'user-123';
+      mockPostService.postsForFeed = jest.fn().mockResolvedValue([]);
+
+      await controller.getPostsForFeed(userId);
+
+      expect(mockPostService.postsForFeed).toHaveBeenCalledWith(userId);
     });
   });
 });

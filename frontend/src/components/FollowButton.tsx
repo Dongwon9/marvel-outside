@@ -66,7 +66,7 @@ export function FollowButton({ userId, onFollowChange }: FollowButtonProps) {
         disabled={isLoading}
         className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-colors ${
           isFollowed
-            ? "bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:bg-gray-100"
+            ? "text-secondary bg-gray-100 hover:bg-gray-200 disabled:bg-gray-100"
             : "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-600"
         }`}
       >
@@ -107,7 +107,7 @@ export function FollowStats({ userId }: FollowStatsProps) {
 
   if (isPending) {
     return (
-      <div className="flex gap-4 text-gray-600">
+      <div className="text-tertiary flex gap-4">
         <div className="h-5 w-12 animate-pulse rounded bg-gray-200" />
         <div className="h-5 w-12 animate-pulse rounded bg-gray-200" />
       </div>
@@ -121,12 +121,12 @@ export function FollowStats({ userId }: FollowStatsProps) {
   return (
     <div className="flex gap-6">
       <div className="text-center">
-        <div className="text-lg font-bold text-gray-900">{stats.followers}</div>
-        <div className="text-sm text-gray-600">팔로워</div>
+        <div className="text-primary text-lg font-bold">{stats.followers}</div>
+        <div className="text-muted text-sm">팔로워</div>
       </div>
       <div className="text-center">
-        <div className="text-lg font-bold text-gray-900">{stats.following}</div>
-        <div className="text-sm text-gray-600">팔로잉</div>
+        <div className="text-primary text-lg font-bold">{stats.following}</div>
+        <div className="text-muted text-sm">팔로잉</div>
       </div>
     </div>
   );

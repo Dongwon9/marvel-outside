@@ -32,6 +32,12 @@ export class PostController {
     return this.postService.posts(queryDto);
   }
 
+  @Get(':userId')
+  @Public()
+  async getPostsForFeed(@Param('userId') userId: string): Promise<PostResponseDto[]> {
+    return this.postService.postsForFeed(userId);
+  }
+  
   @Get(':id')
   @Public()
   async getPostById(@Param('id') id: string): Promise<PostResponseDto | null> {

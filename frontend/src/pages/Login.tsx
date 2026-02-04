@@ -73,10 +73,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="text-primary mb-2 text-3xl font-bold">
             Marvel Outside
           </h1>
-          <p className="text-gray-600">로그인하여 시작하세요</p>
+          <p className="text-tertiary">로그인하여 시작하세요</p>
         </div>
 
         {/* Error Message */}
@@ -92,7 +92,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="text-secondary mb-2 block text-sm font-medium"
             >
               이메일
             </label>
@@ -112,7 +112,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="text-secondary mb-2 block text-sm font-medium"
             >
               비밀번호
             </label>

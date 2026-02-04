@@ -62,7 +62,7 @@ export default function CommentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-3 rounded-lg border border-gray-200 bg-white p-4"
+      className="card-default card-padding-md border-light space-y-3"
     >
       <textarea
         value={content}
@@ -81,7 +81,7 @@ export default function CommentForm({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="rounded px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+            className="text-tertiary rounded px-4 py-2 text-sm hover:bg-gray-100 disabled:opacity-50"
           >
             취소
           </button>

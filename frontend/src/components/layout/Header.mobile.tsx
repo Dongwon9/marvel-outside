@@ -10,13 +10,13 @@ export default function HeaderMobile() {
   const handleMenuClose = () => setMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+    <header className="border-light sticky top-0 z-50 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top bar */}
         <div className="flex items-center justify-between py-3">
           <Link
             to="/"
-            className="text-lg font-bold text-blue-600 transition-colors hover:text-blue-700"
+            className="text-primary text-lg font-bold transition-colors hover:text-blue-700"
           >
             Marvel Outside
           </Link>

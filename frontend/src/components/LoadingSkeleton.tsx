@@ -2,7 +2,7 @@ export function LoadingSkeleton() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header skeleton */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+      <header className="border-light sticky top-0 z-50 border-b bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Logo skeleton */}
           <div className="flex items-center justify-between py-3 lg:py-4">
@@ -31,7 +31,7 @@ export function LoadingSkeleton() {
       </main>
 
       {/* Footer skeleton */}
-      <footer className="mt-auto border-t border-gray-200 bg-white">
+      <footer className="border-light mt-auto bg-white">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="mx-auto h-4 w-1/2 rounded-lg bg-gray-200"></div>
         </div>

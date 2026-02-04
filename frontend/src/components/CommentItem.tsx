@@ -58,11 +58,11 @@ export default function CommentItem({
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
+    <div className="card-default card-padding-md border-light">
       <div className="mb-2 flex items-start justify-between">
         <div>
-          <p className="font-medium text-gray-900">{comment.author.name}</p>
-          <p className="text-sm text-gray-500">{createdAt}</p>
+          <p className="text-primary font-medium">{comment.author.name}</p>
+          <p className="author-meta">{createdAt}</p>
         </div>
 
         {isOwner && (
@@ -70,14 +70,14 @@ export default function CommentItem({
             <button
               onClick={() => setIsEditing(true)}
               disabled={isDeleting}
-              className="text-sm text-blue-500 hover:text-blue-700 disabled:opacity-50"
+              className="action-link-primary"
             >
               수정
             </button>
             <button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="text-sm text-red-500 hover:text-red-700 disabled:opacity-50"
+              className="action-link-danger"
             >
               {isDeleting ? "삭제 중..." : "삭제"}
             </button>
@@ -87,7 +87,7 @@ export default function CommentItem({
 
       {error && <div className="mb-2 text-sm text-red-500">{error}</div>}
 
-      <p className="text-gray-700">{comment.content}</p>
+      <p className="text-secondary">{comment.content}</p>
     </div>
   );
 }

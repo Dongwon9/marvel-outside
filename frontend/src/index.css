@@ -82,3 +82,113 @@ button {
   font-family: inherit;
   cursor: pointer;
 }
+
+/* ============================================
+   Reusable Component Styles
+   ============================================ */
+
+/* Card Styles */
+.card-default {
+  @apply rounded-lg bg-white shadow-md md:rounded-xl;
+}
+
+.card-elevated {
+  @apply rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg md:rounded-xl;
+}
+
+.card-outlined {
+  @apply rounded-lg border border-gray-200 bg-white md:rounded-xl;
+}
+
+.card-padding-sm {
+  @apply p-4;
+}
+
+.card-padding-md {
+  @apply p-4 md:p-6;
+}
+
+.card-padding-lg {
+  @apply p-6 md:p-8;
+}
+
+/* Text Styles */
+.text-primary {
+  @apply text-gray-900;
+}
+
+.text-secondary {
+  @apply text-gray-700;
+}
+
+.text-tertiary {
+  @apply text-gray-600;
+}
+
+.text-muted {
+  @apply text-gray-500;
+}
+
+.text-subtle {
+  @apply text-gray-400;
+}
+
+/* Button/Link Action Styles */
+.action-link-primary {
+  @apply text-sm text-blue-500 transition-colors hover:text-blue-700 disabled:opacity-50;
+}
+
+.action-link-danger {
+  @apply text-sm text-red-500 transition-colors hover:text-red-700 disabled:opacity-50;
+}
+
+.action-link-secondary {
+  @apply text-sm text-gray-600 transition-colors hover:text-blue-600 disabled:opacity-50;
+}
+
+.action-icon-button {
+  @apply flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-blue-600 md:gap-2 md:text-base;
+}
+
+/* Responsive Spacing */
+.responsive-px {
+  @apply px-4 md:px-6;
+}
+
+.responsive-py {
+  @apply py-3 md:py-4;
+}
+
+.responsive-p {
+  @apply p-4 md:p-6;
+}
+
+/* Border Styles */
+.border-light {
+  @apply border border-gray-200;
+}
+
+.border-top-light {
+  @apply border-t border-gray-100;
+}
+
+/* Header/Author Styles */
+.author-section {
+  @apply mb-4 flex items-center gap-3;
+}
+
+.author-avatar {
+  @apply flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg md:h-12 md:w-12 md:text-xl;
+}
+
+.author-info {
+  @apply min-w-0 flex-1;
+}
+
+.author-name {
+  @apply truncate text-sm font-semibold text-gray-900 md:text-base;
+}
+
+.author-meta {
+  @apply text-xs text-gray-500 md:text-sm;
+}

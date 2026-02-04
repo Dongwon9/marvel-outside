@@ -10,6 +10,32 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostService {
   constructor(private prisma: PrismaService) {}
 
+  private includeForDto = {
+    rates: true,
+    author: { select: { name: true } },
+    board: { select: { name: true } },
+  };
+  private transformPostToDto(post: {
+    rates: { isLike: boolean }[];
+    author: { name: string };
+    board: { name: string };
+    id: string;
+    title: string;
+    content: string;
+    authorId: string;
+    boardId: string;
+    hits: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }): PostResponseDto {
+    const { rates, author, board, ...postData } = post;
+    const likeCount = post.rates.filter(rate => rate.isLike).length;
+    const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
+    const authorName = author.name;
+    const boardName = board.name;
+    const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
+    return plainToInstance(PostResponseDto, postWithCounts);
+  }
   async post(id: string): Promise<PostResponseDto | null> {
     const post = await this.prisma.post.findUnique({
       where: { id },
@@ -52,32 +78,30 @@ export class PostService {
         orderBy && validOrderByFields.includes(orderBy)
           ? { [orderBy]: 'asc' }
           : { createdAt: 'desc' },
-      include: {
-        rates: true,
-        author: {
-          select: {
-            name: true,
-          },
-        },
-        board: {
-          select: {
-            name: true,
-          },
-        },
-      },
+      include: this.includeForDto,
     });
 
-    const postsWithLikeCount = posts.map(post => {
-      const { rates, author, board, ...postData } = post;
-      const likeCount = post.rates.filter(rate => rate.isLike).length;
-      const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
-      const authorName = author.name;
-      const boardName = board.name;
-      return { ...postData, likeCount, dislikeCount, authorName, boardName };
-    });
-    return plainToInstance(PostResponseDto, postsWithLikeCount);
+    return posts.map(post => this.transformPostToDto(post));
   }
 
+  async postsForFeed(userId: string): Promise<PostResponseDto[]> {
+    const followings = await this.prisma.follow.findMany({
+      where: { followerId: userId },
+      select: { followingId: true },
+    });
+
+    const followingIds = followings.map(f => f.followingId);
+
+    const posts = await this.prisma.post.findMany({
+      where: {
+        authorId: { in: followingIds },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: this.includeForDto,
+    });
+
+    return posts.map(post => this.transformPostToDto(post));
+  }
   async createPost(createPostDto: CreatePostDto & { authorId: string }): Promise<PostResponseDto> {
     const post = await this.prisma.post.create({
       data: {

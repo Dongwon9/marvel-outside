@@ -5,13 +5,13 @@ import HeaderRight from "../Header-right";
 
 export default function HeaderDesktop() {
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+    <header className="border-light sticky top-0 z-50 border-b bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top bar */}
         <div className="flex items-center justify-between py-3 lg:py-4">
           <Link
             to="/"
-            className="text-xl font-bold text-blue-600 transition-colors hover:text-blue-700 md:text-2xl"
+            className="text-primary text-xl font-bold transition-colors hover:text-blue-700 md:text-2xl"
           >
             Marvel Outside
           </Link>

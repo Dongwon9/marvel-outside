@@ -36,7 +36,7 @@ export default function Settings() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">설정</h1>
-          <p className="mt-1 text-sm text-gray-600 md:text-base">
+          <p className="text-tertiary mt-1 text-sm md:text-base">
             계정 및 설정을 관리하세요
           </p>
         </div>
@@ -51,8 +51,8 @@ export default function Settings() {
             padding="sm"
             className="overflow-hidden"
           >
-            <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 md:px-6 md:py-4">
-              <h2 className="text-base font-semibold text-gray-900 md:text-lg">
+            <div className="border-light border-b bg-gray-50 px-4 py-3 md:px-6 md:py-4">
+              <h2 className="text-primary text-base font-semibold md:text-lg">
                 {section.title}
               </h2>
             </div>
@@ -64,11 +64,11 @@ export default function Settings() {
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xl md:text-2xl">{item.icon}</span>
-                    <span className="text-sm font-medium text-gray-700 md:text-base">
+                    <span className="text-secondary text-sm font-medium md:text-base">
                       {item.label}
                     </span>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
+                  <ChevronRight className="text-subtle h-5 w-5" />
                 </button>
               ))}
             </div>
@@ -90,10 +90,10 @@ export default function Settings() {
         <div className="p-4 md:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-sm font-medium text-gray-900 md:text-base">
+              <h3 className="text-primary text-sm font-medium md:text-base">
                 계정 삭제
               </h3>
-              <p className="mt-1 text-xs text-gray-600 md:text-sm">
+              <p className="text-muted mt-1 text-xs md:text-sm">
                 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
               </p>
             </div>

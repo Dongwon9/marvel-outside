@@ -27,14 +27,14 @@ export default function Feed() {
 
       {/* Empty State */}
       {feedData.length === 0 && (
-        <div className="rounded-lg bg-white p-8 text-center shadow-md md:rounded-xl md:p-12">
+        <div className="card-default card-padding-lg text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 md:h-20 md:w-20">
-            <Newspaper className="h-8 w-8 text-gray-400 md:h-10 md:w-10" />
+            <Newspaper className="text-subtle h-8 w-8 md:h-10 md:w-10" />
           </div>
-          <h3 className="mb-2 text-lg font-semibold md:text-xl">
+          <h3 className="text-primary mb-2 text-lg font-semibold md:text-xl">
             피드가 비어있습니다
           </h3>
-          <p className="mb-6 text-sm text-gray-600 md:text-base">
+          <p className="text-tertiary mb-6 md:text-base">
             다른 사용자를 팔로우하여 피드를 채워보세요!
           </p>
         </div>

@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import {
-  ChevronLeft,
-  MoreVertical,
-  User,
-  Share2,
-  FileText,
-} from "lucide-react";
+import { ChevronLeft, MoreVertical, User, Share2 } from "lucide-react";
 
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import RateButtons from "../components/RateButtons";
@@ -115,7 +109,7 @@ export default function PostView() {
       <section className="space-y-4 md:space-y-6">
         <Link
           to="/post"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 md:text-base"
+          className="text-tertiary hover:text-primary inline-flex items-center gap-2 text-sm transition-colors md:text-base"
         >
           <ChevronLeft className="h-5 w-5" />
           목록으로
@@ -134,25 +128,25 @@ export default function PostView() {
       {/* Back Button */}
       <Link
         to="/post"
-        className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900 md:text-base"
+        className="text-tertiary hover:text-primary inline-flex items-center gap-2 text-sm transition-colors md:text-base"
       >
         <ChevronLeft className="h-5 w-5" />
         목록으로
       </Link>
 
       {/* Post Content */}
-      <article className="overflow-hidden rounded-lg bg-white shadow-md md:rounded-xl">
+      <article className="card-default overflow-hidden">
         {/* Header */}
-        <div className="border-b border-gray-200 p-4 md:p-6 lg:p-8">
+        <div className="border-light border-b p-4 md:p-6 lg:p-8">
           <div className="mb-4 flex items-start justify-between gap-4">
-            <h1 className="flex-1 text-xl font-bold text-gray-900 md:text-2xl lg:text-3xl">
+            <h1 className="text-primary flex-1 text-xl font-bold md:text-2xl lg:text-3xl">
               {post.title}
             </h1>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => void handleDeletePost()}
                 disabled={isDeleting}
-                className="rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
+                className="text-tertiary rounded-lg px-3 py-2 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
               >
                 <MoreVertical className="h-6 w-6" />
               </button>
@@ -160,7 +154,7 @@ export default function PostView() {
           </div>
 
           {/* Meta Info */}
-          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 md:gap-4 md:text-sm">
+          <div className="text-muted flex flex-wrap items-center gap-2 text-xs md:gap-4 md:text-sm">
             <Link
               to={`/board/${post.boardId}`}
               className="rounded bg-blue-100 px-2 py-1 font-medium text-blue-700 transition-colors hover:bg-blue-200"
@@ -201,7 +195,7 @@ export default function PostView() {
                 setDislikes(newDislikes);
               }}
             />
-            <button className="flex items-center gap-1.5 px-3 py-2 text-gray-600 transition-colors hover:text-gray-900 md:gap-2 md:px-4 md:py-2.5">
+            <button className="text-tertiary hover:text-primary flex items-center gap-1.5 px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5">
               <Share2 className="h-5 w-5" />
               <span className="hidden text-sm sm:inline md:text-base">
                 공유

@@ -133,7 +133,7 @@ export default function RateButtons({
           className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5 ${
             currentRate?.isLike === false
               ? "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600"
-              : "bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:bg-gray-50"
+              : "text-tertiary bg-gray-50 hover:bg-gray-100 disabled:bg-gray-50"
           }`}
         >
           <ThumbsDown className="h-5 w-5" />

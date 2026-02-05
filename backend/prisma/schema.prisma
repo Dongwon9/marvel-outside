@@ -59,11 +59,11 @@ model Post {
   updatedAt   DateTime  @updatedAt
   publishedAt DateTime?
   hits        Int       @default(0)
-  author      User      @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
 
   rates    Rate[]
-  board    Board     @relation(fields: [boardId], references: [id])
+  board    Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId  String
   comments Comment[]
 
@@ -88,9 +88,9 @@ model Comment {
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
 
   @@id([authorId, postId])

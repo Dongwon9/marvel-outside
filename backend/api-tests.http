@@ -93,7 +93,7 @@ GET {{baseUrl}}/posts?skip=0&take=10
 GET {{baseUrl}}/posts?orderBy=title
 
 ### Get post by ID
-GET {{baseUrl}}/posts/{{postId}}
+GET {{baseUrl}}/posts/ㅇㄴㄹㄴㅁㄹㄴㅁㄹ
 
 ### Create a new post
 # @name createPost

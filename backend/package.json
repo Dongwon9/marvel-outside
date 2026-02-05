@@ -19,8 +19,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:integration": "NODE_ENV=test jest --config jest.integration.cjs",
     "test:integration:watch": "NODE_ENV=test jest --config jest.integration.cjs --watch",
-    "test:all": "pnpm test && pnpm test:integration",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "NODE_ENV=test jest --config jest-e2e.json --forceExit",
+    "test:e2e:watch": "NODE_ENV=test jest --config jest-e2e.json --watch",
+    "test:e2e:cov": "NODE_ENV=test jest --config jest-e2e.json --coverage",
+    "test:all": "pnpm test && pnpm test:integration && pnpm test:e2e",
     "db:push:dev": "NODE_ENV=development prisma db push",
     "db:reset:dev": "NODE_ENV=development prisma migrate reset --force",
     "db:seed": "NODE_ENV=development pnpx tsx prisma/seed.ts"

@@ -2,21 +2,21 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import AppLayout from "../components/layout/AppLayout";
-import { ProtectedRoute } from "../components/ProtectedRoute";
+import AppLayout from "@/components/layout/AppLayout";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-const Home = lazy(() => import("../pages/Home"));
-const Login = lazy(() => import("../pages/Login"));
-const Signup = lazy(() => import("../pages/Signup"));
-const Feed = lazy(() => import("../pages/Feed"));
-const PostList = lazy(() => import("../pages/PostList"));
-const PostEditor = lazy(() => import("../pages/PostEditor"));
-const PostView = lazy(() => import("../pages/PostView"));
-const UserProfile = lazy(() => import("../pages/UserProfile"));
-const Settings = lazy(() => import("../pages/Settings"));
-const BoardList = lazy(() => import("../pages/BoardList"));
-const BoardView = lazy(() => import("../pages/BoardView"));
-const NotFound = lazy(() => import("../pages/NotFound"));
+const Home = lazy(() => import("@/pages/Home"));
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const Feed = lazy(() => import("@/pages/Feed"));
+const PostList = lazy(() => import("@/pages/PostList"));
+const PostEditor = lazy(() => import("@/pages/PostEditor"));
+const PostView = lazy(() => import("@/pages/PostView"));
+const UserProfile = lazy(() => import("@/pages/UserProfile"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const BoardList = lazy(() => import("@/pages/BoardList"));
+const BoardView = lazy(() => import("@/pages/BoardView"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +53,7 @@ export const router = createBrowserRouter([
         path: "/board/:id",
         element: <BoardView />,
       },
+      { path: "/not-found", element: <NotFound /> },
       { path: "*", element: <NotFound /> },
     ],
   },

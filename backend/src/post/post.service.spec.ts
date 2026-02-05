@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -88,20 +88,10 @@ describe('PostService', () => {
       });
     });
 
-    it('returns null when not found', async () => {
+    it('Throws exception when not found', async () => {
       prismaMock.post.findUnique.mockResolvedValue(null);
 
-      const result = await service.post('missing');
-
-      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
-        where: { id: 'missing' },
-        include: {
-          rates: { omit: { postId: true } },
-          author: { select: { name: true } },
-          board: { select: { name: true } },
-        },
-      });
-      expect(result).toBeNull();
+      await expect(service.post('missing')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -485,11 +475,11 @@ describe('PostService', () => {
       expect(result).toEqual({ likeCount: 2, dislikeCount: 0 });
     });
 
-    it('throws BadRequestException when post not found', async () => {
+    it('throws NotFoundException when post not found', async () => {
       const postId = 'missing-post';
       prismaMock.post.findUnique.mockResolvedValue(null);
 
-      await expect(service.getPostRatings(postId)).rejects.toThrow(BadRequestException);
+      await expect(service.getPostRatings(postId)).rejects.toThrow(NotFoundException);
       await expect(service.getPostRatings(postId)).rejects.toThrow('Post not found');
       expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
         where: { id: postId },

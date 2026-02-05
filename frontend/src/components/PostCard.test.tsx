@@ -1,13 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import type { PostResponse } from "../api/posts";
 import { formatRelativeTime } from "../utils/time";
 
 import PostCard from "./PostCard";
-vi.mock("../utils/time", () => ({
-  formatRelativeTime: vi.fn((date: string) => {
+jest.mock("../utils/time", () => ({
+  formatRelativeTime: jest.fn((date: string) => {
     // 테스트용 간단한 포맷팅
     if (date.includes("2024-01-01")) return "1일 전";
     if (date.includes("2024-01-02")) return "2일 전";
@@ -45,7 +44,7 @@ describe("PostCard", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("card variant (기본값)", () => {
@@ -167,7 +166,7 @@ describe("PostCard", () => {
     });
 
     it("updatedAt이 없을 때 createdAt을 사용해야 한다", () => {
-      vi.clearAllMocks();
+      jest.clearAllMocks();
       renderPostCard({
         variant: "feed",
         createdAt: "2024-01-01T12:00:00Z",

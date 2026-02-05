@@ -22,15 +22,17 @@ done
 
 echo "Database is ready!"
 
-# Run Prisma migrations
+# Run Prisma migrations (use workspace filter to ensure backend's prisma is used)
 echo "Running Prisma migrations..."
-pnpm prisma migrate deploy || {
+pnpx prisma migrate deploy || {
   echo "Migration failed, attempting reset for development..."
-  pnpm prisma migrate reset --force || exit 1
+  pnpx prisma migrate reset --force || exit 1
 }
-
 echo "Migrations completed successfully!"
-
-# Start the NestJS development server
+echo "Seeding database..."
+pnpx prisma db seed || {
+  echo "Database seeding failed! Dadabase will be empty."
+}
+# Start the NestJS development server (run within backend workspace)
 echo "Starting NestJS development server..."
-exec pnpm run start:dev
+exec pnpm -F backend run start:dev

@@ -34,16 +34,10 @@ export class PostController {
     return this.postService.posts(queryDto);
   }
 
-  @Get(':userId')
+  @Get('feed/:userId')
   @Public()
   async getPostsForFeed(@Param('userId') userId: string): Promise<PostResponseDto[]> {
     return this.postService.postsForFeed(userId);
-  }
-
-  @Get(':id')
-  @Public()
-  async getPostById(@Param('id') id: string): Promise<PostResponseDto | null> {
-    return this.postService.post(id);
   }
 
   @Post()
@@ -70,15 +64,21 @@ export class PostController {
     await this.postService.deletePost(id);
   }
 
-  @Patch(':id/hits')
-  async incrementPostHits(@Param('id') id: string): Promise<PostResponseDto> {
-    return this.postService.incrementHits(id);
-  }
-
   @Get('rating/:id')
   async getPostRating(
     @Param('id') id: string,
   ): Promise<{ likeCount: number; dislikeCount: number }> {
     return this.postService.getPostRatings(id);
+  }
+
+  @Get(':id')
+  @Public()
+  async getPostById(@Param('id') id: string): Promise<PostResponseDto> {
+    return this.postService.post(id);
+  }
+
+  @Patch(':id/hits')
+  async incrementPostHits(@Param('id') id: string): Promise<PostResponseDto> {
+    return this.postService.incrementHits(id);
   }
 }

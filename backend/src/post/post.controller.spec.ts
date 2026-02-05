@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CreatePostDto } from './dto/create-post.dto';
@@ -107,14 +108,12 @@ describe('PostController', () => {
       expect(service.post).toHaveBeenCalledTimes(1);
     });
 
-    it('should return null if post not found', async () => {
+    it('should throw NotFoundException if post not found', async () => {
       const postId = 'non-existent';
 
-      mockPostService.post.mockResolvedValue(null);
+      mockPostService.post.mockRejectedValue(new NotFoundException('Post not found'));
 
-      const result = await controller.getPostById(postId);
-
-      expect(result).toBeNull();
+      await expect(controller.getPostById(postId)).rejects.toThrow(NotFoundException);
       expect(service.post).toHaveBeenCalledWith(postId);
     });
   });

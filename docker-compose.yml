@@ -10,6 +10,7 @@ services:
     command: pnpm run start:dev
     ports:
       - "3000:3000"
+      - "8000:8000" #디버그용
     env_file:
       - ./backend/.env.development
     environment:
@@ -23,6 +24,7 @@ services:
     volumes:
       - ./backend:/workspace/backend
       - backend_node_modules:/workspace/backend/node_modules
+      - ./package.json:/workspace/package.json:ro
       - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
       - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
       - ./backend/scripts/docker-entrypoint.sh:/workspace/docker-entrypoint.sh
@@ -41,7 +43,7 @@ services:
       dockerfile: frontend/Dockerfile.dev
     container_name: marvel_frontend_dev
     working_dir: /workspace/frontend
-    command: pnpm run start:dev
+    command: pnpm -F frontend run start:dev
     ports:
       - "5173:5173"
     environment:
@@ -53,6 +55,7 @@ services:
     volumes:
       - ./frontend:/workspace/frontend
       - frontend_node_modules:/workspace/frontend/node_modules
+      - ./package.json:/workspace/package.json:ro
       - ./pnpm-lock.yaml:/workspace/pnpm-lock.yaml:ro
       - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
     depends_on:

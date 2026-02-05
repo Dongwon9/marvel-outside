@@ -2,18 +2,14 @@ import { ChevronLeft, MoreVertical, User, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-import {
-  getPostById,
-  deletePost,
-  increasePostViews,
-  type PostResponse,
-} from "../api/posts";
-import { getRateByPostAndUserId, type RateResponse } from "../api/rates";
-import CommentList from "../components/CommentList";
-import MarkdownRenderer from "../components/MarkdownRenderer";
-import RateButtons from "../components/RateButtons";
-import { useAuth } from "../hooks/useAuth";
-import { formatRelativeTime } from "../utils/time";
+import { ApiError } from "@/api/errors";
+import { getPostById, deletePost, type PostResponse } from "@/api/posts";
+import { getRateByPostAndUserId, type RateResponse } from "@/api/rates";
+import CommentList from "@/components/CommentList";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import RateButtons from "@/components/RateButtons";
+import { useAuth } from "@/hooks/useAuth";
+import { formatRelativeTime } from "@/utils/time";
 
 export default function PostView() {
   const { id } = useParams();
@@ -48,24 +44,29 @@ export default function PostView() {
 
   useEffect(() => {
     if (!id) {
-      alert("잘못된 접근입니다.");
-      void navigate("/post");
+      void navigate("/not-found", { replace: true });
       return;
     }
 
     async function fetchPost() {
       try {
         const data = await getPostById(id as string);
+        if (!data) {
+          setPost(null);
+          void navigate("/not-found", { replace: true });
+          return;
+        }
+
         setPost(data);
         setLikes(data.likes);
         setDislikes(data.dislikes);
 
-        // 조회수 증가
-        try {
-          await increasePostViews(id as string);
-        } catch {
-          // 조회수 증가 실패는 무시
-        }
+        // // 조회수 증가
+        // try {
+        //   await increasePostViews(id as string);
+        // } catch {
+        //   // 조회수 증가 실패는 무시
+        // }
 
         // 사용자의 평가 조회 (현재 사용자가 로그인했다면)
         try {
@@ -80,6 +81,11 @@ export default function PostView() {
           // 평가가 없으면 무시
         }
       } catch (err) {
+        if (err instanceof ApiError && err.statusCode === 404) {
+          void navigate("/not-found", { replace: true });
+          return;
+        }
+
         console.error("Failed to fetch post:", err);
         alert("게시글을 불러올 수 없습니다.");
         void navigate("/post");
@@ -142,15 +148,18 @@ export default function PostView() {
             <h1 className="text-primary flex-1 text-xl font-bold md:text-2xl lg:text-3xl">
               {post.title}
             </h1>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => void handleDeletePost()}
-                disabled={isDeleting}
-                className="text-tertiary rounded-lg px-3 py-2 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
-              >
-                <MoreVertical className="h-6 w-6" />
-              </button>
-            </div>
+            {user?.id === post.authorId && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => void handleDeletePost()}
+                  disabled={isDeleting}
+                  aria-label="게시글 삭제"
+                  className="text-tertiary rounded-lg px-3 py-2 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
+                >
+                  <MoreVertical className="h-6 w-6" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Meta Info */}

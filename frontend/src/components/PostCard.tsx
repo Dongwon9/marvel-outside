@@ -28,42 +28,44 @@ export default function PostCard({ variant = "card", ...item }: PostCardProps) {
 
   if (variant === "feed") {
     return (
-      <article className="card-elevated card-padding-md">
-        {/* Author Info */}
-        <div className="author-section">
-          <div className="author-avatar">{authorAvatar || "👤"}</div>
-          <div className="author-info">
-            <h3 className="author-name">{authorName}</h3>
-            <p className="author-meta">
-              {boardName}, {relativeUpdatedAt}
-            </p>
+      <Link to={`/post/${id}`} className="block hover:underline">
+        <article className="card-elevated card-padding-md">
+          {/* Author Info */}
+          <div className="author-section">
+            <div className="author-avatar">{authorAvatar || "👤"}</div>
+            <div className="author-info">
+              <h3 className="author-name">{authorName}</h3>
+              <p className="author-meta">
+                {boardName}, {relativeUpdatedAt}
+              </p>
+            </div>
+            <button className="text-gray-400 hover:text-gray-600">
+              <MoreVertical className="h-5 w-5 md:h-6 md:w-6" />
+            </button>
           </div>
-          <button className="text-gray-400 hover:text-gray-600">
-            <MoreVertical className="h-5 w-5 md:h-6 md:w-6" />
-          </button>
-        </div>
 
-        {/* Content */}
-        <h4 className="mb-2 text-base font-semibold md:text-lg">
-          {item.title}
-        </h4>
-        <p className="text-tertiary mb-4 md:text-base">{item.content}</p>
+          {/* Content */}
+          <h4 className="mb-2 text-base font-semibold md:text-lg">
+            {item.title}
+          </h4>
+          <p className="text-tertiary mb-4 md:text-base">{item.content}</p>
 
-        {/* Actions */}
-        <div className="border-top-light flex items-center gap-4 pt-4 md:gap-6">
-          <button className="action-icon-button">
-            <ThumbsUp className="h-5 w-5" />
-            <span>{item.likes}</span>
-          </button>
-          <button className="action-icon-button">
-            <MessageCircle className="h-5 w-5" />
-          </button>
-          <button className="action-icon-button ml-auto">
-            <Share2 className="h-5 w-5" />
-            <span className="hidden sm:inline">공유</span>
-          </button>
-        </div>
-      </article>
+          {/* Actions */}
+          <div className="border-top-light flex items-center gap-4 pt-4 md:gap-6">
+            <button className="action-icon-button">
+              <ThumbsUp className="h-5 w-5" />
+              <span>{item.likes}</span>
+            </button>
+            <button className="action-icon-button">
+              <MessageCircle className="h-5 w-5" />
+            </button>
+            <button className="action-icon-button ml-auto">
+              <Share2 className="h-5 w-5" />
+              <span className="hidden sm:inline">공유</span>
+            </button>
+          </div>
+        </article>
+      </Link>
     );
   }
 

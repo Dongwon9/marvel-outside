@@ -1,23 +1,22 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import * as commentsApi from "../api/comments";
 
 import CommentForm from "./CommentForm";
 
-vi.mock("@/api/comments", () => ({
-  createComment: vi.fn(),
-  updateComment: vi.fn(),
+jest.mock("@/api/comments", () => ({
+  createComment: jest.fn(),
+  updateComment: jest.fn(),
 }));
 
 describe("CommentForm", () => {
-  const mockOnSuccess = vi.fn();
-  const mockOnCancel = vi.fn();
+  const mockOnSuccess = jest.fn();
+  const mockOnCancel = jest.fn();
   const postId = "post-123";
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("폼과 버튼을 렌더링해야 한다", () => {
@@ -53,7 +52,7 @@ describe("CommentForm", () => {
 
   it("정상 입력으로 제출 시 API를 호출해야 한다", async () => {
     const user = userEvent.setup();
-    vi.mocked(commentsApi.createComment).mockResolvedValue({
+    jest.mocked(commentsApi.createComment).mockResolvedValue({
       content: "테스트 댓글",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -79,7 +78,7 @@ describe("CommentForm", () => {
 
   it("API 호출 성공 시 onSuccess 콜백을 호출해야 한다", async () => {
     const user = userEvent.setup();
-    vi.mocked(commentsApi.createComment).mockResolvedValue({
+    jest.mocked(commentsApi.createComment).mockResolvedValue({
       content: "테스트 댓글",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -103,7 +102,7 @@ describe("CommentForm", () => {
 
   it("API 호출 실패 시 에러 메시지를 표시해야 한다", async () => {
     const user = userEvent.setup();
-    vi.mocked(commentsApi.createComment).mockRejectedValue(
+    jest.mocked(commentsApi.createComment).mockRejectedValue(
       new Error("네트워크 에러"),
     );
 
@@ -123,7 +122,7 @@ describe("CommentForm", () => {
   it("로딩 중에 textarea가 disabled되어야 한다", async () => {
     const user = userEvent.setup();
 
-    vi.mocked(commentsApi.createComment).mockImplementation(
+    jest.mocked(commentsApi.createComment).mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100)),
     );
 
@@ -142,7 +141,7 @@ describe("CommentForm", () => {
 
   it("isEdit이 true일 때 updateComment를 호출해야 한다", async () => {
     const user = userEvent.setup();
-    vi.mocked(commentsApi.updateComment).mockResolvedValue({
+    jest.mocked(commentsApi.updateComment).mockResolvedValue({
       content: "수정된 댓글",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -204,7 +203,7 @@ describe("CommentForm", () => {
 
   it("전송 성공 후 입력창이 초기화되어야 한다", async () => {
     const user = userEvent.setup();
-    vi.mocked(commentsApi.createComment).mockResolvedValue({
+    jest.mocked(commentsApi.createComment).mockResolvedValue({
       content: "테스트 댓글",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

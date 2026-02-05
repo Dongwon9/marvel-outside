@@ -19,7 +19,7 @@ export default function HeaderDesktop() {
           {/* Desktop Navigation */}
           <nav className="flex items-center gap-6 text-base">
             <Link
-              to="/board"
+              to="/boards"
               className="font-medium transition-colors hover:text-blue-600"
             >
               게시판 목록

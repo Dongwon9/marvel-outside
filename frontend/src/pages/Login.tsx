@@ -29,9 +29,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      void navigate(-1);
+      const state = location.state as LocationState | null;
+      const from = state?.from?.pathname ?? "/";
+      void navigate(from, { replace: true });
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, location.state, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, value, checked } = e.currentTarget;
@@ -60,7 +62,7 @@ export default function LoginPage() {
 
       const state = location.state as LocationState | null;
       const from = state?.from?.pathname ?? "/";
-      void navigate(from);
+      void navigate(from, { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

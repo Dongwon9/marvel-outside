@@ -7,8 +7,10 @@ WORKDIR /workspace
 RUN corepack enable && \
   mkdir -p /workspace
 
-# Copy workspace configuration and lock file from root
-COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+# Copy workspace files for pnpm monorepo
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
+COPY package.json ./
 
 # Copy frontend package.json
 COPY frontend/package.json ./frontend/

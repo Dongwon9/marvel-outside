@@ -1,10 +1,10 @@
+import { ClipboardList, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ClipboardList, FileText } from "lucide-react";
 
-import { formatRelativeTime } from "../utils/time";
 import { getBoardById, type Board } from "../api/boards";
 import { getPosts, type PostResponse } from "../api/posts";
+import { formatRelativeTime } from "../utils/time";
 
 export default function BoardView() {
   const { id } = useParams<{ id: string }>();

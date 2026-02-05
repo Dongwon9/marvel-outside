@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+
 import {
   getCommentsByPost,
   getMyComment,
   type CommentResponse,
 } from "../api/comments";
+import { useAuth } from "../context/AuthContextDef";
+
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
-import { useAuth } from "../context/AuthContextDef";
 
 interface CommentListProps {
   postId: string;

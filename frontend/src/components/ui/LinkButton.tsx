@@ -1,5 +1,5 @@
-import { Link, type LinkProps } from "react-router-dom";
 import type { ReactNode } from "react";
+import { Link, type LinkProps } from "react-router-dom";
 
 interface LinkButtonProps extends Omit<LinkProps, "className"> {
   variant?: "primary" | "secondary" | "danger" | "success" | "outline";

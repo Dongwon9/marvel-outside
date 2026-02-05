@@ -12,15 +12,17 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
+
+import { JwtAuthGuard } from '@/auth/auth.guard';
+import { CurrentUser } from '@/auth/decorators/current-user.decorator';
+import { Public } from '@/auth/decorators/public.decorator';
+import type { User } from '@/generated/prisma/client';
+
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
-import { JwtAuthGuard } from '@/auth/auth.guard';
-import { CurrentUser } from '@/auth/decorators/current-user.decorator';
-import { Public } from '@/auth/decorators/public.decorator';
-import type { User } from '@/generated/prisma/client';
 
 @Controller('posts')
 export class PostController {
@@ -37,7 +39,7 @@ export class PostController {
   async getPostsForFeed(@Param('userId') userId: string): Promise<PostResponseDto[]> {
     return this.postService.postsForFeed(userId);
   }
-  
+
   @Get(':id')
   @Public()
   async getPostById(@Param('id') id: string): Promise<PostResponseDto | null> {

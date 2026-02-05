@@ -1,9 +1,11 @@
 import crypto from 'crypto';
 import { resolve } from 'path';
+
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/auth.guard';
@@ -18,6 +20,14 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RateModule } from './rate/rate.module';
 import { RedisModule } from './redis/redis.module';
 import { UserModule } from './user/user.module';
+
+interface RequestWithContext {
+  headers?: Record<string, string | string[]>;
+  id?: string;
+  user?: {
+    id: string;
+  };
+}
 
 @Module({
   imports: [
@@ -43,9 +53,14 @@ import { UserModule } from './user/user.module';
               }
             : undefined,
         autoLogging: true,
-        genReqId: req => {
-          const headerId = req.headers['x-request-id'];
-          const id = Array.isArray(headerId) ? headerId[0] : headerId?.toString();
+        genReqId: (req: unknown) => {
+          const requestWithContext = req as RequestWithContext;
+          const headerId = requestWithContext.headers?.['x-request-id'];
+          const id = Array.isArray(headerId)
+            ? headerId[0]
+            : typeof headerId === 'string'
+              ? headerId
+              : undefined;
           return id ?? crypto.randomUUID();
         },
         redact: [
@@ -54,11 +69,11 @@ import { UserModule } from './user/user.module';
           'res.headers["set-cookie"]',
           'req.body.password',
         ],
-        customProps: req => {
-          const user = (req as any).user;
+        customProps: (req: unknown) => {
+          const requestWithContext = req as RequestWithContext;
           return {
-            reqId: (req as any).id,
-            userId: user?.id,
+            reqId: requestWithContext.id,
+            userId: requestWithContext.user?.id,
           };
         },
       },

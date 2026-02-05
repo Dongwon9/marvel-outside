@@ -1,21 +1,32 @@
 import crypto from 'crypto';
+
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+
 import { RequestContext } from './request-context';
+
+interface RequestWithContext extends Request {
+  user?: {
+    id: string;
+  };
+}
 
 @Injectable()
 export class RequestContextMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
-    const rawId = (req as any).id || req.headers['x-request-id'];
-    const reqId = Array.isArray(rawId) ? rawId[0] : (rawId as string | undefined);
+  use(req: RequestWithContext, res: Response, next: NextFunction): void {
+    const id = (req as unknown as Record<string, unknown>).id;
+    const headerXRequestId = req.headers['x-request-id'];
+    const rawId = typeof id === 'string' ? id : headerXRequestId;
+    const reqId = typeof rawId === 'string' ? rawId : Array.isArray(rawId) ? rawId[0] : undefined;
+    const finalReqId = typeof reqId === 'string' ? reqId : crypto.randomUUID();
     const store = {
-      reqId: reqId ?? crypto.randomUUID(),
-      userId: (req as any).user?.id,
+      reqId: finalReqId,
+      userId: req.user?.id,
       path: req.path,
       method: req.method,
     };
 
-    res.setHeader('X-Request-ID', store.reqId);
+    res.setHeader('X-Request-ID', finalReqId);
 
     RequestContext.run(store, () => {
       next();

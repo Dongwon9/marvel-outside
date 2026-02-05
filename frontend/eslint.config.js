@@ -13,6 +13,7 @@ export default [
       "dist/**",
       "node_modules/**",
       "eslint.config.js",
+      "vitest.config.ts",
       "vite.config.ts",
       "tailwind.config.js",
     ],
@@ -25,7 +26,7 @@ export default [
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2023,
       globals: globals.browser,
       parser: tseslint.parser,
       parserOptions: {
@@ -49,10 +50,21 @@ export default [
       /* Prettier */
       "prettier/prettier": "error",
 
-      /* TypeScript */
+      /* TypeScript - Strict Rules */
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/ban-ts-comment": [
+        "error",
+        {
+          "ts-expect-error": "allow-with-description",
+          "ts-ignore": "allow-with-description",
+        },
+      ],
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-empty-interface": "warn",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+
       /* Allow some `unknown`/runtime-checked usages without failing CI */
       "@typescript-eslint/no-unsafe-assignment": "warn",
       "@typescript-eslint/no-unsafe-member-access": "warn",
@@ -68,10 +80,26 @@ export default [
             "builtin",
             "external",
             "internal",
-            ["parent", "sibling", "index"],
+            "parent",
+            "sibling",
+            "index",
           ],
+          pathGroups: [
+            {
+              pattern: "@/**",
+              group: "internal",
+              position: "before",
+            },
+          ],
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+          "newlines-between": "always",
         },
       ],
+      "import/no-cycle": "warn",
+      "import/no-self-import": "error",
 
       /* Unused imports */
       "unused-imports/no-unused-imports": "error",

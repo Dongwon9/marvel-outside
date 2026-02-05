@@ -1,5 +1,5 @@
-import { use } from "react";
 import { Newspaper } from "lucide-react";
+import { use } from "react";
 
 import { getPosts } from "../api/posts";
 import PostCard from "../components/PostCard";

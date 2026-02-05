@@ -1,6 +1,6 @@
 import MarkdownPreview from "@uiw/react-markdown-preview";
-import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import rehypeSanitize from "rehype-sanitize";
 
 interface MarkdownRendererProps {
   content: string;

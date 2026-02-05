@@ -3,11 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
+
 import { AppModule } from '../src/app.module';
 import { AuthService } from '../src/auth/auth.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { RedisService } from '../src/redis/redis.service';
 import { UserService } from '../src/user/user.service';
+
 import { IsolatedPrismaService } from './db-isolation';
 import { UserFactory } from './factories/user.factory';
 import { redisStoreMock, mockRedisService } from './mocks/redis.mock';

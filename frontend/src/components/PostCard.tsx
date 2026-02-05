@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { MoreVertical, ThumbsUp, MessageCircle, Share2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import type { PostResponse } from "../api/posts";
 import { formatRelativeTime } from "../utils/time";

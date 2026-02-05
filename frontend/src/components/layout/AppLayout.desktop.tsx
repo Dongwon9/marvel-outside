@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
-import { LoadingSkeleton } from "../LoadingSkeleton";
-import HeaderDesktop from "./Header.desktop";
 import { useAuth } from "../../hooks/useAuth";
+import { LoadingSkeleton } from "../LoadingSkeleton";
+
+import HeaderDesktop from "./Header.desktop";
 
 export default function AppLayoutDesktop() {
   const { isLoading } = useAuth();

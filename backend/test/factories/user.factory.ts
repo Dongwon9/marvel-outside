@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+
 import { CreateUserDto } from '../../src/user/dto/create-user.dto';
 
 /**

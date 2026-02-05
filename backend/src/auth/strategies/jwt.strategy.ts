@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
 import type { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { UserResponseDto } from '../../user/dto/user-response.dto';
 import { UserService } from '../../user/user.service';
 
@@ -21,8 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         // 1순위: httpOnly 쿠키에서 추출
         (request: Request) => {
-          const token = request?.cookies?.accessToken;
-          return token || null;
+          const token = (request?.cookies as Record<string, unknown>)?.accessToken;
+          return typeof token === 'string' ? token : null;
         },
         // 2순위: Authorization 헤더에서 추출 (하위 호환성)
         ExtractJwt.fromAuthHeaderAsBearerToken(),

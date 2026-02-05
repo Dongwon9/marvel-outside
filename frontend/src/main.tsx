@@ -3,10 +3,12 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import "./index.css";
-import { router } from "./router/AppRouter";
 import { AuthProvider } from "./context/AuthContext";
+import { router } from "./router/AppRouter";
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Root element not found");
+createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
       <RouterProvider router={router} />

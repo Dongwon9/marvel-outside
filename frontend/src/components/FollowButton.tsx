@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import { UserPlus, UserMinus } from "lucide-react";
+import { useEffect, useState } from "react";
 
+import { ApiError } from "../api/errors";
 import {
   followUser,
   unfollowUser,
@@ -11,7 +12,6 @@ import {
   type UserBasicInfo,
   type FollowStatsResponse,
 } from "../api/follows";
-import { ApiError } from "../api/errors";
 
 interface FollowButtonProps {
   userId: string;

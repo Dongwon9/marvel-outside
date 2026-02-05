@@ -1,13 +1,13 @@
-import { useState } from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { useState } from "react";
 
+import { ApiError } from "../api/errors";
 import {
   createRate,
   deleteRate,
   updateRate,
   type RateResponse,
 } from "../api/rates";
-import { ApiError } from "../api/errors";
 import { useAuth } from "../hooks/useAuth";
 
 interface RateButtonsProps {

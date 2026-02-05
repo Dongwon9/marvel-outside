@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
-import SearchBar from "../searchbar";
 import HeaderRight from "../Header-right";
+import SearchBar from "../searchbar";
 
 export default function HeaderDesktop() {
   return (

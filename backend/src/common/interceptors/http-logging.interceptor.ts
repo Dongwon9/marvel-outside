@@ -3,13 +3,14 @@ import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+
 import { RequestContext } from '../request-context/request-context';
 
 @Injectable()
 export class HttpLoggingInterceptor implements NestInterceptor {
   constructor(private readonly logger: PinoLogger) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
     const startTime = Date.now();
@@ -38,6 +39,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
           const durationMs = Date.now() - startTime;
           const statusCode = response.statusCode || 500;
           const ctx = RequestContext.get();
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
           this.logger.error({
             msg: 'http.error',
@@ -47,7 +49,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
             path,
             statusCode,
             durationMs,
-            error: error.message,
+            error: errorMessage,
           });
         },
       }),

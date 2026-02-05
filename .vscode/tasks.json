@@ -14,6 +14,13 @@
       "script": "lint:be",
       "problemMatcher": "$eslint-stylish",
       "group": "build"
+    },
+    {
+      "label": "Linting:all",
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": "$eslint-stylish",
+      "group": "build"
     }
   ]
 }

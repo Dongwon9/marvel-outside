@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import { deleteComment, type CommentResponse } from "../api/comments";
-import CommentForm from "./CommentForm";
 import { useAuth } from "../context/AuthContextDef";
+
+import CommentForm from "./CommentForm";
 
 interface CommentItemProps {
   comment: CommentResponse;

@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 
 class AuthorDto {
   @IsString()

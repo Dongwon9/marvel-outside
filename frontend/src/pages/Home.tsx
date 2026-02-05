@@ -1,8 +1,8 @@
 import { use } from "react";
 
 import { getPosts } from "../api/posts";
-import { Section } from "../components/ui";
 import PostCard from "../components/PostCard";
+import { Section } from "../components/ui";
 import { useAuth } from "../hooks/useAuth";
 
 const feedDataPromise = getPosts({ take: 5 });

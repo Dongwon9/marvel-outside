@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { UserResponseDto } from '@/user/dto/user-response.dto';
+
 import { CreateFollowDto } from './dto/create-follow.dto';
 import { FollowResponseDto } from './dto/follow-response.dto';
 import { GetFollowersQueryDto } from './dto/get-followers-query.dto';
 import { FollowController } from './follow.controller';
 import { FollowService } from './follow.service';
-import { UserResponseDto } from '@/user/dto/user-response.dto';
 
 describe('FollowController', () => {
   let controller: FollowController;

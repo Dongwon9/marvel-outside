@@ -27,7 +27,7 @@ async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
 ### 테스트
 
 - **단위 테스트**: 소스 옆 `*.spec.ts` (예: `user.service.spec.ts`)
-- **통합 테스트**: `*.integration.spec.ts` (선택)
+- **통합 테스트**: `test/*.integration.spec.ts`
 - **E2E 테스트**: `test/` 디렉토리 `*.e2e-spec.ts`
 
 ```bash
@@ -91,8 +91,9 @@ export async function getUsers(): Promise<User[]> {
 ## Docker 개발 환경
 
 ```bash
-docker compose up --build    # 백엔드(3000), 프론트엔드(5173), DB, Redis 시작
+docker compose up  # 백엔드(3000), 프론트엔드(5173), DB, Redis 시작
 docker compose down          # 중지
+docker compose up --build  # 재빌드 후 시작
 ```
 
 ## 하지 말 것
@@ -111,6 +112,9 @@ docker compose down          # 중지
 - 이름으로 선언하는 모든 함수 본문은 2줄 이상일 것
 - 모든 api호출은 axios 이용할 것
 - agent 모드 코딩시, 필요한 경우 외부 라이브러리/종속성 사용을 허용함
+- 로컬 모듈을 import할 때는 @를 포함한 절대경로 사용 (예: `import { X } from '@/src/module'`)
+- eslint.config.js, tsconfig.json, prettier.config.js 참고하여, 경고/오류 없도록 코딩할 것
 
 ## 기타 알아야할 사항
+
 - 개발서버는 docker compose로 항상 실행되어있는 상태에서 개발함.

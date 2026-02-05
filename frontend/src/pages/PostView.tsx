@@ -1,10 +1,7 @@
+import { ChevronLeft, MoreVertical, User, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, MoreVertical, User, Share2 } from "lucide-react";
 
-import MarkdownRenderer from "../components/MarkdownRenderer";
-import RateButtons from "../components/RateButtons";
-import CommentList from "../components/CommentList";
 import {
   getPostById,
   deletePost,
@@ -12,8 +9,11 @@ import {
   type PostResponse,
 } from "../api/posts";
 import { getRateByPostAndUserId, type RateResponse } from "../api/rates";
-import { formatRelativeTime } from "../utils/time";
+import CommentList from "../components/CommentList";
+import MarkdownRenderer from "../components/MarkdownRenderer";
+import RateButtons from "../components/RateButtons";
 import { useAuth } from "../hooks/useAuth";
+import { formatRelativeTime } from "../utils/time";
 
 export default function PostView() {
   const { id } = useParams();
@@ -185,16 +185,18 @@ export default function PostView() {
         {/* Actions */}
         <div className="border-t border-gray-200 p-4 md:p-6">
           <div className="flex items-center justify-between gap-4">
-            <RateButtons
-              postId={id!}
-              initialLikes={likes}
-              initialDislikes={dislikes}
-              userRate={userRate}
-              onRateChange={(newLikes, newDislikes) => {
-                setLikes(newLikes);
-                setDislikes(newDislikes);
-              }}
-            />
+            {id && (
+              <RateButtons
+                postId={id}
+                initialLikes={likes}
+                initialDislikes={dislikes}
+                userRate={userRate}
+                onRateChange={(newLikes, newDislikes) => {
+                  setLikes(newLikes);
+                  setDislikes(newDislikes);
+                }}
+              />
+            )}
             <button className="text-tertiary hover:text-primary flex items-center gap-1.5 px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5">
               <Share2 className="h-5 w-5" />
               <span className="hidden text-sm sm:inline md:text-base">

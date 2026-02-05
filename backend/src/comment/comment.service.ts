@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+
+import { PrismaService } from '@/prisma/prisma.service';
+
 import { CommentResponseDto } from './dto/comment-response.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class CommentService {
@@ -43,7 +44,6 @@ export class CommentService {
   }
 
   async findAllByPost(postId: string): Promise<CommentResponseDto[]> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const comments = await this.prisma.comment.findMany({
       where: { postId },
       include: {

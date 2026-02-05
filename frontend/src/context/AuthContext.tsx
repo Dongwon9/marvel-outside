@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
 
 import { getMe, logout as logoutApi, type MeResponse } from "../api/auth";
+
 import { AuthContext, type AuthContextType } from "./AuthContextDef";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -48,3 +49,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+export { AuthContext };

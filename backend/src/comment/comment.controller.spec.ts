@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { PrismaService } from '@/prisma/prisma.service';
+
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
-import { PrismaService } from '@/prisma/prisma.service';
 
 describe('CommentController', () => {
   let controller: CommentController;

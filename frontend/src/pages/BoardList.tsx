@@ -1,10 +1,10 @@
+import { BookOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen } from "lucide-react";
 
+import { getBoards, createBoard, type Board } from "../api/boards";
 import { Button } from "../components/ui";
 import Section from "../components/ui/Section";
-import { getBoards, createBoard, type Board } from "../api/boards";
 
 export default function BoardList() {
   const [boards, setBoards] = useState<Board[]>([]);

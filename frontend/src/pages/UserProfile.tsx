@@ -1,5 +1,6 @@
-import { Link, useParams } from "react-router-dom";
 import { ThumbsUp, MessageCircle } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+
 import { formatRelativeTime } from "../utils/time";
 
 export default function UserProfile() {

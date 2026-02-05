@@ -1,11 +1,11 @@
+import { FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FileText } from "lucide-react";
 
+import { getPosts, type PostResponse } from "../api/posts";
 import PostCard from "../components/PostCard";
 import LinkButton from "../components/ui/LinkButton";
 import Section from "../components/ui/Section";
-import { getPosts, type PostResponse } from "../api/posts";
 
 export default function PostList() {
   const [posts, setPosts] = useState<PostResponse[]>([]);

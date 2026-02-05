@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Edit2, Trash2, X } from "lucide-react";
+import { useState } from "react";
 
 import { updateBoard, deleteBoard, type Board } from "../api/boards";
 import { ApiError } from "../api/errors";

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+
 import { RequestContext } from '../common/request-context/request-context';
 import { PrismaClient } from '../generated/prisma/client';
 

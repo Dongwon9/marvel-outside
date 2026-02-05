@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
-import { LoadingSkeleton } from "../LoadingSkeleton";
-import HeaderMobile from "./Header.mobile";
 import { useAuth } from "../../hooks/useAuth";
+import { LoadingSkeleton } from "../LoadingSkeleton";
+
+import HeaderMobile from "./Header.mobile";
 
 export default function AppLayoutMobile() {
   const { isLoading } = useAuth();

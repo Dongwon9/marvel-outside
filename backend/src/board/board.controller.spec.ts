@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PrismaService } from '../prisma/prisma.service';
+
 import { BoardController } from './board.controller';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { getPostById, createPost, updatePost } from "../api/posts";
 import { getBoards } from "../api/boards";
+import { getPostById, createPost, updatePost } from "../api/posts";
 import MarkdownEditor from "../components/MarkdownEditor";
 import { Button, Input } from "../components/ui";
 
@@ -57,10 +57,17 @@ export default function PostEditor() {
     setLoading(true);
 
     try {
-      const saved = isEditMode
-        ? await updatePost(postId!, form)
-        : await createPost(form);
+      if (isEditMode) {
+        if (!postId) {
+          alert("게시글 정보를 불러올 수 없습니다.");
+          return;
+        }
+        const saved = await updatePost(postId, form);
+        void navigate(`/post/${saved.id}`);
+        return;
+      }
 
+      const saved = await createPost(form);
       void navigate(`/post/${saved.id}`);
     } catch (err) {
       console.error("Save error:", err);

@@ -21,6 +21,51 @@
       "script": "lint",
       "problemMatcher": "$eslint-stylish",
       "group": "build"
+    },
+    {
+      "label": "Test:fe",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "--filter",
+        "frontend",
+        "test"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Test:be",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "--filter",
+        "backend",
+        "test"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Test:all (동시 실행)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "-r",
+        "test"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Test:fe (watch)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "--filter",
+        "frontend",
+        "test:watch"
+      ],
+      "isBackground": true,
+      "group": "test"
     }
   ]
 }

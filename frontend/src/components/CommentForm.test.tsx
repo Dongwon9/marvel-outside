@@ -102,9 +102,9 @@ describe("CommentForm", () => {
 
   it("API 호출 실패 시 에러 메시지를 표시해야 한다", async () => {
     const user = userEvent.setup();
-    jest.mocked(commentsApi.createComment).mockRejectedValue(
-      new Error("네트워크 에러"),
-    );
+    jest
+      .mocked(commentsApi.createComment)
+      .mockRejectedValue(new Error("네트워크 에러"));
 
     render(<CommentForm postId={postId} onSuccess={mockOnSuccess} />);
 
@@ -122,9 +122,11 @@ describe("CommentForm", () => {
   it("로딩 중에 textarea가 disabled되어야 한다", async () => {
     const user = userEvent.setup();
 
-    jest.mocked(commentsApi.createComment).mockImplementation(
-      () => new Promise((resolve) => setTimeout(resolve, 100)),
-    );
+    jest
+      .mocked(commentsApi.createComment)
+      .mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      );
 
     render(<CommentForm postId={postId} onSuccess={mockOnSuccess} />);
 

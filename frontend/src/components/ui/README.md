@@ -201,10 +201,97 @@ import { Section } from "@/components/ui";
 
 ---
 
+### Toast
+
+토스트 메시지 컴포넌트 - 사용자 피드백을 위해 화면의 우측 상단에 임시 알림을 표시합니다.
+
+**상태:**
+
+- 자동으로 3초 후 사라집니다 (duration을 통해 조정 가능)
+- 사용자가 수동으로 닫을 수 있습니다
+- 여러 토스트가 쌓일 수 있습니다
+
+**타입:**
+
+- `success` - 성공 메시지 (초록색)
+- `error` - 에러 메시지 (빨강색)
+- `info` - 정보 메시지 (파란색)
+- `warning` - 경고 메시지 (노란색)
+
+**사용 예시:**
+
+```tsx
+import { useToast } from "@/hooks/useToast";
+
+export default function MyComponent() {
+  const { addToast } = useToast();
+
+  const handleSuccess = () => {
+    addToast("저장되었습니다", "success");
+  };
+
+  const handleError = () => {
+    addToast("오류가 발생했습니다", "error");
+  };
+
+  const handleWarning = () => {
+    // 5초 후 자동으로 사라집니다
+    addToast("주의: 이 작업은 되돌릴 수 없습니다", "warning", 5000);
+  };
+
+  const handlePermanent = () => {
+    // 영구적으로 유지됩니다 (사용자가 수동으로 닫아야 함)
+    addToast("중요한 메시지입니다", "info", 0);
+  };
+
+  return (
+    <>
+      <button onClick={handleSuccess}>성공</button>
+      <button onClick={handleError}>에러</button>
+      <button onClick={handleWarning}>경고</button>
+      <button onClick={handlePermanent}>영구 메시지</button>
+    </>
+  );
+}
+```
+
+**API:**
+
+```tsx
+const { addToast, removeToast, toasts } = useToast();
+
+// addToast(message, type?, duration?)
+// - message: 표시할 메시지 (필수)
+// - type: "success" | "error" | "info" | "warning" (기본값: "info")
+// - duration: 자동으로 닫힐 시간(ms), 0이면 영구적 (기본값: 3000)
+// 반환값: 토스트의 고유 ID
+
+// removeToast(id)
+// - 특정 토스트를 수동으로 제거
+
+// toasts
+// - 현재 표시 중인 모든 토스트 배열
+```
+
+**주의:**
+
+- Toast 컴포넌트는 이미 App에 포함되어 있습니다
+- 토스트를 사용하려면 ToastProvider 내에 있어야 하며, App과 라우터 이전에 설정되어 있습니다
+
+---
+
 ## 일괄 Import
 
 ```tsx
-import { Button, Card, Input, IconButton, Section } from "@/components/ui";
+import {
+  Button,
+  Card,
+  Input,
+  IconButton,
+  Section,
+  Toast,
+} from "@/components/ui";
+import { useToast } from "@/hooks/useToast";
 ```
 
 ## 스타일 커스터마이징

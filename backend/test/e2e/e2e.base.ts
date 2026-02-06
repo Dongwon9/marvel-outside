@@ -98,7 +98,7 @@ export abstract class E2ETestBase {
           this.userCookies.set(key, match[1]);
         }
       }
-      
+
       // refreshToken 추출
       const refreshTokenCookie = setCookieHeaders.find(c => c.includes('refreshToken'));
       if (refreshTokenCookie) {
@@ -121,9 +121,7 @@ export abstract class E2ETestBase {
     if (!token) {
       throw new Error(`No accessToken found for user ${userEmail}`);
     }
-    return request(this.app.getHttpServer())
-      .get(path)
-      .set('Authorization', `Bearer ${token}`);
+    return request(this.app.getHttpServer()).get(path).set('Authorization', `Bearer ${token}`);
   }
 
   /**
@@ -134,9 +132,7 @@ export abstract class E2ETestBase {
     if (!token) {
       throw new Error(`No accessToken found for user ${userEmail}`);
     }
-    return request(this.app.getHttpServer())
-      .post(path)
-      .set('Authorization', `Bearer ${token}`);
+    return request(this.app.getHttpServer()).post(path).set('Authorization', `Bearer ${token}`);
   }
 
   /**
@@ -147,9 +143,7 @@ export abstract class E2ETestBase {
     if (!token) {
       throw new Error(`No accessToken found for user ${userEmail}`);
     }
-    return request(this.app.getHttpServer())
-      .put(path)
-      .set('Authorization', `Bearer ${token}`);
+    return request(this.app.getHttpServer()).put(path).set('Authorization', `Bearer ${token}`);
   }
 
   /**
@@ -160,9 +154,7 @@ export abstract class E2ETestBase {
     if (!token) {
       throw new Error(`No accessToken found for user ${userEmail}`);
     }
-    return request(this.app.getHttpServer())
-      .patch(path)
-      .set('Authorization', `Bearer ${token}`);
+    return request(this.app.getHttpServer()).patch(path).set('Authorization', `Bearer ${token}`);
   }
 
   /**
@@ -173,9 +165,7 @@ export abstract class E2ETestBase {
     if (!token) {
       throw new Error(`No accessToken found for user ${userEmail}`);
     }
-    return request(this.app.getHttpServer())
-      .delete(path)
-      .set('Authorization', `Bearer ${token}`);
+    return request(this.app.getHttpServer()).delete(path).set('Authorization', `Bearer ${token}`);
   }
 
   /**
@@ -183,11 +173,11 @@ export abstract class E2ETestBase {
    */
   async refreshToken(userEmail: string): Promise<{ status: number }> {
     const refreshToken = this.userCookies.get(`${userEmail}:refreshToken`);
-    
+
     if (!refreshToken) {
       throw new Error(`No refreshToken found for user ${userEmail}`);
     }
-    
+
     const response = await request(this.app.getHttpServer())
       .post('/auth/refresh')
       .send({ refreshToken });
@@ -204,7 +194,7 @@ export abstract class E2ETestBase {
             this.userCookies.set(key, match[1]);
           }
         }
-        
+
         const refreshTokenCookie = setCookieHeaders.find(c => c.includes('refreshToken'));
         if (refreshTokenCookie) {
           const match = refreshTokenCookie.match(/refreshToken=([^;]+)/);

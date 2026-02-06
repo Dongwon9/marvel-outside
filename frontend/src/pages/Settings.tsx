@@ -1,33 +1,50 @@
 import { ChevronRight } from "lucide-react";
 
 import { Button, Card, Section } from "../components/ui";
+import { useState } from "react";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
+function handleDelete() {}
 export default function Settings() {
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  function confirmDelete() {
+    setIsDeleteConfirmOpen(true);
+  }
+  <ConfirmDialog
+    isOpen={isDeleteConfirmOpen}
+    title="정말로 삭제하시겠습니까?"
+    description="작성한 게시글과 댓글은 남아있게 됩니다.\n 이 작업은 되돌릴 수 없습니다!!!"
+    confirmLabel="삭제!!!"
+    cancelLabel="취소"
+    onConfirm={handleDelete}
+    onCancel={() => {
+      setIsDeleteConfirmOpen(false);
+    }}
+  />;
   const settingsSections = [
     {
       title: "계정 설정",
       items: [
-        { label: "프로필 수정", icon: "👤" },
         { label: "비밀번호 변경", icon: "🔒" },
         { label: "이메일 변경", icon: "📧" },
       ],
     },
-    {
-      title: "알림 설정",
-      items: [
-        { label: "푸시 알림", icon: "🔔" },
-        { label: "이메일 알림", icon: "📨" },
-        { label: "좋아요 알림", icon: "❤️" },
-      ],
-    },
-    {
-      title: "개인정보 및 보안",
-      items: [
-        { label: "개인정보 처리방침", icon: "📜" },
-        { label: "차단한 사용자", icon: "🚫" },
-        { label: "로그인 기록", icon: "📋" },
-      ],
-    },
+    // {
+    //   title: "알림 설정",
+    //   items: [
+    //     { label: "푸시 알림", icon: "🔔" },
+    //     { label: "이메일 알림", icon: "📨" },
+    //     { label: "좋아요 알림", icon: "❤️" },
+    //   ],
+    // },
+    // {
+    //   title: "개인정보 및 보안",
+    //   items: [
+    //     { label: "개인정보 처리방침", icon: "📜" },
+    //     { label: "차단한 사용자", icon: "🚫" },
+    //     { label: "로그인 기록", icon: "📋" },
+    //   ],
+    // },
   ];
 
   return (
@@ -97,7 +114,12 @@ export default function Settings() {
                 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
               </p>
             </div>
-            <Button variant="danger" size="md" className="whitespace-nowrap">
+            <Button
+              onClick={() => void confirmDelete()}
+              variant="danger"
+              size="md"
+              className="whitespace-nowrap"
+            >
               계정 삭제
             </Button>
           </div>

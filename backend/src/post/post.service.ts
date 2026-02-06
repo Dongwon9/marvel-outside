@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -11,11 +10,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {
-  constructor(
-    @InjectPinoLogger(PostService.name)
-    private readonly logger: PinoLogger,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   private includeForDto = {
     rates: true,
@@ -63,7 +58,6 @@ export class PostService {
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-    console.log('post found: ', post);
     const { rates, author, board, ...postData } = post;
     const likeCount = post.rates.filter(rate => rate.isLike).length;
     const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
@@ -71,7 +65,6 @@ export class PostService {
     const boardName = board.name;
     const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
     const returnObj = plainToInstance(PostResponseDto, postWithCounts);
-    console.log('returnObj: ', returnObj);
     return returnObj;
   }
 

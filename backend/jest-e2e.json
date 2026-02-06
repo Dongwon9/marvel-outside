@@ -6,7 +6,13 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "collectCoverageFrom": ["**/*.(t|j)s"],
+  "transformIgnorePatterns": ["node_modules/(?!(@prisma/adapter-pg)/)"],
+  "collectCoverageFrom": [
+    "**/*.(t|j)s",
+    "!**/*.spec.ts",
+    "!**/*.integration.spec.ts",
+    "!**/node_modules/**"
+  ],
   "coverageDirectory": "../coverage/e2e",
   "testEnvironment": "node",
   "roots": ["<rootDir>", "<rootDir>/../test"],
@@ -16,5 +22,6 @@
   "globalSetup": "<rootDir>/../test/global-setup.js",
   "globalTeardown": "<rootDir>/../test/global-teardown.js",
   "testTimeout": 30000,
-  "forceExit": true
+  "forceExit": true,
+  "testPathIgnorePatterns": ["/node_modules/", "/.spec.ts$", "/.integration.spec.ts$"]
 }

@@ -1,23 +1,22 @@
-import { vi } from "vitest";
-
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 /**
  * Axios client mock 설정
  * 각 테스트에서 필요한 API 응답을 주입할 수 있습니다.
  *
  * 사용 예시:
  * ```tsx
- * vi.mocked(client.get).mockResolvedValue({
+ * (mockClient.get as jest.Mock).mockResolvedValue({
  *   status: 200,
  *   data: { id: 1, title: 'Test Post' }
  * });
  * ```
  */
 export const mockClient = {
-  get: vi.fn(),
-  post: vi.fn(),
-  put: vi.fn(),
-  patch: vi.fn(),
-  delete: vi.fn(),
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  patch: jest.fn(),
+  delete: jest.fn(),
 };
 
 /**

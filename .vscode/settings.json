@@ -3,5 +3,14 @@
     "jest.runMode": {
         "type": "on-save",
         "coverage": true
-    }
+    },
+    "jest.showCoverageOnLoad": false,
+    "jest.autoRun": "on-demand",
+    "jest.monorepo": {
+        "roots": [
+            "<rootFolder>/backend",
+            "<rootFolder>/frontend"
+        ]
+    },
+    "jest.jestCommandLine": "pnpx jest"
 }

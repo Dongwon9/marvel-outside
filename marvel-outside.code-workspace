@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "marvel-outside"
+		},
+		{
+			"name": "frontend",
+			"path": "marvel-outside/frontend"
+		},
+		{
+			"name": "backend",
+			"path": "marvel-outside/backend"
+		}
+	],
+	"settings": {
+		"jest.runMode": "on-demand",
+		"jest.disabledWorkspaceFolders": [],
+		"jest.jestCommandLine": "pnpm jest",
+		"jest.monitorLongRunningTests": true,
+		"jest.rootPath": "./marvel-outside",
+		"jest.showTerminalOnFailure": true,
+		"jest.enableCodeLens": true,
+		"jest.enableSnapshotUpdateMessages": true,
+		"jest.enableInlineErrorMessages": true,
+		"files.watcherExclude": {
+			"**/node_modules/**": true,
+			"**/dist/**": true,
+			"**/coverage/**": true,
+			"**/.git/**": true,
+			"**/.next/**": true,
+			"**/build/**": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/dist": true,
+			"**/coverage": true,
+			"**/.git": true,
+			"prisma/migrations": true
+		}
+	}
+}

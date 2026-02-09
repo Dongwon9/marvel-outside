@@ -24,8 +24,8 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<UserResponseDto | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: String(id) },
+    const user = await this.prisma.user.findFirst({
+      where: { id: String(id), deletedAt: null },
     });
     if (!user) return null;
     return plainToInstance(UserResponseDto, user);
@@ -34,6 +34,7 @@ export class UserService {
   async getUsers(queryDto: GetUsersQueryDto): Promise<UserResponseDto[]> {
     const { skip, take, orderBy } = queryDto;
     const users = await this.prisma.user.findMany({
+      where: { deletedAt: null },
       skip,
       take,
       orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
@@ -42,22 +43,37 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    // Check if user already exists
-    const existingEmail = await this.prisma.user.findUnique({
-      where: { email: createUserDto.email },
+    const { email, name, password } = createUserDto;
+
+    // Check if user already exists and is active
+    const existingEmail = await this.prisma.user.findFirst({
+      where: { email, deletedAt: null },
     });
     if (existingEmail) {
       throw new ConflictException('User with this email already exists');
     }
+
+    // Check if there's a deleted user with the same email and restore them
+    const deletedUserWithEmail = await this.prisma.user.findFirst({
+      where: { email, deletedAt: { not: null } },
+    });
+    if (deletedUserWithEmail) {
+      const passwordHashed = await bcrypt.hash(password, 10);
+      const restoredUser = await this.prisma.user.update({
+        where: { id: deletedUserWithEmail.id },
+        data: { deletedAt: null, passwordHashed, name },
+      });
+      return plainToInstance(UserResponseDto, restoredUser);
+    }
+
     const existingName = await this.prisma.user.findUnique({
-      where: { name: createUserDto.name },
+      where: { name },
     });
     if (existingName) {
       throw new ConflictException('User with this name already exists');
     }
-    const { email, name, password } = createUserDto;
-    const passwordHashed = await bcrypt.hash(password, 10);
 
+    const passwordHashed = await bcrypt.hash(password, 10);
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -97,6 +113,14 @@ export class UserService {
     const user = await this.prisma.user.update({
       where: { id },
       data: { deletedAt: new Date() },
+    });
+    return plainToInstance(UserResponseDto, user);
+  }
+
+  async restoreUser(id: string): Promise<UserResponseDto> {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: { deletedAt: null },
     });
     return plainToInstance(UserResponseDto, user);
   }

@@ -4,7 +4,7 @@ export default {
   testEnvironment: "jsdom",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
-  setupFilesAfterEnv: ["<rootDir>/src/test.setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/test.setup.js"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
@@ -19,6 +19,8 @@ export default {
         tsconfig: {
           jsx: "react-jsx",
           esModuleInterop: true,
+          lib: ["ES2022", "DOM", "DOM.Iterable"],
+          types: ["jest", "@testing-library/jest-dom", "node"],
         },
       },
     ],
@@ -37,6 +39,14 @@ export default {
   globals: {
     "ts-jest": {
       isolatedModules: true,
+      // https://github.com/kulshekhar/ts-jest/issues/3940
+      tsconfig: {
+        jsx: "react-jsx",
+        esModuleInterop: true,
+        lib: ["ES2022", "DOM", "DOM.Iterable"],
+        types: ["jest", "@testing-library/jest-dom", "node"],
+        noUncheckedSideEffectImports: false,
+      },
     },
   },
 };

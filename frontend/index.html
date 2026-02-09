@@ -1,13 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>frontend</title>
+  <script>
+    // Set initial theme before React renders (prevents FOUC)
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+
+      // Force light mode for testing
+      const initialTheme = 'light';
+
+      console.log('[Init] Setting theme to:', initialTheme);
+      console.log('[Init] Before - classList:', Array.from(document.documentElement.classList));
+
+      // Remove dark class
+      document.documentElement.classList.remove('dark');
+
+      // Set light mode
+      document.documentElement.style.colorScheme = 'light';
+
+      console.log('[Init] After - classList:', Array.from(document.documentElement.classList));
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

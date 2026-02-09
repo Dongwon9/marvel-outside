@@ -13,6 +13,15 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private mapCommentToDto(comment: any): CommentResponseDto {
+    const dto = plainToInstance(CommentResponseDto, comment);
+    // Handle deleted author
+    if (dto.author && 'deletedAt' in comment.author && comment.author.deletedAt) {
+      dto.author.name = '삭제된 사용자';
+    }
+    return dto;
+  }
+
   async create(
     postId: string,
     authorId: string,
@@ -30,11 +39,12 @@ export class CommentService {
             select: {
               id: true,
               name: true,
+              deletedAt: true,
             },
           },
         },
       });
-      return plainToInstance(CommentResponseDto, comment);
+      return this.mapCommentToDto(comment);
     } catch (error: any) {
       if (error.code === 'P2002') {
         throw new BadRequestException('You already have a comment on this post');
@@ -51,12 +61,13 @@ export class CommentService {
           select: {
             id: true,
             name: true,
+            deletedAt: true,
           },
         },
       },
       orderBy: { createdAt: 'desc' },
     });
-    return plainToInstance(CommentResponseDto, comments);
+    return comments.map(comment => this.mapCommentToDto(comment));
   }
 
   async findOne(postId: string, authorId: string): Promise<CommentResponseDto | null> {
@@ -72,12 +83,13 @@ export class CommentService {
           select: {
             id: true,
             name: true,
+            deletedAt: true,
           },
         },
       },
     });
     if (!comment) return null;
-    return plainToInstance(CommentResponseDto, comment);
+    return this.mapCommentToDto(comment);
   }
 
   async update(
@@ -110,11 +122,12 @@ export class CommentService {
           select: {
             id: true,
             name: true,
+            deletedAt: true,
           },
         },
       },
     });
-    return plainToInstance(CommentResponseDto, updated);
+    return this.mapCommentToDto(updated);
   }
 
   async remove(postId: string, authorId: string): Promise<void> {

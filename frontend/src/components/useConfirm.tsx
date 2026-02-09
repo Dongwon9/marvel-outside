@@ -1,52 +1,24 @@
-import { useCallback, useRef, useState } from "react";
+import { useContext } from "react";
 
-import ConfirmDialog from "./ConfirmDialog";
-
-type Options = {
-  title?: string;
-  description?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-};
+import { ConfirmContext } from "@/context/ConfirmContext";
+import { type ConfirmOptions } from "@/context/ConfirmProvider";
 
 export function useConfirm() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [options, setOptions] = useState<Options>({});
-  const resolverRef = useRef<(value: boolean) => void | null>(null);
+  const context = useContext(ConfirmContext);
 
-  const open = useCallback((opts?: Options) => {
-    setOptions(opts || {});
-    setIsOpen(true);
-    return new Promise<boolean>((resolve) => {
-      resolverRef.current = resolve;
-    });
-  }, []);
+  if (!context) {
+    throw new Error("useConfirm must be used within ConfirmProvider");
+  }
 
-  const handleConfirm = useCallback(() => {
-    setIsOpen(false);
-    if (resolverRef.current) resolverRef.current(true);
-    resolverRef.current = null;
-  }, []);
-
-  const handleCancel = useCallback(() => {
-    setIsOpen(false);
-    if (resolverRef.current) resolverRef.current(false);
-    resolverRef.current = null;
-  }, []);
-
-  const Modal = (
-    <ConfirmDialog
-      isOpen={isOpen}
-      title={options.title}
-      description={options.description}
-      confirmLabel={options.confirmLabel}
-      cancelLabel={options.cancelLabel}
-      onConfirm={handleConfirm}
-      onCancel={handleCancel}
-    />
-  );
-
-  return { open, Modal };
+  return {
+    confirm: (options?: ConfirmOptions) =>
+      context.confirm({
+        title: "확인",
+        confirmLabel: "확인",
+        cancelLabel: "취소",
+        ...options,
+      }),
+  };
 }
 
 export default useConfirm;

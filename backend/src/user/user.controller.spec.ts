@@ -320,6 +320,15 @@ describe('UserController', () => {
     let controller: UserController;
     let mockUserService: { deleteUser: jest.Mock };
 
+    const mockUser = {
+      id: 'user-1',
+      email: 'test@example.com',
+      name: 'testuser',
+      passwordHashed: 'hashed-password',
+      registeredAt: new Date(),
+      deletedAt: null,
+    };
+
     beforeEach(async () => {
       mockUserService = {
         deleteUser: jest.fn(),
@@ -333,27 +342,28 @@ describe('UserController', () => {
       controller = module.get<UserController>(UserController);
     });
 
-    it('should delete user successfully', async () => {
+    it('should delete current user successfully', async () => {
       mockUserService.deleteUser.mockResolvedValue(undefined);
 
-      const result = await controller.deleteUser('1');
+      const result = await controller.deleteUser(mockUser as any);
 
       expect(result).toBeUndefined();
-      expect(mockUserService.deleteUser).toHaveBeenCalledWith('1');
+      expect(mockUserService.deleteUser).toHaveBeenCalledWith(mockUser.id);
     });
 
-    it('should pass correct id to service', async () => {
+    it('should pass correct user id to service', async () => {
+      const anotherUser = { ...mockUser, id: 'user-456' };
       mockUserService.deleteUser.mockResolvedValue(undefined);
 
-      await controller.deleteUser('user456');
+      await controller.deleteUser(anotherUser as any);
 
-      expect(mockUserService.deleteUser).toHaveBeenCalledWith('user456');
+      expect(mockUserService.deleteUser).toHaveBeenCalledWith('user-456');
     });
 
     it('should handle delete errors', async () => {
       mockUserService.deleteUser.mockRejectedValue(new Error('User not found'));
 
-      await expect(controller.deleteUser('999')).rejects.toThrow('User not found');
+      await expect(controller.deleteUser(mockUser as any)).rejects.toThrow('User not found');
     });
   });
 });

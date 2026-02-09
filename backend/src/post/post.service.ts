@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,12 +14,17 @@ export class PostService {
 
   private includeForDto = {
     rates: true,
-    author: { select: { name: true } },
+    author: { select: { name: true, deletedAt: true } },
     board: { select: { name: true } },
   };
+
+  private getAuthorName(author: { name: string; deletedAt: Date | null }): string {
+    return author.deletedAt ? '삭제된 사용자' : author.name;
+  }
+
   private transformPostToDto(post: {
     rates: { isLike: boolean }[];
-    author: { name: string };
+    author: { name: string; deletedAt: Date | null };
     board: { name: string };
     id: string;
     title: string;
@@ -33,7 +38,7 @@ export class PostService {
     const { rates, author, board, ...postData } = post;
     const likeCount = post.rates.filter(rate => rate.isLike).length;
     const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
-    const authorName = author.name;
+    const authorName = this.getAuthorName(author);
     const boardName = board.name;
     const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
     return plainToInstance(PostResponseDto, postWithCounts);
@@ -46,6 +51,7 @@ export class PostService {
         author: {
           select: {
             name: true,
+            deletedAt: true,
           },
         },
         board: {
@@ -58,14 +64,7 @@ export class PostService {
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-    const { rates, author, board, ...postData } = post;
-    const likeCount = post.rates.filter(rate => rate.isLike).length;
-    const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
-    const authorName = author.name;
-    const boardName = board.name;
-    const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
-    const returnObj = plainToInstance(PostResponseDto, postWithCounts);
-    return returnObj;
+    return this.transformPostToDto(post);
   }
 
   async posts(queryDto: GetPostsQueryDto): Promise<PostResponseDto[]> {
@@ -161,5 +160,49 @@ export class PostService {
     const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
 
     return { likeCount, dislikeCount };
+  }
+
+  async saveDraft(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.publishedAt !== null) {
+      throw new BadRequestException('Cannot edit a published post');
+    }
+
+    const updated = await this.prisma.post.update({
+      where: { id },
+      data: updatePostDto,
+      include: this.includeForDto,
+    });
+
+    return this.transformPostToDto(updated);
+  }
+
+  async publishDraft(id: string): Promise<PostResponseDto> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.publishedAt !== null) {
+      throw new BadRequestException('Post is already published');
+    }
+
+    const published = await this.prisma.post.update({
+      where: { id },
+      data: { publishedAt: new Date() },
+      include: this.includeForDto,
+    });
+
+    return this.transformPostToDto(published);
   }
 }

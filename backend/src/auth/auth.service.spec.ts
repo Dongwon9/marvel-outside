@@ -29,6 +29,7 @@ describe('AuthService', () => {
           useValue: {
             user: {
               findUnique: jest.fn(),
+              findFirst: jest.fn(),
             },
           },
         },
@@ -88,21 +89,21 @@ describe('AuthService', () => {
         passwordHashed: 'hashed-password',
       };
 
-      prismaService.user.findUnique.mockResolvedValue(mockUser as any);
+      prismaService.user.findFirst.mockResolvedValue(mockUser as any);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const result = await service.validateUser('test@example.com', 'password123');
 
       expect(result).toBe('user-123');
-      expect(prismaService.user.findUnique).toHaveBeenCalledWith({
-        where: { email: 'test@example.com' },
+      expect(prismaService.user.findFirst).toHaveBeenCalledWith({
+        where: { email: 'test@example.com', deletedAt: null },
         select: { id: true, passwordHashed: true },
       });
       expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashed-password');
     });
 
     it('should return null for non-existent user', async () => {
-      prismaService.user.findUnique.mockResolvedValue(null);
+      prismaService.user.findFirst.mockResolvedValue(null);
 
       const result = await service.validateUser('test@example.com', 'password123');
 
@@ -115,7 +116,7 @@ describe('AuthService', () => {
         passwordHashed: 'hashed-password',
       };
 
-      prismaService.user.findUnique.mockResolvedValue(mockUser as any);
+      prismaService.user.findFirst.mockResolvedValue(mockUser as any);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       const result = await service.validateUser('test@example.com', 'wrong-password');
@@ -153,7 +154,7 @@ describe('AuthService', () => {
         passwordHashed: 'hashed-password',
       };
 
-      prismaService.user.findUnique.mockResolvedValue(mockUser as any);
+      prismaService.user.findFirst.mockResolvedValue(mockUser as any);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-refresh-token');
       jwtService.sign.mockReturnValueOnce('access-token').mockReturnValueOnce('refresh-token');
@@ -173,7 +174,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException for invalid credentials', async () => {
-      prismaService.user.findUnique.mockResolvedValue(null);
+      prismaService.user.findFirst.mockResolvedValue(null);
 
       await expect(service.login('test@example.com', 'wrong-password')).rejects.toThrow(
         UnauthorizedException,

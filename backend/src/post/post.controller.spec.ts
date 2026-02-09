@@ -19,6 +19,8 @@ describe('PostController', () => {
     updatePost: jest.fn(),
     deletePost: jest.fn(),
     postsForFeed: jest.fn(),
+    saveDraft: jest.fn(),
+    publishDraft: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -255,6 +257,67 @@ describe('PostController', () => {
       await controller.getPostsForFeed(userId);
 
       expect(mockPostService.postsForFeed).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  describe('saveDraft', () => {
+    it('should save draft post', async () => {
+      const postId = 'post-1';
+      const updateDto: UpdatePostDto = {
+        title: 'Draft Title',
+        content: 'Draft Content',
+      };
+      const expectedResult = {
+        id: postId,
+        title: 'Draft Title',
+        content: 'Draft Content',
+        authorId: 'user-1',
+        authorName: 'Test User',
+        boardId: 'board-1',
+        boardName: 'Test Board',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null,
+        likes: 0,
+        dislikes: 0,
+      } as PostResponseDto;
+
+      mockPostService.saveDraft = jest.fn().mockResolvedValue(expectedResult);
+
+      const result = await controller.saveDraft(postId, updateDto);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockPostService.saveDraft).toHaveBeenCalledWith(postId, updateDto);
+      expect(mockPostService.saveDraft).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('publishDraft', () => {
+    it('should publish draft post', async () => {
+      const postId = 'post-1';
+      const now = new Date();
+      const expectedResult = {
+        id: postId,
+        title: 'Published Title',
+        content: 'Published Content',
+        authorId: 'user-1',
+        authorName: 'Test User',
+        boardId: 'board-1',
+        boardName: 'Test Board',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: now,
+        likes: 0,
+        dislikes: 0,
+      } as PostResponseDto;
+
+      mockPostService.publishDraft = jest.fn().mockResolvedValue(expectedResult);
+
+      const result = await controller.publishDraft(postId);
+
+      expect(result).toEqual(expectedResult);
+      expect(mockPostService.publishDraft).toHaveBeenCalledWith(postId);
+      expect(mockPostService.publishDraft).toHaveBeenCalledTimes(1);
     });
   });
 });

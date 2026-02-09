@@ -121,3 +121,29 @@ export async function getPosts(
     throw new ApiError(getStatusCode(error), message, error);
   }
 }
+
+export async function saveDraftPost(
+  id: string,
+  data: Partial<PostForm>,
+): Promise<PostResponse> {
+  try {
+    const response = await client.patch<PostResponse>(
+      `/posts/${id}/draft`,
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
+
+export async function publishDraftPost(id: string): Promise<PostResponse> {
+  try {
+    const response = await client.patch<PostResponse>(`/posts/${id}/publish`);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}

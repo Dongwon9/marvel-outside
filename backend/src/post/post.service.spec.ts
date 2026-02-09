@@ -16,6 +16,7 @@ describe('PostService', () => {
     author: {
       select: {
         name: true,
+        deletedAt: true,
       },
     },
     board: {
@@ -73,7 +74,7 @@ describe('PostService', () => {
         where: { id: '1' },
         include: {
           rates: { omit: { postId: true } },
-          author: { select: { name: true } },
+          author: { select: { name: true, deletedAt: true } },
           board: { select: { name: true } },
         },
       });
@@ -683,6 +684,146 @@ describe('PostService', () => {
         authorName: 'Author 2',
         boardName: 'Board 1',
       });
+    });
+  });
+
+  describe('saveDraft', () => {
+    it('should update a draft post', async () => {
+      const postId = 'post-1';
+      const updateDto: UpdatePostDto = {
+        title: 'Updated Title',
+        content: 'Updated content',
+      };
+      const draftPost = {
+        id: postId,
+        title: 'Original Title',
+        content: 'Original content',
+        authorId: 'author-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null, // Draft post
+        hits: 0,
+        boardId: 'board-1',
+        rates: [],
+        author: { name: 'Author 1', deletedAt: null },
+        board: { name: 'Board 1' },
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(draftPost);
+      prismaMock.post.update.mockResolvedValueOnce({
+        ...draftPost,
+        ...updateDto,
+      });
+
+      const result = await service.saveDraft(postId, updateDto);
+
+      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
+        where: { id: postId },
+      });
+      expect(prismaMock.post.update).toHaveBeenCalledWith({
+        where: { id: postId },
+        data: updateDto,
+        include: commonInclude,
+      });
+      expect(result).toMatchObject({
+        id: postId,
+        title: 'Updated Title',
+      });
+    });
+
+    it('should throw error when trying to save a published post', async () => {
+      const postId = 'post-1';
+      const publishedPost = {
+        id: postId,
+        title: 'Published Title',
+        content: 'Published content',
+        authorId: 'author-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: new Date(), // Published post
+        hits: 0,
+        boardId: 'board-1',
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
+
+      await expect(service.saveDraft(postId, { title: 'New Title' })).rejects.toThrow(
+        'Cannot edit a published post',
+      );
+    });
+
+    it('should throw error when post not found', async () => {
+      const postId = 'non-existent-id';
+      prismaMock.post.findUnique.mockResolvedValueOnce(null);
+
+      await expect(service.saveDraft(postId, { title: 'New Title' })).rejects.toThrow(
+        'Post not found',
+      );
+    });
+  });
+
+  describe('publishDraft', () => {
+    it('should publish a draft post', async () => {
+      const postId = 'post-1';
+      const draftPost = {
+        id: postId,
+        title: 'Draft Title',
+        content: 'Draft content',
+        authorId: 'author-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: null, // Draft post
+        hits: 0,
+        boardId: 'board-1',
+      };
+      const publishedPost = {
+        ...draftPost,
+        publishedAt: new Date(),
+        rates: [],
+        author: { name: 'Author 1', deletedAt: null },
+        board: { name: 'Board 1' },
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(draftPost);
+      prismaMock.post.update.mockResolvedValueOnce(publishedPost);
+
+      const result = await service.publishDraft(postId);
+
+      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
+        where: { id: postId },
+      });
+      expect(prismaMock.post.update).toHaveBeenCalledWith({
+        where: { id: postId },
+        data: expect.objectContaining({ publishedAt: expect.any(Date) }),
+        include: commonInclude,
+      });
+      expect(result.publishedAt).not.toBeNull();
+    });
+
+    it('should throw error when trying to publish an already published post', async () => {
+      const postId = 'post-1';
+      const publishedPost = {
+        id: postId,
+        title: 'Published Title',
+        content: 'Published content',
+        authorId: 'author-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: new Date(),
+        hits: 0,
+        boardId: 'board-1',
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
+
+      await expect(service.publishDraft(postId)).rejects.toThrow('Post is already published');
+    });
+
+    it('should throw error when post not found', async () => {
+      const postId = 'non-existent-id';
+      prismaMock.post.findUnique.mockResolvedValueOnce(null);
+
+      await expect(service.publishDraft(postId)).rejects.toThrow('Post not found');
     });
   });
 });

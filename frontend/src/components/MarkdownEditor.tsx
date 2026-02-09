@@ -12,7 +12,7 @@ export default function MarkdownEditor({
   height = 400,
 }: MarkdownEditorProps) {
   return (
-    <div className="w-full max-w-none">
+    <div className="w-full max-w-none" data-color-mode="light">
       <MDEditor
         value={value}
         onChange={(val) => onChange(val || "")}

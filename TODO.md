@@ -4,47 +4,20 @@
 
 ### Backend
 
-- [x] AuthModule 생성 및 설정 ✅
-  - [x] JWT 전략 구현 (passport-jwt)
-  - [x] Local 전략 구현 (로그인용)
-  - [x] JWT 토큰 발급/검증 서비스
-  - [x] AuthGuard 구현 (protected routes) - JwtAuthGuard 구현됨
-  - [x] DTO: LoginDto, TokenResponseDto
-  - [x] @Public() 데코레이터로 공개 엔드포인트 관리
-- [x] User 비밀번호 검증 로직 (bcrypt) ✅
-- [x] Refresh Token 구현 ✅
-- [x] 로그아웃 엔드포인트 ✅
+- [ ] 추가 인증 기능 (이메일 인증, 비밀번호 초기화)
 
 ### Frontend
 
-- [x] **로그인 페이지 만들기** ✅
-  - [x] 로그인 폼 컴포넌트 (email, password)
-  - [x] Tailwind CSS 스타일링
-  - [x] 폼 validation
-  - [x] 에러 메시지 표시
-- [x] 회원가입 페이지 ✅
-- [x] JWT 토큰 관리 ✅ (httpOnly 쿠키 기반)
-- [x] API client 인증 헤더 설정 ✅ (axios interceptor 구현)
-- [x] Protected Route 컴포넌트 (추가 필요 - 현재 redirect 방식)
-- [x] 로그아웃 기능 ✅
+(완료됨 - 로그인/회원가입/JWT 토큰/인증 헤더/로그아웃)
 
 ---
 
 ## 📱 Frontend Pages
 
-### Core Pages
-
-- [x] 홈 페이지 (게시글 목록)
-- [x] 게시판 목록 페이지
-- [x] 게시판별 게시글 목록
-- [x] 게시글 상세 페이지
-- [x] 게시글 작성/수정 페이지
-- [x] 사용자 프로필 페이지
-- [x] 사용자 설정 페이지
+(완료됨 - 홈, 게시판, 게시글, 프로필, 설정 페이지)
 
 ### Components
 
-- [x] Navigation Bar (로그인 상태 표시) ✅ (Header.tsx, HeaderRight.tsx 구현됨)
 - [ ] Post Card 컴포넌트
 - [ ] Comment 컴포넌트
 - [ ] Like/Dislike 버튼
@@ -58,7 +31,6 @@
 
 ### User API
 
-- [x] 회원가입 API 연동
 - [ ] 회원탈퇴, 비밀번호/이름 변경 API 연동
 - [ ] 사용자 검색
 
@@ -94,7 +66,6 @@
 
 ### Backend
 
-- [x] User Service 통합 테스트 완료 ✅
 - [ ] Post Service 통합 테스트
 - [ ] Follow Service 통합 테스트
 - [ ] Rate Service 통합 테스트
@@ -112,11 +83,8 @@
 
 ## 🗄️ Database & Schema
 
-- [x] User 모델 (완료)
-- [x] Post 모델 (완료)
-- [x] Board 모델 (완료)
-- [x] Follow 모델 (완료)
-- [x] Rate 모델 (완료)
+(완료됨 - User, Post, Board, Follow, Rate 모델)
+
 - [ ] Comment 모델 추가 (댓글 기능)
 - [ ] Image/Media 모델 추가 (첨부파일)
 - [ ] Notification 모델 추가 (알림)
@@ -201,7 +169,7 @@
 ## 🎯 Current Priority
 
 1. **API 연동 완성** 🔥🔥
-   - [ ] User API (회원가입, 프로필 조회/수정)
+   - [ ] User API (프로필 조회/수정, 회원탈퇴)
    - [ ] Post API (CRUD, 페이지네이션)
    - [ ] Board API (목록 조회)
    - [ ] Follow API (팔로우/언팔로우)
@@ -227,54 +195,41 @@
 
 ---
 
-## 📅 Notes
+## 📅 Recent Progress
 
-- 첫 번째 풀스택 프로젝트이므로 단계별로 진행
-- 고급 CI/CD는 필요할 때까지 미룸
-- 코드 품질과 일관성 유지가 중요
+### 완료된 작업 (2026년 2월 9일)
 
----
-
-## 🎉 Recent Progress
-
-### 완료된 작업 (2026년 1월 28일)
-
-#### 백엔드
+#### 백엔드 기본 구조
 
 - ✅ AuthModule 전체 구현 (JWT, Local 전략, AuthGuard)
-- ✅ @Public() 데코레이터로 공개 엔드포인트 관리
 - ✅ User, Post, Board, Follow, Rate 모듈 구현
-- ✅ Prisma 마이그레이션 (User, Post, Board, Follow, Rate 모델)
-- ✅ bcrypt 기반 비밀번호 해싱
-- ✅ Refresh Token 시스템
+- ✅ bcrypt 기반 비밀번호 해싱 및 Refresh Token 시스템
 - ✅ User Service 통합 테스트 완료
 
-#### 프론트엔드
+#### 프론트엔드 기본 구조
 
-- ✅ 로그인/회원가입 페이지 완성 (UI + validation + 에러 처리)
-- ✅ axios 기반 API client 구성
-- ✅ httpOnly 쿠키를 활용한 토큰 관리
-- ✅ axios interceptor로 자동 인증 헤더 설정
+- ✅ 로그인/회원가입 페이지 (UI + validation + 에러 처리)
+- ✅ axios 인증 클라이언트 (httpOnly 쿠키, 자동 헤더 설정)
+- ✅ 모든 핵심 페이지 (Home, Board, Post, Profile, Settings)
 - ✅ Header 컴포넌트 (로그인 상태 표시)
-- ✅ 모든 핵심 페이지 (Home, Board, Post, Profile 등)
 
 ### 다음 단계
 
-1. **API 연동 완성** - 현재 우선순위
-   - User API 연동 (회원가입, 프로필)
-   - Post API 연동 (CRUD)
-   - Board API 연동
-   - Follow API 연동
-   - Rate API 연동
+1. **API 연동** - 현재 우선순위 🔥
+   - Post 목록/상세/작성/수정/삭제
+   - Board 목록 조회
+   - User 프로필 조회/수정
+   - Follow/Unfollow
+   - Rate (좋아요/싫어요)
 
 2. **UI 컴포넌트 구현**
    - Post Card, Comment, Like/Dislike, Follow 버튼
    - Loading Spinner, Error Boundary
 
-3. **테스트 커버리지 향상**
-   - Auth, Post, Follow, Rate Service 통합 테스트
+3. **테스트 커버리지**
+   - Post, Follow, Rate, Board, Auth Service 통합 테스트
    - Frontend Component 테스트
 
 ---
 
-**Last Updated**: 2026년 1월 28일
+**Last Updated**: 2026년 2월 9일

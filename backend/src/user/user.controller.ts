@@ -11,7 +11,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
+import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { Public } from '@/auth/decorators/public.decorator';
+import { User } from '@/generated/prisma/client';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
@@ -49,9 +51,9 @@ export class UserController {
     return this.userService.updateUser(id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteUser(@Param('id') id: string): Promise<void> {
-    await this.userService.deleteUser(id);
+  async deleteUser(@CurrentUser() user: User): Promise<void> {
+    await this.userService.deleteUser(user.id);
   }
 }

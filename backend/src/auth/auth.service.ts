@@ -30,8 +30,8 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<string | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
+    const user = await this.prisma.user.findFirst({
+      where: { email, deletedAt: null },
       select: { id: true, passwordHashed: true },
     });
     if (!user) {

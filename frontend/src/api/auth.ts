@@ -37,3 +37,7 @@ export async function getMe(): Promise<MeResponse | null> {
   const response = await client.get<MeResponse>("/auth/me");
   return response.data;
 }
+
+export async function deleteAccount(): Promise<void> {
+  await client.delete("/users");
+}

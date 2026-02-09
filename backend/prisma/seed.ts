@@ -42,6 +42,13 @@ async function main() {
   const users = await Promise.all([
     prisma.user.create({
       data: {
+        email: 'qwe@a.com',
+        name: '홍길동',
+        passwordHashed: await hashPassword('123'),
+      },
+    }),
+    prisma.user.create({
+      data: {
         email: 'user1@example.com',
         name: '김철수',
         passwordHashed: await hashPassword('password123'),

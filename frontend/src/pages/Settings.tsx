@@ -1,26 +1,45 @@
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import { deleteAccount } from "@/api/auth";
+import useConfirm from "@/components/useConfirm";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 
 import { Button, Card, Section } from "../components/ui";
-import { useState } from "react";
-import ConfirmDialog from "@/components/ConfirmDialog";
 
-function handleDelete() {}
 export default function Settings() {
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  function confirmDelete() {
-    setIsDeleteConfirmOpen(true);
+  const { confirm } = useConfirm();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  async function handleDelete() {
+    const confirmed = await confirm({
+      title: "정말로 탈퇴하시겠습니까?",
+      description:
+        "작성한 게시글과 댓글은 남아있게 됩니다. \n이 작업은 되돌릴 수 없습니다!!!",
+      confirmLabel: "탈퇴!!!",
+      cancelLabel: "취소",
+      isDangerous: true,
+    });
+
+    if (confirmed) {
+      try {
+        await deleteAccount();
+        addToast("계정이 삭제되었습니다", "success");
+        // 로그아웃 처리 및 로그인 페이지로 이동
+        void logout();
+        void navigate("/login", { replace: true });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "계정 삭제 중 오류가 발생했습니다";
+        addToast(errorMessage, "error");
+      }
+    }
   }
-  <ConfirmDialog
-    isOpen={isDeleteConfirmOpen}
-    title="정말로 삭제하시겠습니까?"
-    description="작성한 게시글과 댓글은 남아있게 됩니다.\n 이 작업은 되돌릴 수 없습니다!!!"
-    confirmLabel="삭제!!!"
-    cancelLabel="취소"
-    onConfirm={handleDelete}
-    onCancel={() => {
-      setIsDeleteConfirmOpen(false);
-    }}
-  />;
   const settingsSections = [
     {
       title: "계정 설정",
@@ -108,14 +127,14 @@ export default function Settings() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="text-primary text-sm font-medium md:text-base">
-                계정 삭제
+                회원 탈퇴
               </h3>
               <p className="text-muted mt-1 text-xs md:text-sm">
-                계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.
+                떠나시면 돌아올 수 없습니다...
               </p>
             </div>
             <Button
-              onClick={() => void confirmDelete()}
+              onClick={() => void handleDelete()}
               variant="danger"
               size="md"
               className="whitespace-nowrap"

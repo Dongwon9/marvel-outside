@@ -81,4 +81,19 @@ export class PostController {
   async incrementPostHits(@Param('id') id: string): Promise<PostResponseDto> {
     return this.postService.incrementHits(id);
   }
+
+  @Patch(':id/draft')
+  @UseGuards(JwtAuthGuard)
+  async saveDraft(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.saveDraft(id, updatePostDto);
+  }
+
+  @Patch(':id/publish')
+  @UseGuards(JwtAuthGuard)
+  async publishDraft(@Param('id') id: string): Promise<PostResponseDto> {
+    return this.postService.publishDraft(id);
+  }
 }

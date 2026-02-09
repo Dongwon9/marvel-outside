@@ -1,7 +1,7 @@
 {
     "editor.tabSize": 2,
     "jest.runMode": {
-        "type": "on-save",
+        "type": "watch",
         "coverage": true
     },
     "jest.showCoverageOnLoad": false,

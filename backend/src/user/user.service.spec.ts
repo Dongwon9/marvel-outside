@@ -35,6 +35,7 @@ describe('UserService', () => {
           useValue: {
             user: {
               findUnique: jest.fn(),
+              findFirst: jest.fn(),
               findMany: jest.fn(),
               create: jest.fn(),
               update: jest.fn(),
@@ -84,6 +85,7 @@ describe('UserService', () => {
       const result = await service.getUsers(queryDto);
 
       expect(prismaService.user.findMany).toHaveBeenCalledWith({
+        where: { deletedAt: null },
         skip: 0,
         take: 10,
         orderBy: undefined,
@@ -99,6 +101,7 @@ describe('UserService', () => {
       await service.getUsers(queryDto);
 
       expect(prismaService.user.findMany).toHaveBeenCalledWith({
+        where: { deletedAt: null },
         skip: 0,
         take: 10,
         orderBy: { name: 'asc' },
@@ -115,11 +118,14 @@ describe('UserService', () => {
       };
 
       const mocks = {
+        findFirst: jest.fn(),
         findUnique: jest.fn(),
         create: jest.fn(),
       };
-      mocks.findUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+      mocks.findFirst.mockResolvedValueOnce(null).mockResolvedValueOnce(null); // no active user, no deleted user
+      mocks.findUnique.mockResolvedValueOnce(null); // no user with same name
       mocks.create.mockResolvedValue(mockUser);
+      prismaService.user.findFirst = mocks.findFirst;
       prismaService.user.findUnique = mocks.findUnique;
       prismaService.user.create = mocks.create;
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedpassword');
@@ -150,7 +156,7 @@ describe('UserService', () => {
         password: 'password123',
       };
 
-      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
+      jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(mockUser);
 
       await expect(service.createUser(createUserDto)).rejects.toThrow(ConflictException);
     });
@@ -163,9 +169,11 @@ describe('UserService', () => {
       };
 
       jest
-        .spyOn(prismaService.user, 'findUnique')
+        .spyOn(prismaService.user, 'findFirst')
         .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(mockUser);
+        .mockResolvedValueOnce(null); // no active user, no deleted user
+
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(mockUser);
 
       await expect(service.createUser(createUserDto)).rejects.toThrow(ConflictException);
     });

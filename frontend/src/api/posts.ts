@@ -56,9 +56,9 @@ export async function getPostById(id: string): Promise<PostResponse> {
   }
 }
 
-export async function createPost(data: PostForm): Promise<PostResponse> {
+export async function createPost(data: PostForm): Promise<string> {
   try {
-    const response = await client.post<PostResponse>("/posts", data);
+    const response = await client.post<string>("/posts", data);
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);

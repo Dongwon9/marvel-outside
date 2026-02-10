@@ -46,7 +46,7 @@ export class PostController {
   async createPost(
     @Body() createPostDto: CreatePostDto,
     @CurrentUser() user: User,
-  ): Promise<PostResponseDto> {
+  ): Promise<string> {
     return this.postService.createPost({ ...createPostDto, authorId: user.id });
   }
 

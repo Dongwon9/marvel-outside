@@ -33,7 +33,7 @@ export default function PostList() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold md:text-3xl">게시글 목록</h1>
-        <LinkButton to="/post/new">+ 새 게시글</LinkButton>
+       
       </div>
 
       {/* Filter/Sort Bar */}

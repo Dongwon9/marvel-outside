@@ -121,24 +121,12 @@ describe('PostController', () => {
   });
 
   describe('createPost', () => {
-    it('should create and return a new post', async () => {
+    it('should create and return a new post id', async () => {
       const createPostDto: CreatePostDto = {
         title: 'New Post',
         content: 'New Content',
       } as CreatePostDto;
-      const expectedResult: PostResponseDto = {
-        id: '1',
-        title: 'New Post',
-        content: 'New Content',
-        hits: 0,
-        authorId: 'user-1',
-        authorName: 'Test User',
-        boardId: 'board-1',
-        boardName: 'Test Board',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        publishedAt: null,
-      } as PostResponseDto;
+      const expectedResult = 'post-1';
 
       mockPostService.createPost.mockResolvedValue(expectedResult);
 

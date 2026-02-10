@@ -224,11 +224,7 @@ describe('PostService', () => {
         },
       });
       expect(prismaMock.post.create).toHaveBeenCalledTimes(1);
-      expect(result).toMatchObject({
-        id: 'post-1',
-        title: 'New Post',
-        content: 'Post content here',
-      });
+      expect(result).toBe('post-1');
     });
 
     it('handles empty content field gracefully', async () => {
@@ -256,7 +252,7 @@ describe('PostService', () => {
           board: { connect: { id: 'board-1' } },
         },
       });
-      expect(result.content).toBe('');
+      expect(result).toBe('post-2');
     });
 
     it('connects author and board by id', async () => {

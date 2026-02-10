@@ -107,7 +107,7 @@ export class PostService {
     return posts.map(post => this.transformPostToDto(post));
   }
 
-  async createPost(createPostDto: CreatePostDto & { authorId: string }): Promise<PostResponseDto> {
+  async createPost(createPostDto: CreatePostDto & { authorId: string }): Promise<string> {
     const post = await this.prisma.post.create({
       data: {
         title: createPostDto.title,
@@ -120,7 +120,7 @@ export class PostService {
         },
       },
     });
-    return plainToInstance(PostResponseDto, post);
+    return post.id;
   }
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {

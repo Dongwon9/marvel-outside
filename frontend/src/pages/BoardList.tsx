@@ -1,34 +1,42 @@
 import { BookOpen } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 
-import { getBoards, createBoard, type Board } from "../api/boards";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+
+import { getBoards, createBoard } from "../api/boards";
 import { Button } from "../components/ui";
 import Section from "../components/ui/Section";
 
 export default function BoardList() {
-  const [boards, setBoards] = useState<Board[]>([]);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Memoized fetch functions
+  const fetchInitialMemo = useCallback(
+    () => getBoards({ skip: 0, take: 20 }),
+    [],
+  );
 
-  useEffect(() => {
-    async function fetchBoards() {
-      try {
-        setError(null);
-        const data = await getBoards();
-        setBoards(data);
-      } catch (err) {
-        setError("게시판을 불러올 수 없습니다.");
-        console.error("Failed to fetch boards:", err);
-      } finally {
-        setIsPending(false);
-      }
-    }
+  const fetchMoreMemo = useCallback(
+    (skip: number) => getBoards({ skip, take: 10 }),
+    [],
+  );
 
-    void fetchBoards();
-  }, []);
+  // Infinite scroll hook
+  const {
+    data: boards,
+    isLoading: isPending,
+    isLoadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    setData: setBoardsData,
+  } = useInfiniteScroll({
+    fetchInitial: fetchInitialMemo,
+    fetchMore: fetchMoreMemo,
+    initialSize: 20,
+    pageSize: 10,
+  });
 
-  function handleCreateBoard() {
+  const handleCreateBoard = () => {
     const name = prompt("새 게시판 이름을 입력하세요:");
     if (!name) return;
     const description = prompt("게시판 설명을 입력하세요 (선택사항):");
@@ -39,13 +47,13 @@ export default function BoardList() {
           name,
           description: description || undefined,
         });
-        setBoards((prev) => [newBoard, ...prev]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        setBoardsData(([newBoard] as any).concat(boards));
       } catch (err) {
-        setError("게시판을 생성할 수 없습니다.");
         console.error("Failed to create board:", err);
       }
     })();
-  }
+  };
 
   return (
     <Section>
@@ -68,7 +76,9 @@ export default function BoardList() {
       {/* Error State */}
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 md:p-6">
-          <p className="text-sm text-red-700 md:text-base">{error}</p>
+          <p className="text-sm text-red-700 md:text-base">
+            게시판을 불러올 수 없습니다.
+          </p>
         </div>
       )}
 
@@ -94,6 +104,18 @@ export default function BoardList() {
               )}
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Sentinel Element for Infinite Scroll */}
+      {!isPending && !error && hasMore && (
+        <div ref={sentinelRef} className="h-2 w-full" />
+      )}
+
+      {/* Loading More Indicator */}
+      {isLoadingMore && (
+        <div className="flex items-center justify-center py-8">
+          <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
         </div>
       )}
 

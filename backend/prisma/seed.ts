@@ -236,6 +236,7 @@ async function main() {
         authorId: users[4].id,
         boardId: boards[1].id,
         hits: 45,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -246,6 +247,7 @@ async function main() {
         authorId: users[0].id,
         boardId: boards[0].id,
         hits: 23,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -257,6 +259,7 @@ async function main() {
         authorId: users[1].id,
         boardId: boards[2].id,
         hits: 67,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -267,6 +270,7 @@ async function main() {
         authorId: users[0].id,
         boardId: boards[3].id,
         hits: 15,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -277,6 +281,7 @@ async function main() {
 
         authorId: users[2].id,
         boardId: boards[2].id,
+        publishedAt: new Date(),
         hits: 42,
       },
     }),
@@ -289,6 +294,7 @@ async function main() {
         authorId: users[3].id,
         boardId: boards[2].id,
         hits: 38,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -299,6 +305,7 @@ async function main() {
         authorId: users[1].id,
         boardId: boards[3].id,
         hits: 18,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -310,6 +317,7 @@ async function main() {
         authorId: users[0].id,
         boardId: boards[2].id,
         hits: 52,
+        publishedAt: new Date(),
       },
     }),
     // 추가 게시글
@@ -320,6 +328,7 @@ async function main() {
         authorId: users[5].id,
         boardId: boards[0].id,
         hits: 3,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -329,6 +338,7 @@ async function main() {
         authorId: users[6].id,
         boardId: boards[2].id,
         hits: 7,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -338,6 +348,7 @@ async function main() {
         authorId: users[7].id,
         boardId: boards[1].id,
         hits: 1,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -347,6 +358,7 @@ async function main() {
         authorId: users[8].id,
         boardId: boards[3].id,
         hits: 2,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -356,6 +368,7 @@ async function main() {
         authorId: users[9].id,
         boardId: boards[0].id,
         hits: 5,
+        publishedAt: new Date(),
       },
     }),
     prisma.post.create({
@@ -365,6 +378,7 @@ async function main() {
         authorId: users[10].id,
         boardId: boards[2].id,
         hits: 4,
+        publishedAt: new Date(),
       },
     }),
   ]);

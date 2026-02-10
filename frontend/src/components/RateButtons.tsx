@@ -117,7 +117,7 @@ export default function RateButtons({
       <div className="flex items-center gap-2 md:gap-3">
         <button
           onClick={() => void handleRate(true)}
-          disabled={isLoading}
+          disabled={isLoading || !user}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5 ${
             currentRate?.isLike === true
               ? "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-600"
@@ -129,7 +129,7 @@ export default function RateButtons({
         </button>
         <button
           onClick={() => void handleRate(false)}
-          disabled={isLoading}
+          disabled={isLoading || !user}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors md:gap-2 md:px-4 md:py-2.5 ${
             currentRate?.isLike === false
               ? "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600"

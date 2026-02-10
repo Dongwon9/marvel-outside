@@ -21,8 +21,7 @@ export interface PostsQueryForm {
   authorId?: string;
   search?: string;
   take?: number;
-  offset?: number;
-  orderBy?: { field: string; direction: "asc" | "desc" };
+  skip?: number;
 }
 export interface PostResponse {
   authorAvatar: string | undefined;

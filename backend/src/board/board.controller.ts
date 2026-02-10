@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 
 import { Public } from '@/auth/decorators/public.decorator';
 
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { GetBoardsQueryDto } from './dto/get-boards-query.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
 @Controller('boards')
@@ -17,8 +18,8 @@ export class BoardController {
 
   @Get()
   @Public()
-  findAll() {
-    return this.boardService.findAll();
+  findAll(@Query() queryDto: GetBoardsQueryDto) {
+    return this.boardService.findAll(queryDto);
   }
 
   @Get(':id')

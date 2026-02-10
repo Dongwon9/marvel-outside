@@ -75,6 +75,7 @@ export class PostService {
       where: {
         ...(authorId && { authorId }),
         ...(boardId && { boardId }),
+        publishedAt: { not: null },
       },
       skip,
       take,
@@ -99,6 +100,7 @@ export class PostService {
     const posts = await this.prisma.post.findMany({
       where: {
         authorId: { in: followingIds },
+        publishedAt: { not: null },
       },
       orderBy: { createdAt: 'desc' },
       include: this.includeForDto,

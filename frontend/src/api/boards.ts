@@ -16,9 +16,16 @@ export interface Board {
   description?: string;
 }
 
-export async function getBoards(): Promise<Board[]> {
+export interface BoardsQueryForm {
+  skip?: number;
+  take?: number;
+}
+
+export async function getBoards(query?: BoardsQueryForm): Promise<Board[]> {
   try {
-    const response = await client.get<Board[]>("/boards");
+    const response = await client.get<Board[]>("/boards", {
+      params: query,
+    });
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);

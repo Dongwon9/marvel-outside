@@ -118,4 +118,4 @@ docker compose up --build  # 재빌드 후 시작
 ## 기타 알아야할 사항
 
 - 개발서버는 docker compose로 항상 실행되어있는 상태에서 개발함.
-- 명령어 docker-compose 대신 docker compose 사용할 것
+- 명령어 `docker-compose` 대신 `docker compose` 사용할 것

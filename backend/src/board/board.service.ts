@@ -4,11 +4,13 @@ import { Board } from '@/generated/prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 
 import { CreateBoardDto } from './dto/create-board.dto';
+import { GetBoardsQueryDto } from './dto/get-boards-query.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
 @Injectable()
 export class BoardService {
   constructor(private prisma: PrismaService) {}
+
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
     return this.prisma.board.create({
       data: {
@@ -17,8 +19,14 @@ export class BoardService {
     });
   }
 
-  async findAll(): Promise<Board[]> {
-    return this.prisma.board.findMany();
+  async findAll(queryDto?: GetBoardsQueryDto): Promise<Board[]> {
+    const { skip = 0, take } = queryDto || {};
+
+    return this.prisma.board.findMany({
+      skip,
+      ...(take && { take }),
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   async findOne(id: string): Promise<Board | null> {

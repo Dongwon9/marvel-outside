@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { getPostById, updatePost } from "../api/posts";
+import { getPostById, saveDraftPost, publishDraftPost } from "../api/posts";
 import MarkdownEditor from "../components/MarkdownEditor";
 import { Button, Input } from "../components/ui";
 import { useToast } from "../hooks/useToast";
@@ -21,7 +21,8 @@ export default function PostEditor() {
     content: "",
   });
   const [loading, setLoading] = useState(false);
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const [publishLoading, setPublishLoading] = useState(false);
+  const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 게시글 불러오기
   useEffect(() => {
@@ -45,14 +46,14 @@ export default function PostEditor() {
     if (!postId) return;
 
     // 기존 타이머 클리어
-    if (autoSaveTimeoutRef.current) {
+    if (autoSaveTimeoutRef.current !== null) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
 
     // 새로운 타이머 설정
     autoSaveTimeoutRef.current = setTimeout(async () => {
       try {
-        await updatePost(postId, form);
+        await saveDraftPost(postId, form);
         addToast("저장됨", "success");
       } catch (err) {
         console.error("Save error:", err);
@@ -61,7 +62,7 @@ export default function PostEditor() {
     }, 3000);
 
     return () => {
-      if (autoSaveTimeoutRef.current) {
+      if (autoSaveTimeoutRef.current !== null) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
@@ -77,21 +78,41 @@ export default function PostEditor() {
         return;
       }
 
-      await updatePost(postId, form);
-      addToast("게시글이 수정되었습니다.", "success");
+      await saveDraftPost(postId, form);
+      addToast("게시글이 저장되었습니다.", "success");
       void navigate(`/post/${postId}`);
     } catch (err) {
       console.error("Save error:", err);
-      addToast("게시글 수정에 실패했습니다.", "error");
+      addToast("게시글 저장에 실패했습니다.", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    setPublishLoading(true);
+
+    try {
+      if (!postId) {
+        addToast("게시글을 찾을 수 없습니다.", "error");
+        return;
+      }
+
+      await publishDraftPost(postId);
+      addToast("게시글이 공개되었습니다.", "success");
+      void navigate(`/post/${postId}`);
+    } catch (err) {
+      console.error("Publish error:", err);
+      addToast("게시글 공개에 실패했습니다.", "error");
+    } finally {
+      setPublishLoading(false);
     }
   };
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">게시글 수정</h1>
+        <h1 className="text-3xl font-bold">게시글 초안 편집</h1>
       </div>
 
       <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
@@ -118,7 +139,16 @@ export default function PostEditor() {
         {/* 버튼 */}
         <div className="flex gap-4">
           <Button type="submit" disabled={loading} variant="primary" size="lg">
-            {loading ? "수정 중..." : "수정"}
+            {loading ? "저장 중..." : "저장"}
+          </Button>
+          <Button
+            type="button"
+            onClick={() => void handlePublish()}
+            disabled={publishLoading}
+            variant="primary"
+            size="lg"
+          >
+            {publishLoading ? "공개 중..." : "공개"}
           </Button>
           <Button
             type="button"

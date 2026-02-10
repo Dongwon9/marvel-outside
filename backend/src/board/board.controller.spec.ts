@@ -78,7 +78,7 @@ describe('BoardController', () => {
 
       jest.spyOn(controller['boardService'], 'findAll').mockResolvedValue(expectedBoards);
 
-      const result = await controller.findAll();
+      const result = await controller.findAll({});
 
       expect(result).toEqual(expectedBoards);
       expect(controller['boardService'].findAll).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('BoardController', () => {
     it('should return an empty array when no boards exist', async () => {
       jest.spyOn(controller['boardService'], 'findAll').mockResolvedValue([]);
 
-      const result = await controller.findAll();
+      const result = await controller.findAll({});
 
       expect(result).toEqual([]);
       expect(controller['boardService'].findAll).toHaveBeenCalled();

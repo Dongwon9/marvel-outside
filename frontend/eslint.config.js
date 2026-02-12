@@ -19,12 +19,29 @@ export default [
       "vite.config.ts",
       "tailwind.config.js",
       "src/test/mocks.ts",
+      "src/test.setup.js",
     ],
   },
 
   js.configs.recommended,
 
-  ...tseslint.configs.recommendedTypeChecked,
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2023,
+      globals: globals.browser,
+      parser: tseslint.parser,
+      parserOptions: {
+        project: ["./tsconfig.json", "./tsconfig.app.json"],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+
+  ...tseslint.configs.recommendedTypeChecked.map((config) => ({
+    ...config,
+    files: config.files || ["**/*.{ts,tsx}"],
+  })),
 
   {
     files: ["**/*.{ts,tsx}"],
@@ -105,6 +122,51 @@ export default [
       "import/no-self-import": "error",
 
       /* Unused imports */
+      "unused-imports/no-unused-imports": "error",
+    },
+  },
+
+  // JS-specific rules
+  {
+    files: ["**/*.{js,jsx}"],
+    languageOptions: {
+      ecmaVersion: 2023,
+      globals: globals.browser,
+    },
+    plugins: {
+      prettier,
+      import: importPlugin,
+      "unused-imports": unusedImports,
+    },
+    rules: {
+      "prettier/prettier": "error",
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          pathGroups: [
+            {
+              pattern: "@/**",
+              group: "internal",
+              position: "before",
+            },
+          ],
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+          "newlines-between": "always",
+        },
+      ],
+      "import/no-cycle": "warn",
+      "import/no-self-import": "error",
       "unused-imports/no-unused-imports": "error",
     },
   },

@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { getPostById, saveDraftPost, publishDraftPost } from "../api/posts";
-import MarkdownEditor from "../components/MarkdownEditor";
-import { Button, Input } from "../components/ui";
-import { useToast } from "../hooks/useToast";
+import { getPostById, saveDraftPost, publishDraftPost } from "@/api/posts";
+import MarkdownEditor from "@/components/MarkdownEditor";
+import { Button, Input } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 
 interface PostForm {
   title: string;
@@ -15,7 +16,7 @@ export default function PostEditor() {
   const { id: postId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToast } = useToast();
-
+  const { user } = useAuth();
   const [form, setForm] = useState<PostForm>({
     title: "",
     content: "",
@@ -26,20 +27,26 @@ export default function PostEditor() {
 
   // 게시글 불러오기
   useEffect(() => {
-    if (postId) {
-      void getPostById(postId)
-        .then((data) => {
-          setForm({
-            title: data.title,
-            content: data.content,
-          });
-        })
-        .catch((err) => {
-          console.error("Failed to load post:", err);
-          addToast("게시글을 불러올 수 없습니다.", "error");
-        });
+    if (!postId) {
+      return;
     }
-  }, [postId, addToast]);
+    void getPostById(postId)
+      .then((data) => {
+        if (data.authorId !== user?.id) {
+          addToast("작성자가 아닙니다.", "error");
+          void navigate(-1);
+          return;
+        }
+        setForm({
+          title: data.title,
+          content: data.content,
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load post:", err);
+        addToast("게시글을 불러올 수 없습니다.", "error");
+      });
+  }, [postId, addToast, user?.id, navigate]);
 
   // 자동 저장 로직 (3초 디바운스)
   useEffect(() => {

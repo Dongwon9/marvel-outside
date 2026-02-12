@@ -33,12 +33,10 @@ interface RequestWithContext {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        // Load environment-specific .env file based on NODE_ENV
-        resolve(__dirname, `../.env.${process.env.NODE_ENV || 'development'}`),
-        // Fallback to .env if environment-specific file doesn't exist
-        resolve(__dirname, '../.env'),
-      ],
+      envFilePath:
+        process.env.NODE_ENV === 'test'
+          ? resolve(__dirname, '../.env.test')
+          : resolve(__dirname, '../.env'),
     }),
     LoggerModule.forRoot({
       pinoHttp: {

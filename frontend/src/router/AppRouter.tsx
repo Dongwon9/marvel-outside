@@ -27,10 +27,6 @@ export const router = createBrowserRouter([
       { path: "/signup", element: <Signup /> },
       { path: "/feed", element: <Feed /> },
       { path: "/post", element: <PostList /> },
-      {
-        path: "/post/new",
-        element: <ProtectedRoute element={<PostEditor />} />,
-      },
       { path: "/post/:id", element: <PostView /> },
       {
         path: "/post/:id/edit",

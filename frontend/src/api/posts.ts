@@ -126,9 +126,10 @@ export async function saveDraftPost(
   data: Partial<PostForm>,
 ): Promise<PostResponse> {
   try {
+    const { boardId, ...draftData } = data;
     const response = await client.patch<PostResponse>(
       `/posts/${id}/draft`,
-      data,
+      draftData,
     );
     return response.data;
   } catch (error) {

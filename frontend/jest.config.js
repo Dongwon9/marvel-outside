@@ -1,3 +1,5 @@
+process.env.NODE_ENV = "test";
+
 export default {
   displayName: "frontend",
   preset: "ts-jest",

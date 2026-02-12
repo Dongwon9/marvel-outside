@@ -20,7 +20,7 @@ export default function HeaderRight() {
           {user.name}
           <Link to="/settings">
             <Button variant="secondary" size="md">
-              설정
+              마이페이지
             </Button>
           </Link>
           <Button

@@ -29,7 +29,6 @@ async function hashPassword(password: string): Promise<string> {
 async function main() {
   console.log('🌱 데이터베이스 시딩 시작...');
 
-  // 기존 데이터 삭제 (자식 테이블을 먼저 삭제)
   await prisma.rate.deleteMany();
   await prisma.comment.deleteMany();
   await prisma.post.deleteMany();

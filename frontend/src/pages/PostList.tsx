@@ -1,10 +1,8 @@
 import { FileText } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { getPosts, type PostResponse } from "../api/posts";
 import PostCard from "../components/PostCard";
-import LinkButton from "../components/ui/LinkButton";
 import Section from "../components/ui/Section";
 
 export default function PostList() {
@@ -33,7 +31,6 @@ export default function PostList() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold md:text-3xl">게시글 목록</h1>
-       
       </div>
 
       {/* Filter/Sort Bar */}
@@ -82,17 +79,8 @@ export default function PostList() {
             <FileText className="h-8 w-8 text-gray-400 md:h-10 md:w-10" />
           </div>
           <h3 className="text-primary mb-2 text-lg font-semibold md:text-xl">
-            게시글이 없습니다
+            게시글이 없습니다...
           </h3>
-          <p className="text-tertiary mb-6 md:text-base">
-            첫 번째 게시글을 작성해보세요!
-          </p>
-          <Link
-            to="/post/new"
-            className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
-          >
-            게시글 작성하기
-          </Link>
         </div>
       )}
     </Section>

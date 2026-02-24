@@ -24,6 +24,8 @@ services:
       - ./pnpm-workspace.yaml:/workspace/pnpm-workspace.yaml:ro
       - ./backend/scripts/docker-entrypoint.sh:/workspace/docker-entrypoint.sh
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     networks:
@@ -64,6 +66,28 @@ services:
       - marvel_network
     restart: unless-stopped
 
+  postgres:
+    image: postgres:18
+    container_name: marvel_postgres_dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: marvel_password
+      POSTGRES_DB: postgres
+      TZ: Asia/Seoul
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - marvel_network
+    restart: unless-stopped
+
   redis:
     image: redis:8-alpine
     container_name: marvel_redis_dev
@@ -98,6 +122,8 @@ services:
 
 # Volumes for data persistence
 volumes:
+  postgres_data:
+    driver: local
   redis_data:
     driver: local
 

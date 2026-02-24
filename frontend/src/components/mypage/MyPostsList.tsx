@@ -1,0 +1,71 @@
+import { Link } from "react-router-dom";
+
+import { formatRelativeTime } from "@/utils/time";
+import { Card } from "@/components/ui";
+
+interface Post {
+  id: string;
+  title: string;
+  boardName: string;
+  createdAt: string;
+  views: number;
+  comments: number;
+}
+
+interface MyPostsListProps {
+  posts: Post[];
+  isLoading?: boolean;
+}
+
+export default function MyPostsList({ posts, isLoading }: MyPostsListProps) {
+  if (isLoading) {
+    return (
+      <Card variant="default" padding="md">
+        <p className="text-muted text-center">로딩 중...</p>
+      </Card>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <Card variant="default" padding="md">
+        <p className="text-muted text-center py-8">
+          아직 게시글이 없습니다.
+        </p>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-3 md:space-y-4">
+      {posts.map((post) => (
+        <Card
+          key={post.id}
+          variant="outlined"
+          padding="sm"
+          className="hover:shadow-md transition-shadow"
+        >
+          <Link
+            to={`/post/${post.id}`}
+            className="block space-y-2 md:space-y-3"
+          >
+            <h3 className="text-primary text-base md:text-lg font-semibold hover:text-blue-600 transition-colors">
+              {post.title}
+            </h3>
+            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm">
+              <span className="text-muted">{post.boardName}</span>
+              <span className="text-muted">·</span>
+              <span className="text-muted">
+                {formatRelativeTime(post.createdAt)}
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-tertiary">
+              <span>조회 {post.views}</span>
+              <span>댓글 {post.comments}</span>
+            </div>
+          </Link>
+        </Card>
+      ))}
+    </div>
+  );
+}

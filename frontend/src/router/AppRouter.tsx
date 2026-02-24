@@ -13,6 +13,7 @@ const PostList = lazy(() => import("@/pages/PostList"));
 const PostEditor = lazy(() => import("@/pages/PostEditor"));
 const PostView = lazy(() => import("@/pages/PostView"));
 const UserProfile = lazy(() => import("@/pages/UserProfile"));
+const MyPage = lazy(() => import("@/pages/MyPage"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const BoardList = lazy(() => import("@/pages/BoardList"));
 const BoardView = lazy(() => import("@/pages/BoardView"));
@@ -37,6 +38,12 @@ export const router = createBrowserRouter([
       {
         path: "/user/:id",
         element: <ProtectedRoute element={<UserProfile />} />,
+      },
+      {
+        path: "/mypage",
+        element: (
+          <ProtectedRoute element={<MyPage />} kickOnAuthFail={true} />
+        ),
       },
       {
         path: "/settings",

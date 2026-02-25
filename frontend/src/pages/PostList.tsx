@@ -35,15 +35,9 @@ export default function PostList() {
 
       {/* Filter/Sort Bar */}
       <div className="flex flex-wrap items-center gap-2 rounded-lg bg-white p-3 shadow-sm md:gap-3 md:p-4">
-        <button className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white transition-colors hover:bg-blue-700 md:px-4 md:py-2 md:text-base">
-          최신순
-        </button>
-        <button className="text-secondary rounded-lg bg-gray-100 px-3 py-1.5 text-sm transition-colors hover:bg-gray-200 md:px-4 md:py-2 md:text-base">
-          인기순
-        </button>
-        <button className="text-secondary rounded-lg bg-gray-100 px-3 py-1.5 text-sm transition-colors hover:bg-gray-200 md:px-4 md:py-2 md:text-base">
-          댓글순
-        </button>
+        <button className="btn-sm-primary">최신순</button>
+        <button className="btn-sm-secondary">인기순</button>
+        <button className="btn-sm-secondary">댓글순</button>
       </div>
 
       {/* Loading State */}

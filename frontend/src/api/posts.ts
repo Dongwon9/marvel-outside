@@ -34,14 +34,14 @@ export interface PostResponse {
   createdAt: string;
   updatedAt: string;
   publishedAt?: string | null;
-  likes: number;
-  dislikes: number;
+  likeCount: number;
+  dislikeCount: number;
 }
 
 export interface PostStatsResponse {
   postId: string;
-  likes: number;
-  dislikes: number;
+  likeCount: number;
+  dislikeCount: number;
 }
 
 export async function getPostById(id: string): Promise<PostResponse> {

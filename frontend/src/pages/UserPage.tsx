@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ProfileCard from "@/components/mypage/ProfileCard";
 import ActivityStats from "@/components/mypage/ActivityStats";
@@ -9,6 +9,7 @@ import FollowList from "@/components/mypage/FollowList";
 import LikedPostsList from "@/components/mypage/LikedPostsList";
 import { Section } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
+import { getUserById } from "@/api/user";
 
 type TabType = "posts" | "liked" | "comments" | "followers" | "following";
 
@@ -123,11 +124,34 @@ const mockLikedPosts = [
 ];
 
 export default function MyPage() {
+  const { id: userId } = useParams<{ id: string }>();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("posts");
-
-  if (!user) {
+  const [userData, setUserData] = useState<{
+    name: string;
+    registeredAt: string;
+  } | null>(null);
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!userId) {
+        navigate("/not-found", { replace: true });
+        return;
+      }
+      try {
+        const data = await getUserById(userId); // API 호출로 사용자 데이터 가져오기
+        setUserData({
+          name: data.name,
+          registeredAt: data.registeredAt.toString(),
+        });
+      } catch (error) {
+        console.error("사용자 데이터를 가져오는 중 오류 발생:", error);
+        navigate("/not-found", { replace: true });
+      }
+    }
+    fetchUserData();
+  }, [userId]);
+  if (!userId) {
     return (
       <Section>
         <p className="text-tertiary text-center">
@@ -136,21 +160,11 @@ export default function MyPage() {
       </Section>
     );
   }
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/login", { replace: true });
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
+  const profileMode = () => {
+    if (!user) return "nonMember";
+    if (user.id === userId) return "self";
+    return "member";
   };
-
-  const handleDeleteAccount = () => {
-    // 이 부분은 나중에 useConfirm으로 구현
-    console.log("계정 삭제");
-  };
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "posts":
@@ -171,13 +185,15 @@ export default function MyPage() {
   return (
     <Section>
       {/* Profile Section */}
+
       <ProfileCard
-        userName={user.name}
-        email={user.email}
-        registeredAt={new Date().toISOString()}
+        userName={userData?.name || ""}
+        registeredAt={
+          userData ? new Date(userData.registeredAt).toISOString() : ""
+        }
         onEditProfile={() => console.log("프로필 수정")}
-        onLogout={handleLogout}
-        onDeleteAccount={handleDeleteAccount}
+        mode={profileMode()}
+        onFollow={() => console.log("팔로우")}
       />
 
       {/* Activity Stats */}

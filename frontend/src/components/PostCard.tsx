@@ -21,7 +21,8 @@ export default function PostCard({
   boardName,
   createdAt,
   updatedAt,
-  likes,
+  likeCount,
+  dislikeCount,
   variant = "card",
 }: PostCardProps) {
   const displayTime = useMemo(() => {
@@ -55,7 +56,7 @@ export default function PostCard({
     <div className="border-top-light flex items-center gap-4 pt-4 md:gap-6">
       <button className="action-icon-button">
         <ThumbsUp className="h-5 w-5" />
-        <span>{likes}</span>
+        <span>{likeCount}</span>
       </button>
       <button className="action-icon-button">
         <MessageCircle className="h-5 w-5" />

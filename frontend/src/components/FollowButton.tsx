@@ -66,7 +66,7 @@ export function FollowButton({ userId, onFollowChange }: FollowButtonProps) {
         disabled={isLoading}
         className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-colors ${
           isFollowed
-            ? "text-secondary bg-gray-100 hover:bg-gray-200 disabled:bg-gray-100"
+            ? "bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:bg-gray-100"
             : "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-600"
         }`}
       >

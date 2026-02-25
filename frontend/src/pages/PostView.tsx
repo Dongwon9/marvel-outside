@@ -56,19 +56,11 @@ export default function PostView() {
           void navigate("/not-found", { replace: true });
           return;
         }
-
+        console.log(data);
         setPost(data);
-        setLikes(data.likes);
-        setDislikes(data.dislikes);
+        setLikes(data.likeCount);
+        setDislikes(data.dislikeCount);
 
-        // // 조회수 증가
-        // try {
-        //   await increasePostViews(id as string);
-        // } catch {
-        //   // 조회수 증가 실패는 무시
-        // }
-
-        // 사용자의 평가 조회 (현재 사용자가 로그인했다면)
         try {
           if (user?.id) {
             const currentUserRate = await getRateByPostAndUserId(
@@ -154,7 +146,7 @@ export default function PostView() {
                   onClick={() => void handleDeletePost()}
                   disabled={isDeleting}
                   aria-label="게시글 삭제"
-                  className="text-tertiary rounded-lg px-3 py-2 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 md:px-4 md:py-2.5"
+                  className="btn-icon-small-danger"
                 >
                   <MoreVertical className="h-6 w-6" />
                 </button>
@@ -164,10 +156,7 @@ export default function PostView() {
 
           {/* Meta Info */}
           <div className="text-muted flex flex-wrap items-center gap-2 text-xs md:gap-4 md:text-sm">
-            <Link
-              to={`/board/${post.boardId}`}
-              className="rounded bg-blue-100 px-2 py-1 font-medium text-blue-700 transition-colors hover:bg-blue-200"
-            >
+            <Link to={`/board/${post.boardId}`} className="badge-primary">
               {post.boardName}
             </Link>
             <span className="flex items-center gap-1.5">

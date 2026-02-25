@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <Section>
       {user ? user.name + "님 만을 위한" : "오늘의"} 피드
-      <div className="space-y-4 grid grid-cols-2 gap-4">
+      <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {feedData.map((item) => (
           <PostCard key={item.id} {...item} variant="feed" />
         ))}

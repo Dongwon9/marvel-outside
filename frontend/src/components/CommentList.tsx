@@ -63,11 +63,7 @@ export default function CommentList({ postId }: CommentListProps) {
         댓글 ({comments.length + (myComment ? 1 : 0)})
       </h2>
 
-      {error && (
-        <div className="rounded bg-red-50 p-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <div className="alert-error">{error}</div>}
 
       {user && !myComment && (
         <div>

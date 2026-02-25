@@ -78,7 +78,7 @@ export default function CommentForm({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="text-tertiary rounded px-4 py-2 text-sm hover:bg-gray-100 disabled:opacity-50"
+            className="btn-tertiary"
           >
             취소
           </button>
@@ -86,7 +86,7 @@ export default function CommentForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 disabled:opacity-50"
+          className="btn-primary"
         >
           {isLoading ? "작성 중..." : isEdit ? "수정" : "댓글 작성"}
         </button>

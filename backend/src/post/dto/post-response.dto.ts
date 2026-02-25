@@ -51,11 +51,11 @@ export class PostResponseDto {
 
   @IsNumber()
   @IsNotEmpty()
-  likes!: number;
+  likeCount!: number;
 
   @IsNumber()
   @IsNotEmpty()
-  dislikes!: number;
+  dislikeCount!: number;
 
   constructor(partial: Partial<PostResponseDto> = {}) {
     Object.assign(this, partial);

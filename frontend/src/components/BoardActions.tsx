@@ -90,24 +90,20 @@ export function BoardEditModal({
             />
           </div>
 
-          {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
+          {error && <div className="alert-error">{error}</div>}
 
           <div className="flex gap-3">
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-blue-400"
+              className="btn-primary flex-1"
             >
               {isLoading ? "저장 중..." : "저장"}
             </button>
             <button
               type="button"
               onClick={() => onClose()}
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="btn-secondary flex-1"
             >
               취소
             </button>
@@ -155,7 +151,7 @@ export function BoardActions({ board, onDeleted }: BoardActionsProps) {
       <div className="flex gap-2">
         <button
           onClick={() => setIsEditModalOpen(true)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100"
+          className="btn-icon-primary"
         >
           <Edit2 className="h-4 w-4" />
           수정
@@ -163,7 +159,7 @@ export function BoardActions({ board, onDeleted }: BoardActionsProps) {
         <button
           onClick={onDeleteWrapper}
           disabled={isDeleting}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"
+          className="btn-icon-danger"
         >
           <Trash2 className="h-4 w-4" />
           삭제

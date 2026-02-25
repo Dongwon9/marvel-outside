@@ -259,6 +259,7 @@ describe('PostController', () => {
         id: postId,
         title: 'Draft Title',
         content: 'Draft Content',
+        hits: 0,
         authorId: 'user-1',
         authorName: 'Test User',
         boardId: 'board-1',
@@ -266,8 +267,8 @@ describe('PostController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         publishedAt: null,
-        likes: 0,
-        dislikes: 0,
+        likeCount: 0,
+        dislikeCount: 0,
       } as PostResponseDto;
 
       mockPostService.saveDraft = jest.fn().mockResolvedValue(expectedResult);
@@ -288,6 +289,7 @@ describe('PostController', () => {
         id: postId,
         title: 'Published Title',
         content: 'Published Content',
+        hits: 0,
         authorId: 'user-1',
         authorName: 'Test User',
         boardId: 'board-1',
@@ -295,8 +297,8 @@ describe('PostController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         publishedAt: now,
-        likes: 0,
-        dislikes: 0,
+        likeCount: 0,
+        dislikeCount: 0,
       } as PostResponseDto;
 
       mockPostService.publishDraft = jest.fn().mockResolvedValue(expectedResult);

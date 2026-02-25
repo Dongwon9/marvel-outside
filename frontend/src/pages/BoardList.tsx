@@ -133,7 +133,7 @@ export default function BoardList() {
           </p>
           <button
             onClick={handleCreateBoard}
-            className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
+            className="btn-primary inline-block"
           >
             게시판 만들기
           </button>

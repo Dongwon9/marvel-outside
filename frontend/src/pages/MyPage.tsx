@@ -130,7 +130,9 @@ export default function MyPage() {
   if (!user) {
     return (
       <Section>
-        <p className="text-center text-tertiary">사용자 정보를 로드할 수 없습니다.</p>
+        <p className="text-tertiary text-center">
+          사용자 정보를 로드할 수 없습니다.
+        </p>
       </Section>
     );
   }
@@ -187,15 +189,15 @@ export default function MyPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="border-b border-light mt-8">
+      <div className="border-light mt-8 border-b">
         <div className="flex gap-2 overflow-x-auto md:gap-4">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`whitespace-nowrap px-4 py-3 font-medium text-sm md:text-base transition-colors ${
+              className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors md:text-base ${
                 activeTab === tab.id
-                  ? "border-b-2 border-blue-500 text-primary"
+                  ? "text-primary border-b-2 border-blue-500"
                   : "text-secondary hover:text-primary"
               }`}
             >

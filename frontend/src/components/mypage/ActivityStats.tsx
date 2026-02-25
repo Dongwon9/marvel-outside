@@ -21,20 +21,18 @@ export default function ActivityStats({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:gap-6 mt-6">
+    <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
       {stats.map((stat) => (
         <Card
           key={stat.label}
           variant="outlined"
           padding="sm"
-          className="text-center hover:shadow-lg transition-shadow"
+          className="text-center transition-shadow hover:shadow-lg"
         >
-          <div className="text-2xl md:text-3xl font-bold text-primary">
+          <div className="text-primary text-2xl font-bold md:text-3xl">
             {stat.count}
           </div>
-          <div className="text-muted text-xs md:text-sm mt-2">
-            {stat.label}
-          </div>
+          <div className="text-muted mt-2 text-xs md:text-sm">{stat.label}</div>
         </Card>
       ))}
     </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import HeaderRight from "../Header-right";
-import SearchBar from "../searchbar";
+import SearchBar from "../Searchbar";
 
 export default function HeaderMobile() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,13 +55,7 @@ export default function HeaderMobile() {
             >
               게시판 목록
             </Link>
-            <Link
-              to="/feed"
-              className="rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"
-              onClick={handleMenuClose}
-            >
-              피드
-            </Link>
+
             <Link
               to="/post"
               className="rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"

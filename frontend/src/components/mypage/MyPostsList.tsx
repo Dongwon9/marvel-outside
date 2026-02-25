@@ -29,9 +29,7 @@ export default function MyPostsList({ posts, isLoading }: MyPostsListProps) {
   if (posts.length === 0) {
     return (
       <Card variant="default" padding="md">
-        <p className="text-muted text-center py-8">
-          아직 게시글이 없습니다.
-        </p>
+        <p className="text-muted py-8 text-center">아직 게시글이 없습니다.</p>
       </Card>
     );
   }
@@ -43,13 +41,13 @@ export default function MyPostsList({ posts, isLoading }: MyPostsListProps) {
           key={post.id}
           variant="outlined"
           padding="sm"
-          className="hover:shadow-md transition-shadow"
+          className="transition-shadow hover:shadow-md"
         >
           <Link
             to={`/post/${post.id}`}
             className="block space-y-2 md:space-y-3"
           >
-            <h3 className="text-primary text-base md:text-lg font-semibold hover:text-blue-600 transition-colors">
+            <h3 className="text-primary text-base font-semibold transition-colors hover:text-blue-600 md:text-lg">
               {post.title}
             </h3>
             <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm">
@@ -59,7 +57,7 @@ export default function MyPostsList({ posts, isLoading }: MyPostsListProps) {
                 {formatRelativeTime(post.createdAt)}
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-tertiary">
+            <div className="text-tertiary flex flex-wrap items-center gap-3 text-xs md:text-sm">
               <span>조회 {post.views}</span>
               <span>댓글 {post.comments}</span>
             </div>

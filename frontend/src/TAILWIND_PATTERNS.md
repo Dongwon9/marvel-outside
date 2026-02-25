@@ -99,40 +99,6 @@
 
 ---
 
-## 👤 작성자 정보 섹션
-
-작성자 정보를 표시하는 패턴입니다.
-
-```tsx
-<div className="author-section">
-  <div className="author-avatar">{avatar || "👤"}</div>
-  <div className="author-info">
-    <h3 className="author-name">{name}</h3>
-    <p className="author-meta">
-      {board}, {time}
-    </p>
-  </div>
-</div>
-```
-
-**사용 예시:**
-
-```tsx
-// PostCard에서
-<div className="author-section">
-  <div className="author-avatar">{authorAvatar || "👤"}</div>
-  <div className="author-info">
-    <h3 className="author-name">{authorName}</h3>
-    <p className="author-meta">
-      {boardName}, {relativeUpdatedAt}
-    </p>
-  </div>
-  <button>...</button>
-</div>
-```
-
----
-
 ## 🎯 응답형 간격
 
 반응형 패딩과 마진을 위한 유틸리티 클래스입니다.
@@ -244,5 +210,4 @@ Tailwind 기본 유틸리티와 자유롭게 조합하세요:
 - [ ] 카드 스타일이 필요한가? → `card-*` 클래스 사용
 - [ ] 텍스트 색상 지정? → `text-primary`, `text-secondary` 등 사용
 - [ ] 버튼/링크? → `action-link-*` 또는 기존 Button 컴포넌트 사용
-- [ ] 작성자 정보? → `author-*` 클래스 사용
 - [ ] 반응형 간격? → `responsive-*` 클래스 사용

@@ -35,9 +35,9 @@ export default function ProfileCard({
       <div className="space-y-4">
         {/* User Info */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">{userName}</h1>
-          <p className="text-blue-100 text-sm md:text-base mt-1">{email}</p>
-          <p className="text-blue-100 text-xs md:text-sm mt-2">
+          <h1 className="text-2xl font-bold md:text-3xl">{userName}</h1>
+          <p className="mt-1 text-sm text-blue-100 md:text-base">{email}</p>
+          <p className="mt-2 text-xs text-blue-100 md:text-sm">
             가입일: {registeredDate}
           </p>
         </div>
@@ -48,7 +48,7 @@ export default function ProfileCard({
             onClick={onEditProfile}
             variant="primary"
             size="md"
-            className="bg-white text-blue-600 hover:bg-blue-50 font-medium"
+            className="bg-white font-medium text-blue-600 hover:bg-blue-50"
           >
             프로필 수정
           </Button>
@@ -56,7 +56,7 @@ export default function ProfileCard({
             onClick={() => navigate("/settings")}
             variant="secondary"
             size="md"
-            className="border border-white bg-transparent text-white hover:bg-blue-700 font-medium"
+            className="border border-white bg-transparent font-medium text-white hover:bg-blue-700"
           >
             설정
           </Button>
@@ -64,7 +64,7 @@ export default function ProfileCard({
             onClick={onLogout}
             variant="secondary"
             size="md"
-            className="border border-white bg-transparent text-white hover:bg-blue-700 font-medium"
+            className="border border-white bg-transparent font-medium text-white hover:bg-blue-700"
           >
             로그아웃
           </Button>
@@ -72,7 +72,7 @@ export default function ProfileCard({
             onClick={onDeleteAccount}
             variant="danger"
             size="md"
-            className="border border-red-300 bg-red-600 hover:bg-red-700 font-medium"
+            className="border border-red-300 bg-red-600 font-medium hover:bg-red-700"
           >
             계정 삭제
           </Button>

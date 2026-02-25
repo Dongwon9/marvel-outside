@@ -24,7 +24,6 @@ export interface PostsQueryForm {
   skip?: number;
 }
 export interface PostResponse {
-  authorAvatar: string | undefined;
   id: string;
   title: string;
   content: string;

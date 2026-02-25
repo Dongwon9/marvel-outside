@@ -46,11 +46,6 @@ export default function UserProfile() {
       {/* Profile Header */}
       <div className="rounded-lg bg-linear-to-r from-blue-500 to-purple-500 p-6 text-white shadow-lg md:rounded-xl md:p-8 lg:p-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-          {/* Avatar */}
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white text-3xl md:h-24 md:w-24 md:text-4xl lg:h-28 lg:w-28 lg:text-5xl">
-            👤
-          </div>
-
           {/* User Info */}
           <div className="flex-1">
             <h1 className="mb-2 text-2xl font-bold md:text-3xl lg:text-4xl">

@@ -22,7 +22,6 @@ describe("PostCard", () => {
       "이것은 테스트 포스트의 내용입니다. 더 긴 내용이 있을 수 있습니다.",
     authorName: "John Doe",
     authorId: "user-123",
-    authorAvatar: "👨",
     boardName: "일반",
     boardId: "board-1",
     createdAt: "2024-01-01T12:00:00Z",
@@ -60,11 +59,7 @@ describe("PostCard", () => {
       expect(screen.getByText("테스트 포스트 제목")).toBeInTheDocument();
     });
 
-    it("내용을 렌더링해야 한다", () => {
-      renderPostCard({ variant: "card" });
-
-      expect(screen.getByText(/테스트 포스트의 내용/)).toBeInTheDocument();
-    });
+ 
 
     it("저자명을 렌더링해야 한다", () => {
       renderPostCard({ variant: "card" });
@@ -133,11 +128,7 @@ describe("PostCard", () => {
       expect(screen.getByText("테스트 포스트 제목")).toBeInTheDocument();
     });
 
-    it("내용을 렌더링해야 한다", () => {
-      renderPostCard({ variant: "feed" });
-
-      expect(screen.getByText(/테스트 포스트의 내용/)).toBeInTheDocument();
-    });
+    
 
     it("저자명을 렌더링해야 한다", () => {
       renderPostCard({ variant: "feed" });
@@ -149,18 +140,6 @@ describe("PostCard", () => {
       renderPostCard({ variant: "feed" });
 
       expect(screen.getByText(/일반/)).toBeInTheDocument();
-    });
-
-    it("아바타를 렌더링해야 한다", () => {
-      renderPostCard({ variant: "feed", authorAvatar: "👩" });
-
-      expect(screen.getByText("👩")).toBeInTheDocument();
-    });
-
-    it("아바타가 없을 때 기본 아바타를 사용해야 한다", () => {
-      renderPostCard({ variant: "feed", authorAvatar: undefined });
-
-      expect(screen.getByText("👤")).toBeInTheDocument();
     });
 
     it("좋아요 버튼을 렌더링해야 한다", () => {
@@ -210,12 +189,6 @@ describe("PostCard", () => {
       const link = screen.getByRole("link");
       expect(link).toHaveAttribute("href", "/post/post-789");
     });
-
-    it("아바타가 빈 문자열일 때 기본 아바타를 사용해야 한다", () => {
-      renderPostCard({ variant: "feed", authorAvatar: "" });
-
-      expect(screen.getByText("👤")).toBeInTheDocument();
-    });
   });
 
   describe("공통 기능", () => {
@@ -223,15 +196,6 @@ describe("PostCard", () => {
       renderPostCard();
 
       expect(screen.getByRole("link")).toBeInTheDocument();
-    });
-
-    it("빈 아바타 문자열이 아닌 undefined일 때만 기본값을 사용해야 한다", () => {
-      renderPostCard({
-        variant: "feed",
-        authorAvatar: undefined,
-      });
-
-      expect(screen.getByText("👤")).toBeInTheDocument();
     });
 
     it("0개의 좋아요를 렌더링해야 한다", () => {
@@ -253,13 +217,6 @@ describe("PostCard", () => {
       });
 
       expect(screen.getByText(/테스트 & <포스트>/)).toBeInTheDocument();
-    });
-
-    it("매우 긴 내용을 렌더링해야 한다", () => {
-      const longContent = "a".repeat(500);
-      renderPostCard({ variant: "card", content: longContent });
-
-      expect(screen.getByText(new RegExp(longContent))).toBeInTheDocument();
     });
   });
 });

@@ -18,10 +18,10 @@ export default function HeaderRight() {
       {user ? (
         <>
           {user.name}
-          <Link to="/settings">
+          <Link to="/mypage">
             <Button variant="secondary" size="md">
               마이페이지
-            </Button>
+            </Button> 
           </Link>
           <Button
             onClick={() => void handleLogout()}

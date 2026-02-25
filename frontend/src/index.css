@@ -177,10 +177,6 @@ button {
   @apply mb-4 flex items-center gap-3;
 }
 
-.author-avatar {
-  @apply flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg md:h-12 md:w-12 md:text-xl;
-}
-
 .author-info {
   @apply min-w-0 flex-1;
 }

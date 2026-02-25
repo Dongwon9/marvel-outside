@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import HeaderRight from "../Header-right";
-import SearchBar from "../searchbar";
+import SearchBar from "../Searchbar";
 
 export default function HeaderDesktop() {
   return (
@@ -23,12 +23,6 @@ export default function HeaderDesktop() {
               className="font-medium transition-colors hover:text-blue-600"
             >
               게시판 목록
-            </Link>
-            <Link
-              to="/feed"
-              className="font-medium transition-colors hover:text-blue-600"
-            >
-              피드
             </Link>
             <Link
               to="/post"

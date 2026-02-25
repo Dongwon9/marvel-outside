@@ -24,3 +24,9 @@ EXPOSE 5173
 
 # Run Vite dev server
 CMD ["pnpm", "run", "start:dev"]
+
+RUN <<EOF
+  echo "---FRONTEND---"
+  echo "Node.js version: $(node -v)"
+  echo "pnpm version: $(pnpm -v)"
+EOF

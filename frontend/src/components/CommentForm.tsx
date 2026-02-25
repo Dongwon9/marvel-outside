@@ -26,7 +26,7 @@ export default function CommentForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) {
       setError("댓글 내용을 입력해주세요.");
@@ -36,28 +36,24 @@ export default function CommentForm({
     setIsLoading(true);
     setError("");
 
-    const performSubmit = async () => {
-      try {
-        const form: ICommentForm = { content };
+    try {
+      const form: ICommentForm = { content };
 
-        if (isEdit) {
-          await updateComment(postId, form);
-        } else {
-          await createComment(postId, form);
-        }
-
-        setContent("");
-        onSuccess();
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "댓글 작성에 실패했습니다.";
-        setError(message);
-      } finally {
-        setIsLoading(false);
+      if (isEdit) {
+        await updateComment(postId, form);
+      } else {
+        await createComment(postId, form);
       }
-    };
 
-    void performSubmit();
+      setContent("");
+      onSuccess();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "댓글 작성에 실패했습니다.";
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 describe('AppController', () => {
   let appController: AppController;
   const mockAppService: Partial<AppService> = {
-    getHello: () => 'Hello World!',
+    getHealth: jest.fn().mockReturnValue('OK'),
   };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('AppController', () => {
     appController = module.get<AppController>(AppController);
   });
 
-  it('should return "Hello World!"', () => {
-    expect(appController.getHello()).toBe('Hello World!');
+  it('should return "OK"', () => {
+    expect(appController.getHealth()).toBe('OK');
   });
 });

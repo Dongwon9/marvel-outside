@@ -5,6 +5,11 @@
 
 set -e
 
+#node.js and pnpm version check
+echo "---BACKEND---"
+echo "Node.js version: $(node -v)"
+echo "pnpm version: $(pnpm -v)"
+
 echo "Waiting for database to be ready..."
 
 # Wait for PostgreSQL to accept connections

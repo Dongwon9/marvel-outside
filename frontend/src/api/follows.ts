@@ -19,7 +19,6 @@ export interface FollowStatsResponse {
 export interface UserBasicInfo {
   id: string;
   email: string;
-  avatar?: string;
 }
 
 function getStatusCode(error: unknown): number {

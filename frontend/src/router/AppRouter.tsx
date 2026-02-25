@@ -8,7 +8,6 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
 const Signup = lazy(() => import("@/pages/Signup"));
-const Feed = lazy(() => import("@/pages/Feed"));
 const PostList = lazy(() => import("@/pages/PostList"));
 const PostEditor = lazy(() => import("@/pages/PostEditor"));
 const PostView = lazy(() => import("@/pages/PostView"));
@@ -26,7 +25,6 @@ export const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/feed", element: <Feed /> },
       { path: "/post", element: <PostList /> },
       { path: "/post/:id", element: <PostView /> },
       {
@@ -41,9 +39,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/mypage",
-        element: (
-          <ProtectedRoute element={<MyPage />} kickOnAuthFail={true} />
-        ),
+        element: <ProtectedRoute element={<MyPage />} kickOnAuthFail={true} />,
       },
       {
         path: "/settings",

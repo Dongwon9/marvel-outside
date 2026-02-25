@@ -34,9 +34,7 @@ export default function MyCommentsList({
   if (comments.length === 0) {
     return (
       <Card variant="default" padding="md">
-        <p className="text-muted text-center py-8">
-          작성한 댓글이 없습니다.
-        </p>
+        <p className="text-muted py-8 text-center">작성한 댓글이 없습니다.</p>
       </Card>
     );
   }
@@ -48,16 +46,16 @@ export default function MyCommentsList({
           key={comment.id}
           variant="outlined"
           padding="sm"
-          className="hover:shadow-md transition-shadow"
+          className="transition-shadow hover:shadow-md"
         >
           <div className="space-y-2 md:space-y-3">
-            <p className="text-tertiary text-sm md:text-base line-clamp-2">
+            <p className="text-tertiary line-clamp-2 text-sm md:text-base">
               {comment.content}
             </p>
             <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm">
               <Link
                 to={`/post/${comment.postId}`}
-                className="text-secondary hover:text-blue-600 transition-colors"
+                className="text-secondary transition-colors hover:text-blue-600"
               >
                 {comment.postTitle}
               </Link>

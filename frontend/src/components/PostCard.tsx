@@ -17,17 +17,13 @@ interface PostCardProps extends PostResponse {
 export default function PostCard({
   id,
   title,
-  content,
   authorName,
-  authorAvatar,
   boardName,
   createdAt,
   updatedAt,
   likes,
   variant = "card",
 }: PostCardProps) {
-  const displayAvatar = useMemo(() => authorAvatar || "👤", [authorAvatar]);
-
   const displayTime = useMemo(() => {
     if (variant === "feed" && updatedAt) {
       return formatRelativeTime(updatedAt);
@@ -37,10 +33,9 @@ export default function PostCard({
 
   const authorSection = (
     <div className="author-section">
-      <div className="author-avatar">{displayAvatar}</div>
       <div className="author-info">
         <h3 className="author-name">{authorName}</h3>
-        {variant === "feed" && <p className="author-meta">{boardName}</p>}
+        <p className="author-meta">{boardName}</p>
         <p className="author-meta">{displayTime}</p>
       </div>
       <button className="text-gray-400 hover:text-gray-600">
@@ -52,7 +47,7 @@ export default function PostCard({
   const contentSection = (
     <>
       <h4 className="mb-2 text-base font-semibold md:text-lg">{title}</h4>
-      <p className="text-tertiary mb-4 md:text-base">{content}</p>
+      {/* <p className="text-tertiary mb-4 md:text-base">{content}</p> */}
     </>
   );
 
@@ -75,8 +70,8 @@ export default function PostCard({
   return (
     <Link to={`/post/${id}`} className="block hover:underline">
       <article className="card-elevated card-padding-md">
-        {authorSection}
         {contentSection}
+        {authorSection}
         {actionSection}
       </article>
     </Link>

@@ -13,6 +13,7 @@ import {
 
 import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { Public } from '@/auth/decorators/public.decorator';
+import { CommentService } from '@/comment/comment.service';
 import { User } from '@/generated/prisma/client';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,7 +24,10 @@ import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly commentService: CommentService,
+  ) {}
 
   @Get()
   async getUsers(@Query() queryDto: GetUsersQueryDto): Promise<UserResponseDto[]> {
@@ -34,6 +38,18 @@ export class UserController {
   @Public()
   async getUserById(@Param('id') id: string): Promise<UserResponseDto | null> {
     return this.userService.getUserById(id);
+  }
+
+  @Get(':id/stats')
+  @Public()
+  async getUserStats(@Param('id') id: string): Promise<{
+    postCount: number;
+    commentCount: number;
+    followerCount: number;
+    followingCount: number;
+    likedCount: number;
+  }> {
+    return this.userService.getUserStats(id);
   }
 
   @Post()
@@ -55,5 +71,11 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@CurrentUser() user: User): Promise<void> {
     await this.userService.deleteUser(user.id);
+  }
+
+  @Get(':id/comments')
+  @Public()
+  async getUserComments(@Param('id') userId: string) {
+    return this.commentService.findAllByAuthor(userId);
   }
 }

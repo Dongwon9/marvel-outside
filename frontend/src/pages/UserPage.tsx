@@ -9,101 +9,66 @@ import FollowList from "@/components/mypage/FollowList";
 import LikedPostsList from "@/components/mypage/LikedPostsList";
 import { Section } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
-import { getUserById } from "@/api/user";
+import {
+  getUserById,
+  getUserStats,
+  type UserStats,
+} from "@/api/user";
+import { getUserPosts, type PostResponse } from "@/api/posts";
+import { getUserComments, type CommentResponse } from "@/api/comments";
+import {
+  getFollowers,
+  getFollowing,
+  type FollowUserInfo,
+} from "@/api/follows";
 
-type TabType = "posts" | "liked" | "comments" | "followers" | "following";
+type TabType =
+  | "posts"
+  | "liked"
+  | "comments"
+  | "followers"
+  | "following"
+  | "drafts";
 
-const tabs: Array<{ id: TabType; label: string; icon: string }> = [
-  { id: "posts", label: "내 게시글", icon: "📝" },
-  { id: "liked", label: "좋아요한 글", icon: "❤️" },
+// Component-compatible types
+interface Post {
+  id: string;
+  title: string;
+  boardName: string;
+  createdAt: string;
+  views: number;
+  comments: number;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  postTitle: string;
+  postId: string;
+  createdAt: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+const tabs: Array<{
+  id: TabType;
+  label: string;
+  icon: string;
+  meOnly?: boolean;
+}> = [
+  { id: "posts", label: "게시글", icon: "📝" },
   { id: "comments", label: "댓글", icon: "💬" },
   { id: "followers", label: "팔로워", icon: "👥" },
   { id: "following", label: "팔로잉", icon: "👥" },
+  { id: "liked", label: "좋아요한 글", icon: "❤️", meOnly: true },
+  { id: "drafts", label: "임시저장", icon: "🗂️", meOnly: true },
 ];
 
-// Mock data for demonstration
-const mockStats = {
-  postCount: 42,
-  commentCount: 128,
-  followerCount: 315,
-  followingCount: 84,
-};
-
-const mockPosts = [
-  {
-    id: "1",
-    title: "마이페이지 설계를 마쳤습니다",
-    boardName: "개발 팁",
-    createdAt: "2026-02-20T14:12:05.000Z",
-    views: 142,
-    comments: 8,
-  },
-  {
-    id: "2",
-    title: "React 19 업데이트 정리",
-    boardName: "기술 공유",
-    createdAt: "2026-02-19T11:03:40.000Z",
-    views: 89,
-    comments: 5,
-  },
-  {
-    id: "3",
-    title: "Tailwind CSS 팁과 트릭",
-    boardName: "프론트엔드",
-    createdAt: "2026-02-18T07:30:18.000Z",
-    views: 256,
-    comments: 12,
-  },
-];
-
-const mockComments = [
-  {
-    id: "1",
-    content: "정말 좋은 글이네요! 감사합니다.",
-    postTitle: "마이페이지 설계를 마쳤습니다",
-    postId: "1",
-    createdAt: "2026-02-20T15:20:00.000Z",
-  },
-  {
-    id: "2",
-    content: "저도 이 방법을 써봐야겠습니다.",
-    postTitle: "React 19 업데이트 정리",
-    postId: "2",
-    createdAt: "2026-02-19T12:45:00.000Z",
-  },
-];
-
-const mockFollowers = [
-  {
-    id: "user1",
-    name: "이준호",
-    email: "junhove@example.com",
-  },
-  {
-    id: "user2",
-    name: "박민지",
-    email: "minji@example.com",
-  },
-  {
-    id: "user3",
-    name: "최현준",
-    email: "hyunjoon@example.com",
-  },
-];
-
-const mockFollowing = [
-  {
-    id: "user4",
-    name: "김재훈",
-    email: "jaehun@example.com",
-  },
-  {
-    id: "user5",
-    name: "이수현",
-    email: "suhyun@example.com",
-  },
-];
-
+// Temporary mock data for unsupported features
 const mockLikedPosts = [
   {
     id: "post1",
@@ -125,13 +90,22 @@ const mockLikedPosts = [
 
 export default function MyPage() {
   const { id: userId } = useParams<{ id: string }>();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("posts");
   const [userData, setUserData] = useState<{
     name: string;
     registeredAt: string;
   } | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [postsList, setPostsList] = useState<Post[]>([]);
+  const [commentsList, setCommentsList] = useState<Comment[]>([]);
+  const [followersList, setFollowersList] = useState<User[]>([]);
+  const [followingList, setFollowingList] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch user data and stats on mount
   useEffect(() => {
     async function fetchUserData() {
       if (!userId) {
@@ -139,18 +113,99 @@ export default function MyPage() {
         return;
       }
       try {
-        const data = await getUserById(userId); // API 호출로 사용자 데이터 가져오기
+        setLoading(true);
+        setError(null);
+
+        const [userRes, statsRes] = await Promise.all([
+          getUserById(userId),
+          getUserStats(userId),
+        ]);
+
         setUserData({
-          name: data.name,
-          registeredAt: data.registeredAt.toString(),
+          name: userRes.name,
+          registeredAt: userRes.registeredAt.toString(),
         });
-      } catch (error) {
-        console.error("사용자 데이터를 가져오는 중 오류 발생:", error);
+        setStats(statsRes);
+      } catch (err) {
+        console.error("사용자 데이터를 가져오는 중 오류 발생:", err);
+        setError("사용자 정보를 불러올 수 없습니다");
         navigate("/not-found", { replace: true });
+      } finally {
+        setLoading(false);
       }
     }
+
     fetchUserData();
-  }, [userId]);
+  }, [userId, navigate]);
+
+  // Fetch tab-specific data when active tab changes
+  useEffect(() => {
+    if (!userId) return;
+
+    async function fetchTabData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Transform API responses to component-compatible types
+        const transformPost = (post: PostResponse): Post => ({
+          id: post.id,
+          title: post.title,
+          boardName: post.boardName,
+          createdAt: post.createdAt,
+          views: post.hits,
+          comments: 0, // API doesn't provide comment count - will be 0 for now
+        });
+
+        const transformComment = (comment: CommentResponse): Comment => ({
+          id: `${comment.authorId}_${comment.postId}`, // Unique ID from authorId and postId
+          content: comment.content,
+          postTitle: comment.post.title,
+          postId: comment.postId,
+          createdAt: comment.createdAt,
+        });
+
+        const transformUser = (data: FollowUserInfo): User => ({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+        });
+
+        switch (activeTab) {
+          case "posts": {
+            const posts = await getUserPosts(userId!);
+            setPostsList(posts.map(transformPost));
+            break;
+          }
+          case "comments": {
+            const comments = await getUserComments(userId!);
+            setCommentsList(comments.map(transformComment));
+            break;
+          }
+          case "followers": {
+            const followers = await getFollowers(userId!);
+            setFollowersList(followers.map(transformUser));
+            break;
+          }
+          case "following": {
+            const following = await getFollowing(userId!);
+            setFollowingList(following.map(transformUser));
+            break;
+          }
+          default:
+            break;
+        }
+      } catch (err) {
+        console.error(`${activeTab} 탭 데이터 로딩 중 오류:`, err);
+        setError(`${activeTab} 데이터를 불러올 수 없습니다`);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTabData();
+  }, [userId, activeTab]);
+
   if (!userId) {
     return (
       <Section>
@@ -160,23 +215,41 @@ export default function MyPage() {
       </Section>
     );
   }
+
   const profileMode = () => {
     if (!user) return "nonMember";
     if (user.id === userId) return "self";
     return "member";
   };
+
   const renderTabContent = () => {
+    if (loading && activeTab !== "posts") {
+      return (
+        <div className="text-tertiary text-center py-8">
+          로드 중입니다...
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-red-500 text-center py-8">
+          {error}
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "posts":
-        return <MyPostsList posts={mockPosts} />;
+        return <MyPostsList posts={postsList} />;
       case "liked":
         return <LikedPostsList posts={mockLikedPosts} />;
       case "comments":
-        return <MyCommentsList comments={mockComments} />;
+        return <MyCommentsList comments={commentsList} />;
       case "followers":
-        return <FollowList users={mockFollowers} type="followers" />;
+        return <FollowList users={followersList} type="followers" />;
       case "following":
-        return <FollowList users={mockFollowing} type="following" />;
+        return <FollowList users={followingList} type="following" />;
       default:
         return null;
     }
@@ -198,29 +271,31 @@ export default function MyPage() {
 
       {/* Activity Stats */}
       <ActivityStats
-        postCount={mockStats.postCount}
-        commentCount={mockStats.commentCount}
-        followerCount={mockStats.followerCount}
-        followingCount={mockStats.followingCount}
+        postCount={stats?.postCount || 0}
+        commentCount={stats?.commentCount || 0}
+        followerCount={stats?.followerCount || 0}
+        followingCount={stats?.followingCount || 0}
       />
 
       {/* Tab Navigation */}
       <div className="border-light mt-8 border-b">
         <div className="flex gap-2 overflow-x-auto md:gap-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors md:text-base ${
-                activeTab === tab.id
-                  ? "text-primary border-b-2 border-blue-500"
-                  : "text-secondary hover:text-primary"
-              }`}
-            >
-              <span className="mr-1">{tab.icon}</span>
-              {tab.label}
-            </button>
-          ))}
+          {tabs.map((tab) =>
+            !tab.meOnly || user?.id === userId ? (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors md:text-base ${
+                  activeTab === tab.id
+                    ? "text-primary border-b-2 border-blue-500"
+                    : "text-secondary hover:text-primary"
+                }`}
+              >
+                <span className="mr-1">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ) : null,
+          )}
         </div>
       </div>
 

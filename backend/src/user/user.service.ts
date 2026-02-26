@@ -124,4 +124,44 @@ export class UserService {
     });
     return plainToInstance(UserResponseDto, user);
   }
+
+  async getUserStats(userId: string): Promise<{
+    postCount: number;
+    commentCount: number;
+    followerCount: number;
+    followingCount: number;
+    likedCount: number;
+  }> {
+    const [postCount, commentCount, followerCount, followingCount, likedCount] = await Promise.all([
+      this.prisma.post.count({
+        where: {
+          authorId: userId,
+          publishedAt: { not: null },
+        },
+      }),
+      this.prisma.comment.count({
+        where: { authorId: userId },
+      }),
+      this.prisma.follow.count({
+        where: { followingId: userId },
+      }),
+      this.prisma.follow.count({
+        where: { followerId: userId },
+      }),
+      this.prisma.rate.count({
+        where: {
+          userId,
+          isLike: true,
+        },
+      }),
+    ]);
+
+    return {
+      postCount,
+      commentCount,
+      followerCount,
+      followingCount,
+      likedCount,
+    };
+  }
 }

@@ -42,6 +42,12 @@ export class CommentService {
               deletedAt: true,
             },
           },
+          post: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
         },
       });
       return this.mapCommentToDto(comment);
@@ -64,6 +70,12 @@ export class CommentService {
             deletedAt: true,
           },
         },
+        post: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -84,6 +96,12 @@ export class CommentService {
             id: true,
             name: true,
             deletedAt: true,
+          },
+        },
+        post: {
+          select: {
+            id: true,
+            title: true,
           },
         },
       },
@@ -125,6 +143,12 @@ export class CommentService {
             deletedAt: true,
           },
         },
+        post: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
       },
     });
     return this.mapCommentToDto(updated);
@@ -151,5 +175,28 @@ export class CommentService {
         },
       },
     });
+  }
+
+  async findAllByAuthor(authorId: string): Promise<CommentResponseDto[]> {
+    const comments = await this.prisma.comment.findMany({
+      where: { authorId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            deletedAt: true,
+          },
+        },
+        post: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return comments.map(comment => this.mapCommentToDto(comment));
   }
 }

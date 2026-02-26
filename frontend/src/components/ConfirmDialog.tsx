@@ -17,11 +17,11 @@ export default function ConfirmDialog() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="absolute inset-0 bg-black/50"
+      <button
+        type="button"
+        aria-label="대화상자 닫기"
         onClick={context.handleCancel}
-        role="button"
-        tabIndex={-1}
+        className="absolute inset-0 cursor-default bg-black/50 focus:outline-none"
       />
 
       <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">

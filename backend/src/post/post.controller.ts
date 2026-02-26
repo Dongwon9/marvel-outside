@@ -34,6 +34,19 @@ export class PostController {
     return this.postService.posts(queryDto);
   }
 
+  @Get('by-author/:userId')
+  @Public()
+  async getPostsByAuthor(@Param('userId') userId: string): Promise<PostResponseDto[]> {
+    return this.postService.posts({ authorId: userId });
+  }
+
+  @Get('draft/:userId')
+  async getDraftsByAuthor(@Param('userId') userId:string):Promise<PostResponseDto[]>{
+    return this.postService.drafts(userId);
+  }
+
+
+
   @Get('feed/:userId')
   @Public()
   async getPostsForFeed(@Param('userId') userId: string): Promise<PostResponseDto[]> {

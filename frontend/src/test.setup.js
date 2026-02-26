@@ -9,6 +9,19 @@ if (typeof globalThis.TextDecoder === "undefined") {
   globalThis.TextDecoder = TextDecoder;
 }
 
+// Mock IntersectionObserver
+if (typeof globalThis.IntersectionObserver === "undefined") {
+  globalThis.IntersectionObserver = class IntersectionObserver {
+    constructor() {}
+    disconnect() {}
+    observe() {}
+    takeRecords() {
+      return [];
+    }
+    unobserve() {}
+  };
+}
+
 // Suppress React act() warnings during async state updates in tests
 const originalError = console.error;
 beforeAll(() => {
@@ -16,6 +29,13 @@ beforeAll(() => {
     if (
       args[0]?.includes?.("An update to") &&
       args[0]?.includes?.("inside a test was not wrapped in act")
+    ) {
+      return;
+    }
+    // Suppress hook context errors in tests
+    if (
+      args[0]?.includes?.("useAuth must be used within") ||
+      args[0]?.includes?.("useToast는 ToastProvider")
     ) {
       return;
     }

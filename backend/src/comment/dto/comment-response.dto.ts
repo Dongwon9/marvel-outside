@@ -11,6 +11,16 @@ class AuthorDto {
   name!: string;
 }
 
+class PostDto {
+  @IsString()
+  @IsNotEmpty()
+  id!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+}
+
 export class CommentResponseDto {
   @IsString()
   @IsNotEmpty()
@@ -34,4 +44,7 @@ export class CommentResponseDto {
 
   @IsNotEmpty()
   author!: AuthorDto;
+
+  @IsNotEmpty()
+  post!: PostDto;
 }

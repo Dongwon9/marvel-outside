@@ -6,11 +6,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { CommentService } from '@/comment/comment.service';
 
 describe('UserController', () => {
   let controller: UserController;
   let service: UserService;
-
+  let commentService: CommentService;
   const mockUserService = {
     createUser: jest.fn(),
     getUsers: jest.fn(),
@@ -18,15 +19,22 @@ describe('UserController', () => {
     updateUser: jest.fn(),
     deleteUser: jest.fn(),
   };
+  const mockCommentService = {
+    findAllByAuthor: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [{ provide: UserService, useValue: mockUserService }],
+      providers: [
+        { provide: UserService, useValue: mockUserService },
+        { provide: CommentService, useValue: mockCommentService },
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
     service = module.get<UserService>(UserService);
+    commentService = module.get<CommentService>(CommentService);
   });
 
   afterEach(() => {

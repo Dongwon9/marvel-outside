@@ -3,6 +3,7 @@ import { IsString, IsOptional, IsISO8601 } from 'class-validator';
 
 export class UpdatePostDto {
   @Exclude()
+  @IsOptional()
   boardId?: string;
 
   @IsString()

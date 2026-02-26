@@ -31,6 +31,7 @@ export interface PostResponse {
   boardName: string;
   authorId: string;
   authorName: string;
+  hits: number;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string | null;
@@ -113,6 +114,18 @@ export async function getPosts(
     const response = await client.get<PostResponse[]>("/posts", {
       params: query,
     });
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
+
+export async function getUserPosts(userId: string): Promise<PostResponse[]> {
+  try {
+    const response = await client.get<PostResponse[]>(
+      `/posts/by-author/${userId}`,
+    );
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);

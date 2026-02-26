@@ -17,6 +17,10 @@ export interface CommentResponse {
     id: string;
     name: string;
   };
+  post: {
+    id: string;
+    title: string;
+  };
 }
 
 export async function createComment(
@@ -81,6 +85,19 @@ export async function updateComment(
 export async function deleteComment(postId: string): Promise<void> {
   try {
     await client.delete(`/posts/${postId}/comments`);
+  } catch (error) {
+    throw new ApiError(getStatusCode(error), getErrorMessage(error));
+  }
+}
+
+export async function getUserComments(
+  userId: string,
+): Promise<CommentResponse[]> {
+  try {
+    const response = await client.get<CommentResponse[]>(
+      `/users/${userId}/comments`,
+    );
+    return response.data;
   } catch (error) {
     throw new ApiError(getStatusCode(error), getErrorMessage(error));
   }

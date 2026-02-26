@@ -21,6 +21,15 @@ export interface UserBasicInfo {
   email: string;
 }
 
+export interface FollowUserInfo {
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
 function getStatusCode(error: unknown): number {
   if (error instanceof AxiosError) {
     return error.response?.status || 500;
@@ -58,9 +67,9 @@ export async function unfollowUser(userId: string): Promise<void> {
 /**
  * 팔로워 목록 조회
  */
-export async function getFollowers(userId: string): Promise<UserBasicInfo[]> {
+export async function getFollowers(userId: string): Promise<FollowUserInfo[]> {
   try {
-    const response = await client.get<UserBasicInfo[]>(
+    const response = await client.get<FollowUserInfo[]>(
       `/follows/users/${userId}/followers`,
     );
     return response.data;
@@ -73,9 +82,9 @@ export async function getFollowers(userId: string): Promise<UserBasicInfo[]> {
 /**
  * 팔로잉 목록 조회
  */
-export async function getFollowing(userId: string): Promise<UserBasicInfo[]> {
+export async function getFollowing(userId: string): Promise<FollowUserInfo[]> {
   try {
-    const response = await client.get<UserBasicInfo[]>(
+    const response = await client.get<FollowUserInfo[]>(
       `/follows/users/${userId}/following`,
     );
     return response.data;

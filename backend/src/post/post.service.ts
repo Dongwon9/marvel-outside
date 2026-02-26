@@ -34,6 +34,7 @@ export class PostService {
     hits: number;
     createdAt: Date;
     updatedAt: Date;
+    publishedAt: Date | null;
   }): PostResponseDto {
     const { rates, author, board, ...postData } = post;
     const likeCount = post.rates.filter(rate => rate.isLike).length;
@@ -88,7 +89,16 @@ export class PostService {
 
     return posts.map(post => this.transformPostToDto(post));
   }
-
+  async drafts(userId: string) {
+    const drafts = await this.prisma.post.findMany({
+      where: {
+        authorId: userId,
+        publishedAt: null,
+      },
+      include:this.includeForDto,
+    });
+    return drafts.map(draft => this.transformPostToDto(draft));
+  }
   async postsForFeed(userId: string): Promise<PostResponseDto[]> {
     const followings = await this.prisma.follow.findMany({
       where: { followerId: userId },

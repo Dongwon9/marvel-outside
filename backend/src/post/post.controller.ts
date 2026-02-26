@@ -40,7 +40,7 @@ export class PostController {
     return this.postService.posts({ authorId: userId });
   }
 
-  @Get('draft/:userId')
+  @Get('drafts/:userId')
   async getDraftsByAuthor(@Param('userId') userId:string):Promise<PostResponseDto[]>{
     return this.postService.drafts(userId);
   }

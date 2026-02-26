@@ -14,6 +14,7 @@ export default {
     "\\.(gif|ttf|eot|svg|png|jpg|jpeg)$":
       "<rootDir>/src/test/__mocks__/fileMock.js",
   },
+  coverageProvider: "v8",
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
@@ -36,6 +37,9 @@ export default {
     "!src/**/*.spec.ts",
     "!src/**/*.test.ts",
   ],
+  coverageDirectory: "../coverage",
+  coverageReporters: ["text", "text-summary", "html", "lcov", "clover"],
+  coveragePathIgnorePatterns: ["/node_modules/", "/dist/", "/test/"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
   watchPathIgnorePatterns: ["/node_modules/", "/dist/"],
   globals: {

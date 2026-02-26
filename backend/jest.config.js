@@ -4,6 +4,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
   testRegex: '.*\\.spec\\.ts$',
+  coverageProvider: 'v8',
   transform: {
     '^.+\\.(t|j)s$': [
       'ts-jest',
@@ -21,9 +22,10 @@ module.exports = {
     '!**/*.spec.ts',
     '!**/*.integration.spec.ts',
     '!**/*.e2e-spec.ts',
+    '!**/generated/**',
     '!**/node_modules/**',
   ],
-  coverageDirectory: '../coverage',
+  coverageDirectory: '../../coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
@@ -32,4 +34,5 @@ module.exports = {
   roots: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/', '/.integration.spec.ts$', '/.e2e-spec.ts$'],
   watchPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/migration/', '/generated/'],
 };

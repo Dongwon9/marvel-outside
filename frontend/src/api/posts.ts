@@ -120,7 +120,17 @@ export async function getPosts(
     throw new ApiError(getStatusCode(error), message, error);
   }
 }
-
+export async function getDrafts(userId: string): Promise<PostResponse[]> {
+  try {
+    const response = await client.get<PostResponse[]>(
+      `/posts/drafts/${userId}`,
+    );
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
 export async function getUserPosts(userId: string): Promise<PostResponse[]> {
   try {
     const response = await client.get<PostResponse[]>(

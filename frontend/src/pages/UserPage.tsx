@@ -9,18 +9,10 @@ import FollowList from "@/components/mypage/FollowList";
 import LikedPostsList from "@/components/mypage/LikedPostsList";
 import { Section } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  getUserById,
-  getUserStats,
-  type UserStats,
-} from "@/api/user";
-import { getUserPosts, type PostResponse } from "@/api/posts";
+import { getUserById, getUserStats, type UserStats } from "@/api/user";
+import { getDrafts, getUserPosts, type PostResponse } from "@/api/posts";
 import { getUserComments, type CommentResponse } from "@/api/comments";
-import {
-  getFollowers,
-  getFollowing,
-  type FollowUserInfo,
-} from "@/api/follows";
+import { getFollowers, getFollowing, type FollowUserInfo } from "@/api/follows";
 
 type TabType =
   | "posts"
@@ -102,6 +94,7 @@ export default function MyPage() {
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [followersList, setFollowersList] = useState<User[]>([]);
   const [followingList, setFollowingList] = useState<User[]>([]);
+  const [draftsList, setDraftsList] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -192,6 +185,11 @@ export default function MyPage() {
             setFollowingList(following.map(transformUser));
             break;
           }
+          case "drafts": {
+            const drafts = await getDrafts(userId!);
+            setDraftsList(drafts.map(transformPost));
+            break;
+          }
           default:
             break;
         }
@@ -225,18 +223,12 @@ export default function MyPage() {
   const renderTabContent = () => {
     if (loading && activeTab !== "posts") {
       return (
-        <div className="text-tertiary text-center py-8">
-          로드 중입니다...
-        </div>
+        <div className="text-tertiary py-8 text-center">로드 중입니다...</div>
       );
     }
 
     if (error) {
-      return (
-        <div className="text-red-500 text-center py-8">
-          {error}
-        </div>
-      );
+      return <div className="py-8 text-center text-red-500">{error}</div>;
     }
 
     switch (activeTab) {
@@ -250,6 +242,8 @@ export default function MyPage() {
         return <FollowList users={followersList} type="followers" />;
       case "following":
         return <FollowList users={followingList} type="following" />;
+      case "drafts":
+        return <MyPostsList posts={draftsList} />;
       default:
         return null;
     }

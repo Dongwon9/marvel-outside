@@ -21,6 +21,7 @@ describe('PostController', () => {
     postsForFeed: jest.fn(),
     saveDraft: jest.fn(),
     publishDraft: jest.fn(),
+    discardDraft: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -164,10 +165,10 @@ describe('PostController', () => {
 
       mockPostService.updatePost.mockResolvedValue(expectedResult);
 
-      const result = await controller.updatePost(postId, updatePostDto);
+      const result = await controller.updatePost(postId, updatePostDto, { id: 'user-1' } as any);
 
       expect(result).toEqual(expectedResult);
-      expect(service.updatePost).toHaveBeenCalledWith(postId, updatePostDto);
+      expect(service.updatePost).toHaveBeenCalledWith(postId, 'user-1', updatePostDto);
       expect(service.updatePost).toHaveBeenCalledTimes(1);
     });
   });
@@ -273,10 +274,10 @@ describe('PostController', () => {
 
       mockPostService.saveDraft = jest.fn().mockResolvedValue(expectedResult);
 
-      const result = await controller.saveDraft(postId, updateDto);
+      const result = await controller.saveDraft(postId, updateDto, { id: 'user-1' } as any);
 
       expect(result).toEqual(expectedResult);
-      expect(mockPostService.saveDraft).toHaveBeenCalledWith(postId, updateDto);
+      expect(mockPostService.saveDraft).toHaveBeenCalledWith(postId, 'user-1', updateDto);
       expect(mockPostService.saveDraft).toHaveBeenCalledTimes(1);
     });
   });
@@ -303,10 +304,10 @@ describe('PostController', () => {
 
       mockPostService.publishDraft = jest.fn().mockResolvedValue(expectedResult);
 
-      const result = await controller.publishDraft(postId);
+      const result = await controller.publishDraft(postId, { id: 'user-1' } as any);
 
       expect(result).toEqual(expectedResult);
-      expect(mockPostService.publishDraft).toHaveBeenCalledWith(postId);
+      expect(mockPostService.publishDraft).toHaveBeenCalledWith(postId, 'user-1');
       expect(mockPostService.publishDraft).toHaveBeenCalledTimes(1);
     });
   });

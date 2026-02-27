@@ -1,13 +1,16 @@
 import {
   EllipsisVertical,
   MessageCircle,
+  Pencil,
   Share2,
+  ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import type { PostResponse } from "@/api/posts";
+import { useAuth } from "@/hooks/useAuth";
 import { formatRelativeTime } from "@/utils/time";
 
 interface PostCardProps extends PostResponse {
@@ -17,20 +20,41 @@ interface PostCardProps extends PostResponse {
 export default function PostCard({
   id,
   title,
+  authorId,
   authorName,
   boardName,
   createdAt,
   updatedAt,
   likeCount,
   dislikeCount,
+  hasDraft,
   variant = "card",
 }: PostCardProps) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const isAuthor = user?.id === authorId;
+
   const displayTime = useMemo(() => {
     if (variant === "feed" && updatedAt) {
       return formatRelativeTime(updatedAt);
     }
     return formatRelativeTime(createdAt);
   }, [variant, updatedAt, createdAt]);
+
+  const handleMenuToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen(false);
+    void navigate(`/post/${id}/edit`);
+  };
 
   const authorSection = (
     <div className="author-section">
@@ -39,16 +63,44 @@ export default function PostCard({
         <p className="author-meta">{boardName}</p>
         <p className="author-meta">{displayTime}</p>
       </div>
-      <button className="text-gray-400 hover:text-gray-600">
-        <EllipsisVertical className="h-5 w-5 md:h-6 md:w-6" />
-      </button>
+      {isAuthor ? (
+        <div ref={menuRef} className="relative">
+          <button
+            onClick={handleMenuToggle}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <EllipsisVertical className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 z-10 mt-1 w-32 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+              <button
+                onClick={handleEdit}
+                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                <Pencil className="h-4 w-4" />
+                수정
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <button className="text-gray-400 hover:text-gray-600">
+          <EllipsisVertical className="h-5 w-5 md:h-6 md:w-6" />
+        </button>
+      )}
     </div>
   );
 
   const contentSection = (
     <>
-      <h4 className="mb-2 text-base font-semibold md:text-lg">{title}</h4>
-      {/* <p className="text-tertiary mb-4 md:text-base">{content}</p> */}
+      <div className="mb-2 flex items-center gap-2">
+        <h4 className="text-base font-semibold md:text-lg">{title}</h4>
+        {isAuthor && hasDraft && (
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+            수정본
+          </span>
+        )}
+      </div>
     </>
   );
 
@@ -57,6 +109,10 @@ export default function PostCard({
       <button className="action-icon-button">
         <ThumbsUp className="h-5 w-5" />
         <span>{likeCount}</span>
+      </button>
+      <button className="action-icon-button">
+        <ThumbsDown className="h-5 w-5" />
+        <span>{dislikeCount}</span>
       </button>
       <button className="action-icon-button">
         <MessageCircle className="h-5 w-5" />

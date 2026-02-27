@@ -57,6 +57,17 @@ export class PostResponseDto {
   @IsNotEmpty()
   dislikeCount!: number;
 
+  @IsString()
+  @IsOptional()
+  draftTitle!: string | null;
+
+  @IsString()
+  @IsOptional()
+  draftContent!: string | null;
+
+  @IsNotEmpty()
+  hasDraft!: boolean;
+
   constructor(partial: Partial<PostResponseDto> = {}) {
     Object.assign(this, partial);
   }

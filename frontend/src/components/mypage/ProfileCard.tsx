@@ -52,7 +52,9 @@ export default function ProfileCard({
                 프로필 수정
               </Button>
               <Button
-                onClick={() => navigate("/settings")}
+                onClick={() => {
+                  void navigate("/settings");
+                }}
                 variant="secondary"
                 size="md"
                 className="border border-white bg-transparent font-medium text-white hover:bg-blue-700"

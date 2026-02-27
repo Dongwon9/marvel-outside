@@ -23,9 +23,10 @@
     "db:reset:dev": "pnpm -F backend db:reset:dev"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.3",
     "@types/node": "^25.3.0",
-    "eslint": "^10.0.1",
+    "ajv": "^6.14.0",
+    "eslint": "^9.39.3",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-unused-imports": "^4.4.1",
@@ -34,5 +35,10 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.0"
   },
-  "packageManager": "pnpm@10.30.2+sha512.36cdc707e7b7940a988c9c1ecf88d084f8514b5c3f085f53a2e244c2921d3b2545bc20dd4ebe1fc245feec463bb298aecea7a63ed1f7680b877dc6379d8d0cb4"
+  "packageManager": "pnpm@10.30.2+sha512.36cdc707e7b7940a988c9c1ecf88d084f8514b5c3f085f53a2e244c2921d3b2545bc20dd4ebe1fc245feec463bb298aecea7a63ed1f7680b877dc6379d8d0cb4",
+  "pnpm": {
+    "overrides": {
+      "@eslint/eslintrc>ajv": "^6.14.0"
+    }
+  }
 }

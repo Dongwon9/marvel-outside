@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import { Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import { formatRelativeTime } from "@/utils/time";
 import { Card, IconButton } from "@/components/ui";
+import { formatRelativeTime } from "@/utils/time";
 
 interface Comment {
   id: string;

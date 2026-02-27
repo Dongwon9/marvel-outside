@@ -1,8 +1,9 @@
 import { renderHook, act } from "@testing-library/react";
 import type { ReactNode } from "react";
 
-import { useToast } from "./useToast";
 import { ToastContext, type ToastContextType } from "@/context/toast";
+
+import { useToast } from "./useToast";
 
 describe("useToast", () => {
   it("should return toast context when used within ToastProvider", () => {
@@ -49,10 +50,7 @@ describe("useToast", () => {
       return result.current.addToast("Success message", "success");
     });
 
-    expect(addToastMock).toHaveBeenCalledWith(
-      "Success message",
-      "success"
-    );
+    expect(addToastMock).toHaveBeenCalledWith("Success message", "success");
   });
 
   it("should allow adding error toast with duration", () => {

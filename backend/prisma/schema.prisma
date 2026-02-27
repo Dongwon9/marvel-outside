@@ -52,15 +52,17 @@ model Board {
 }
 
 model Post {
-  id          String    @id @default(uuid())
-  title       String
-  content     String    @db.Text
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
-  hits        Int       @default(0)
-  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    String
+  id           String    @id @default(uuid())
+  title        String
+  content      String    @db.Text
+  draftTitle   String?
+  draftContent String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  publishedAt  DateTime?
+  hits         Int       @default(0)
+  author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
 
   rates    Rate[]
   board    Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)

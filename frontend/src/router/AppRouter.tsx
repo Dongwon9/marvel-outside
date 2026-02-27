@@ -34,9 +34,9 @@ export const router = createBrowserRouter([
       },
       {
         path: "/user/:id",
-        element: <UserPage/>,
+        element: <UserPage />,
       },
-   
+
       {
         path: "/settings",
         element: (

@@ -1,10 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { type ReactNode } from "react";
 
-import RateButtons from "./RateButtons";
 import * as ratesApi from "@/api/rates";
 import { AuthContext } from "@/context/AuthContextDef";
 import type { AuthContextType } from "@/context/AuthContextDef";
+
+import RateButtons from "./RateButtons";
 
 jest.mock("@/api/rates");
 
@@ -26,9 +27,7 @@ describe("RateButtons", () => {
   };
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <AuthContext.Provider value={mockAuth}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={mockAuth}>{children}</AuthContext.Provider>
   );
 
   beforeEach(() => {
@@ -48,12 +47,8 @@ describe("RateButtons", () => {
 
   it("should render like and dislike buttons with counts", () => {
     render(
-      <RateButtons
-        postId="post-456"
-        initialLikes={10}
-        initialDislikes={2}
-      />,
-      { wrapper }
+      <RateButtons postId="post-456" initialLikes={10} initialDislikes={2} />,
+      { wrapper },
     );
 
     expect(screen.getByText("10")).toBeInTheDocument();
@@ -70,7 +65,7 @@ describe("RateButtons", () => {
         initialDislikes={2}
         onRateChange={onRateChange}
       />,
-      { wrapper }
+      { wrapper },
     );
 
     const likeButtons = screen.getAllByRole("button");
@@ -104,7 +99,7 @@ describe("RateButtons", () => {
         userRate={userRate}
         onRateChange={onRateChange}
       />,
-      { wrapper }
+      { wrapper },
     );
 
     const likeButtons = screen.getAllByRole("button");
@@ -133,7 +128,7 @@ describe("RateButtons", () => {
         userRate={userRate}
         onRateChange={onRateChange}
       />,
-      { wrapper }
+      { wrapper },
     );
 
     const dislikeButton = screen.getAllByRole("button")[1];
@@ -151,12 +146,8 @@ describe("RateButtons", () => {
     mockCreateRate.mockRejectedValue(new Error("Rate failed"));
 
     render(
-      <RateButtons
-        postId="post-456"
-        initialLikes={10}
-        initialDislikes={2}
-      />,
-      { wrapper }
+      <RateButtons postId="post-456" initialLikes={10} initialDislikes={2} />,
+      { wrapper },
     );
 
     const likeButtons = screen.getAllByRole("button");
@@ -183,12 +174,8 @@ describe("RateButtons", () => {
     );
 
     render(
-      <RateButtons
-        postId="post-456"
-        initialLikes={10}
-        initialDislikes={2}
-      />,
-      { wrapper: noAuthWrapper }
+      <RateButtons postId="post-456" initialLikes={10} initialDislikes={2} />,
+      { wrapper: noAuthWrapper },
     );
 
     const buttons = screen.getAllByRole("button");

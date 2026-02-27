@@ -37,6 +37,9 @@ export interface PostResponse {
   publishedAt?: string | null;
   likeCount: number;
   dislikeCount: number;
+  draftTitle?: string | null;
+  draftContent?: string | null;
+  hasDraft: boolean;
 }
 
 export interface PostStatsResponse {
@@ -163,6 +166,16 @@ export async function saveDraftPost(
 export async function publishDraftPost(id: string): Promise<PostResponse> {
   try {
     const response = await client.patch<PostResponse>(`/posts/${id}/publish`);
+    return response.data;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
+
+export async function discardDraft(id: string): Promise<PostResponse> {
+  try {
+    const response = await client.delete<PostResponse>(`/posts/${id}/draft`);
     return response.data;
   } catch (error) {
     const message = getErrorMessage(error);

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import ProfileCard from "@/components/mypage/ProfileCard";
-import ActivityStats from "@/components/mypage/ActivityStats";
-import MyPostsList from "@/components/mypage/MyPostsList";
-import MyCommentsList from "@/components/mypage/MyCommentsList";
-import FollowList from "@/components/mypage/FollowList";
-import LikedPostsList from "@/components/mypage/LikedPostsList";
-import { Section } from "@/components/ui";
-import { useAuth } from "@/hooks/useAuth";
-import { getUserById, getUserStats, type UserStats } from "@/api/user";
-import { getDrafts, getUserPosts, type PostResponse } from "@/api/posts";
 import { getUserComments, type CommentResponse } from "@/api/comments";
 import { getFollowers, getFollowing, type FollowUserInfo } from "@/api/follows";
+import { getDrafts, getUserPosts, type PostResponse } from "@/api/posts";
+import { getUserById, getUserStats, type UserStats } from "@/api/user";
+import ActivityStats from "@/components/mypage/ActivityStats";
+import FollowList from "@/components/mypage/FollowList";
+import LikedPostsList from "@/components/mypage/LikedPostsList";
+import MyCommentsList from "@/components/mypage/MyCommentsList";
+import MyPostsList from "@/components/mypage/MyPostsList";
+import ProfileCard from "@/components/mypage/ProfileCard";
+import { Section } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
 
 type TabType =
   | "posts"
@@ -102,7 +102,7 @@ export default function MyPage() {
   useEffect(() => {
     async function fetchUserData() {
       if (!userId) {
-        navigate("/not-found", { replace: true });
+        void navigate("/not-found", { replace: true });
         return;
       }
       try {
@@ -122,18 +122,19 @@ export default function MyPage() {
       } catch (err) {
         console.error("사용자 데이터를 가져오는 중 오류 발생:", err);
         setError("사용자 정보를 불러올 수 없습니다");
-        navigate("/not-found", { replace: true });
+        void navigate("/not-found", { replace: true });
       } finally {
         setLoading(false);
       }
     }
 
-    fetchUserData();
+    void fetchUserData();
   }, [userId, navigate]);
 
   // Fetch tab-specific data when active tab changes
   useEffect(() => {
     if (!userId) return;
+    const safeUserId = userId;
 
     async function fetchTabData() {
       try {
@@ -166,27 +167,27 @@ export default function MyPage() {
 
         switch (activeTab) {
           case "posts": {
-            const posts = await getUserPosts(userId!);
+            const posts = await getUserPosts(safeUserId);
             setPostsList(posts.map(transformPost));
             break;
           }
           case "comments": {
-            const comments = await getUserComments(userId!);
+            const comments = await getUserComments(safeUserId);
             setCommentsList(comments.map(transformComment));
             break;
           }
           case "followers": {
-            const followers = await getFollowers(userId!);
+            const followers = await getFollowers(safeUserId);
             setFollowersList(followers.map(transformUser));
             break;
           }
           case "following": {
-            const following = await getFollowing(userId!);
+            const following = await getFollowing(safeUserId);
             setFollowingList(following.map(transformUser));
             break;
           }
           case "drafts": {
-            const drafts = await getDrafts(userId!);
+            const drafts = await getDrafts(safeUserId);
             setDraftsList(drafts.map(transformPost));
             break;
           }
@@ -201,7 +202,7 @@ export default function MyPage() {
       }
     }
 
-    fetchTabData();
+    void fetchTabData();
   }, [userId, activeTab]);
 
   if (!userId) {

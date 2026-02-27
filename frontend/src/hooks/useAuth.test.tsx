@@ -1,9 +1,10 @@
 import { renderHook, act } from "@testing-library/react";
 import { ReactNode } from "react";
 
-import { useAuth } from "./useAuth";
 import { AuthContext } from "@/context/AuthContextDef";
 import type { AuthContextType } from "@/context/AuthContextDef";
+
+import { useAuth } from "./useAuth";
 
 describe("useAuth", () => {
   it("should return auth context when used within AuthProvider", () => {
@@ -53,7 +54,7 @@ describe("useAuth", () => {
 
     expect(result.error).toBeTruthy();
     expect(result.error?.message).toBe(
-      "useAuth must be used within an AuthProvider"
+      "useAuth must be used within an AuthProvider",
     );
   });
 

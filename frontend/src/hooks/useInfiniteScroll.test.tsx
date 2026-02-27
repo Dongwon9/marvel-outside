@@ -22,7 +22,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 10,
         initialSize: 3,
-      })
+      }),
     );
 
     expect(result.current.isLoading).toBe(true);
@@ -47,7 +47,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 10,
         initialSize: 3,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -70,7 +70,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 3,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -99,7 +99,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 3,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -125,7 +125,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 2,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -151,7 +151,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 2,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -180,7 +180,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 1,
         initialSize: 1,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -215,7 +215,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 1,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -241,7 +241,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 1,
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -257,9 +257,7 @@ describe("useInfiniteScroll", () => {
   });
 
   it("should provide sentinel ref for intersection observer", () => {
-    const fetchInitial = jest
-      .fn()
-      .mockResolvedValue([{ id: 1 }, { id: 2 }]);
+    const fetchInitial = jest.fn().mockResolvedValue([{ id: 1 }, { id: 2 }]);
     const fetchMore = jest.fn();
 
     const { result } = renderHook(() =>
@@ -268,7 +266,7 @@ describe("useInfiniteScroll", () => {
         fetchMore,
         pageSize: 2,
         initialSize: 2,
-      })
+      }),
     );
 
     expect(result.current.sentinelRef).toBeDefined();

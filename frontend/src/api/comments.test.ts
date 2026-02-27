@@ -51,7 +51,7 @@ describe("Comments API", () => {
 
       expect(mockClient.post).toHaveBeenCalledWith(
         `/posts/${postId}/comments`,
-        commentForm
+        commentForm,
       );
       expect(result).toEqual(mockCommentResponse);
     });
@@ -71,13 +71,13 @@ describe("Comments API", () => {
           data: { message: "잘못된 요청입니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
 
       await expect(
-        commentsApi.createComment(postId, commentForm)
+        commentsApi.createComment(postId, commentForm),
       ).rejects.toThrow(ApiError);
     });
   });
@@ -93,9 +93,7 @@ describe("Comments API", () => {
 
       const result = await commentsApi.getCommentsByPost(postId);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        `/posts/${postId}/comments`
-      );
+      expect(mockClient.get).toHaveBeenCalledWith(`/posts/${postId}/comments`);
       expect(result).toEqual(mockComments);
     });
 
@@ -113,13 +111,13 @@ describe("Comments API", () => {
           data: { message: "데이터를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
 
       await expect(commentsApi.getCommentsByPost(postId)).rejects.toThrow(
-        ApiError
+        ApiError,
       );
     });
   });
@@ -135,7 +133,7 @@ describe("Comments API", () => {
       const result = await commentsApi.getMyComment(postId);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        `/posts/${postId}/comments/me`
+        `/posts/${postId}/comments/me`,
       );
       expect(result).toEqual(mockCommentResponse);
     });
@@ -177,7 +175,7 @@ describe("Comments API", () => {
           data: { message: "인증되지 않은 요청입니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -199,7 +197,7 @@ describe("Comments API", () => {
 
       expect(mockClient.patch).toHaveBeenCalledWith(
         `/posts/${postId}/comments`,
-        updateForm
+        updateForm,
       );
       expect(result.content).toBe("Updated content");
     });
@@ -219,13 +217,13 @@ describe("Comments API", () => {
           data: { message: "접근 권한이 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.patch as jest.Mock).mockRejectedValue(error);
 
       await expect(
-        commentsApi.updateComment(postId, updateForm)
+        commentsApi.updateComment(postId, updateForm),
       ).rejects.toThrow(ApiError);
     });
   });
@@ -241,7 +239,7 @@ describe("Comments API", () => {
       await commentsApi.deleteComment(postId);
 
       expect(mockClient.delete).toHaveBeenCalledWith(
-        `/posts/${postId}/comments`
+        `/posts/${postId}/comments`,
       );
     });
 
@@ -259,7 +257,7 @@ describe("Comments API", () => {
           data: { message: "접근 권한이 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.delete as jest.Mock).mockRejectedValue(error);
@@ -297,13 +295,13 @@ describe("Comments API", () => {
           data: { message: "데이터를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
 
       await expect(commentsApi.getUserComments(userId)).rejects.toThrow(
-        ApiError
+        ApiError,
       );
     });
   });

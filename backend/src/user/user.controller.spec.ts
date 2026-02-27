@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CommentService } from '@/comment/comment.service';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { CommentService } from '@/comment/comment.service';
 
 describe('UserController', () => {
   let controller: UserController;

@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -53,6 +53,8 @@ describe('PostService', () => {
         id: '1',
         title: 't',
         content: 'c',
+        draftTitle: null,
+        draftContent: null,
         authorId: 'a',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -103,6 +105,8 @@ describe('PostService', () => {
           id: 'post-1',
           title: 'First Post',
           content: 'content1',
+          draftTitle: null,
+          draftContent: null,
           authorId: 'a1',
           createdAt: new Date('2024-01-10'),
           updatedAt: new Date('2024-01-11'),
@@ -117,6 +121,8 @@ describe('PostService', () => {
           id: 'post-2',
           title: 'Second Post',
           content: 'content2',
+          draftTitle: null,
+          draftContent: null,
           authorId: 'a2',
           createdAt: new Date('2024-01-09'),
           updatedAt: new Date('2024-01-09'),
@@ -230,32 +236,60 @@ describe('PostService', () => {
   describe('updatePost', () => {
     it('updates post with provided fields', async () => {
       const postId = 'post-1';
+      const userId = 'author-1';
       const dto: UpdatePostDto = { title: 'Updated Title', content: 'Updated content' };
-      const updated = {
+      const existingPost = {
         id: postId,
-        title: 'Updated Title',
-        content: 'Updated content',
-        authorId: 'author-1',
+        title: 'Original Title',
+        content: 'Original content',
+        authorId: userId,
         boardId: 'board-1',
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date(),
         publishedAt: null,
         hits: 0,
       };
+      const updated = {
+        ...existingPost,
+        ...dto,
+        draftTitle: null,
+        draftContent: null,
+        rates: [],
+        author: { name: 'Author 1', deletedAt: null },
+        board: { name: 'Board 1' },
+      };
+      prismaMock.post.findUnique.mockResolvedValue(existingPost);
       prismaMock.post.update.mockResolvedValue(updated);
 
-      const result = await service.updatePost(postId, dto);
+      const result = await service.updatePost(postId, userId, dto);
 
+      expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
+        where: { id: postId },
+      });
       expect(prismaMock.post.update).toHaveBeenCalledWith({
         where: { id: postId },
         data: dto,
+        include: commonInclude,
       });
-      expect(prismaMock.post.update).toHaveBeenCalledTimes(1);
       expect(result).toMatchObject({
         id: postId,
         title: 'Updated Title',
         content: 'Updated content',
       });
+    });
+
+    it('throws ForbiddenException when user is not the author', async () => {
+      const postId = 'post-1';
+      const existingPost = {
+        id: postId,
+        authorId: 'author-1',
+        publishedAt: null,
+      };
+      prismaMock.post.findUnique.mockResolvedValue(existingPost);
+
+      await expect(service.updatePost(postId, 'other-user', { title: 'New' })).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
@@ -338,6 +372,8 @@ describe('PostService', () => {
           id: 'post-1',
           title: 'Recent post',
           content: 'content1',
+          draftTitle: null,
+          draftContent: null,
           authorId: 'author-1',
           createdAt: new Date('2024-01-15'),
           updatedAt: new Date('2024-01-15'),
@@ -352,6 +388,8 @@ describe('PostService', () => {
           id: 'post-2',
           title: 'Older post',
           content: 'content2',
+          draftTitle: null,
+          draftContent: null,
           authorId: 'author-2',
           createdAt: new Date('2024-01-10'),
           updatedAt: new Date('2024-01-10'),
@@ -456,6 +494,7 @@ describe('PostService', () => {
   describe('saveDraft', () => {
     it('should update a draft post', async () => {
       const postId = 'post-1';
+      const userId = 'author-1';
       const updateDto: UpdatePostDto = {
         title: 'Updated Title',
         content: 'Updated content',
@@ -464,7 +503,9 @@ describe('PostService', () => {
         id: postId,
         title: 'Original Title',
         content: 'Original content',
-        authorId: 'author-1',
+        draftTitle: null,
+        draftContent: null,
+        authorId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
         publishedAt: null, // Draft post
@@ -481,7 +522,7 @@ describe('PostService', () => {
         ...updateDto,
       });
 
-      const result = await service.saveDraft(postId, updateDto);
+      const result = await service.saveDraft(postId, userId, updateDto);
 
       expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
         where: { id: postId },
@@ -497,24 +538,62 @@ describe('PostService', () => {
       });
     });
 
-    it('should throw error when trying to save a published post', async () => {
+    it('should save draft fields for a published post', async () => {
       const postId = 'post-1';
+      const userId = 'author-1';
+      const updateDto: UpdatePostDto = {
+        title: 'New Title',
+        content: 'New Content',
+      };
       const publishedPost = {
         id: postId,
         title: 'Published Title',
         content: 'Published content',
-        authorId: 'author-1',
+        draftTitle: null,
+        draftContent: null,
+        authorId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
-        publishedAt: new Date(), // Published post
+        publishedAt: new Date(),
         hits: 0,
         boardId: 'board-1',
+        rates: [],
+        author: { name: 'Author 1', deletedAt: null },
+        board: { name: 'Board 1' },
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
+      prismaMock.post.update.mockResolvedValueOnce({
+        ...publishedPost,
+        draftTitle: 'New Title',
+        draftContent: 'New Content',
+      });
+
+      const result = await service.saveDraft(postId, userId, updateDto);
+
+      expect(prismaMock.post.update).toHaveBeenCalledWith({
+        where: { id: postId },
+        data: {
+          draftTitle: 'New Title',
+          draftContent: 'New Content',
+        },
+        include: commonInclude,
+      });
+      expect(result.draftTitle).toBe('New Title');
+    });
+
+    it('should throw ForbiddenException when user is not the author', async () => {
+      const postId = 'post-1';
+      const publishedPost = {
+        id: postId,
+        authorId: 'author-1',
+        publishedAt: null,
       };
 
       prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
 
-      await expect(service.saveDraft(postId, { title: 'New Title' })).rejects.toThrow(
-        'Cannot edit a published post',
+      await expect(service.saveDraft(postId, 'other-user', { title: 'New Title' })).rejects.toThrow(
+        ForbiddenException,
       );
     });
 
@@ -522,7 +601,7 @@ describe('PostService', () => {
       const postId = 'non-existent-id';
       prismaMock.post.findUnique.mockResolvedValueOnce(null);
 
-      await expect(service.saveDraft(postId, { title: 'New Title' })).rejects.toThrow(
+      await expect(service.saveDraft(postId, 'user-1', { title: 'New Title' })).rejects.toThrow(
         'Post not found',
       );
     });
@@ -531,11 +610,14 @@ describe('PostService', () => {
   describe('publishDraft', () => {
     it('should publish a draft post', async () => {
       const postId = 'post-1';
+      const userId = 'author-1';
       const draftPost = {
         id: postId,
         title: 'Draft Title',
         content: 'Draft content',
-        authorId: 'author-1',
+        draftTitle: null,
+        draftContent: null,
+        authorId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
         publishedAt: null, // Draft post
@@ -553,7 +635,7 @@ describe('PostService', () => {
       prismaMock.post.findUnique.mockResolvedValueOnce(draftPost);
       prismaMock.post.update.mockResolvedValueOnce(publishedPost);
 
-      const result = await service.publishDraft(postId);
+      const result = await service.publishDraft(postId, userId);
 
       expect(prismaMock.post.findUnique).toHaveBeenCalledWith({
         where: { id: postId },
@@ -566,13 +648,62 @@ describe('PostService', () => {
       expect(result.publishedAt).not.toBeNull();
     });
 
-    it('should throw error when trying to publish an already published post', async () => {
+    it('should promote draft fields to title/content for published post', async () => {
       const postId = 'post-1';
+      const userId = 'author-1';
+      const publishedPost = {
+        id: postId,
+        title: 'Original Title',
+        content: 'Original content',
+        draftTitle: 'Updated Title',
+        draftContent: 'Updated content',
+        authorId: userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        publishedAt: new Date(),
+        hits: 0,
+        boardId: 'board-1',
+      };
+      const updatedPost = {
+        ...publishedPost,
+        title: 'Updated Title',
+        content: 'Updated content',
+        draftTitle: null,
+        draftContent: null,
+        rates: [],
+        author: { name: 'Author 1', deletedAt: null },
+        board: { name: 'Board 1' },
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
+      prismaMock.post.update.mockResolvedValueOnce(updatedPost);
+
+      const result = await service.publishDraft(postId, userId);
+
+      expect(prismaMock.post.update).toHaveBeenCalledWith({
+        where: { id: postId },
+        data: {
+          title: 'Updated Title',
+          content: 'Updated content',
+          draftTitle: null,
+          draftContent: null,
+        },
+        include: commonInclude,
+      });
+      expect(result.title).toBe('Updated Title');
+      expect(result.draftTitle).toBeNull();
+    });
+
+    it('should throw error when published post has no draft changes', async () => {
+      const postId = 'post-1';
+      const userId = 'author-1';
       const publishedPost = {
         id: postId,
         title: 'Published Title',
         content: 'Published content',
-        authorId: 'author-1',
+        draftTitle: null,
+        draftContent: null,
+        authorId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
         publishedAt: new Date(),
@@ -582,14 +713,29 @@ describe('PostService', () => {
 
       prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
 
-      await expect(service.publishDraft(postId)).rejects.toThrow('Post is already published');
+      await expect(service.publishDraft(postId, userId)).rejects.toThrow(
+        'No draft changes to publish',
+      );
+    });
+
+    it('should throw ForbiddenException when user is not the author', async () => {
+      const postId = 'post-1';
+      const post = {
+        id: postId,
+        authorId: 'author-1',
+        publishedAt: null,
+      };
+
+      prismaMock.post.findUnique.mockResolvedValueOnce(post);
+
+      await expect(service.publishDraft(postId, 'other-user')).rejects.toThrow(ForbiddenException);
     });
 
     it('should throw error when post not found', async () => {
       const postId = 'non-existent-id';
       prismaMock.post.findUnique.mockResolvedValueOnce(null);
 
-      await expect(service.publishDraft(postId)).rejects.toThrow('Post not found');
+      await expect(service.publishDraft(postId, 'user-1')).rejects.toThrow('Post not found');
     });
   });
 });

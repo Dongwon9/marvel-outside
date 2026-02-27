@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
-import { formatRelativeTime } from "@/utils/time";
 import { Card } from "@/components/ui";
+import { formatRelativeTime } from "@/utils/time";
 
 interface Post {
   id: string;

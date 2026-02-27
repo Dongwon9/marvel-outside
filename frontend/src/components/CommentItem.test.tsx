@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 
-import CommentItem from "./CommentItem";
 import * as commentsApi from "@/api/comments";
 import { AuthContext } from "@/context/AuthContextDef";
 import type { AuthContextType } from "@/context/AuthContextDef";
+
+import CommentItem from "./CommentItem";
 
 jest.mock("@/api/comments");
 jest.mock("./CommentForm", () => {
@@ -69,10 +69,9 @@ describe("CommentItem", () => {
       </AuthContext.Provider>
     );
 
-    render(
-      <CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />,
-      { wrapper }
-    );
+    render(<CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />, {
+      wrapper,
+    });
 
     expect(screen.getByText("Comment Author")).toBeInTheDocument();
     expect(screen.getByText("Great post!")).toBeInTheDocument();
@@ -85,10 +84,9 @@ describe("CommentItem", () => {
       </AuthContext.Provider>
     );
 
-    render(
-      <CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />,
-      { wrapper }
-    );
+    render(<CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />, {
+      wrapper,
+    });
 
     expect(screen.queryByText("수정")).not.toBeInTheDocument();
     expect(screen.queryByText("삭제")).not.toBeInTheDocument();
@@ -101,10 +99,9 @@ describe("CommentItem", () => {
       </AuthContext.Provider>
     );
 
-    render(
-      <CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />,
-      { wrapper }
-    );
+    render(<CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />, {
+      wrapper,
+    });
 
     expect(screen.getByText("수정")).toBeInTheDocument();
     expect(screen.getByText("삭제")).toBeInTheDocument();
@@ -117,10 +114,9 @@ describe("CommentItem", () => {
       </AuthContext.Provider>
     );
 
-    render(
-      <CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />,
-      { wrapper }
-    );
+    render(<CommentItem comment={mockComment} onCommentUpdated={jest.fn()} />, {
+      wrapper,
+    });
 
     const editButton = screen.getByText("수정");
     fireEvent.click(editButton);
@@ -139,11 +135,8 @@ describe("CommentItem", () => {
     );
 
     render(
-      <CommentItem
-        comment={mockComment}
-        onCommentUpdated={onCommentUpdated}
-      />,
-      { wrapper }
+      <CommentItem comment={mockComment} onCommentUpdated={onCommentUpdated} />,
+      { wrapper },
     );
 
     // Mock window.confirm
@@ -167,11 +160,8 @@ describe("CommentItem", () => {
     );
 
     render(
-      <CommentItem
-        comment={mockComment}
-        onCommentUpdated={onCommentUpdated}
-      />,
-      { wrapper }
+      <CommentItem comment={mockComment} onCommentUpdated={onCommentUpdated} />,
+      { wrapper },
     );
 
     window.confirm = jest.fn(() => false);
@@ -197,11 +187,8 @@ describe("CommentItem", () => {
     );
 
     render(
-      <CommentItem
-        comment={mockComment}
-        onCommentUpdated={onCommentUpdated}
-      />,
-      { wrapper }
+      <CommentItem comment={mockComment} onCommentUpdated={onCommentUpdated} />,
+      { wrapper },
     );
 
     window.confirm = jest.fn(() => true);

@@ -1,4 +1,4 @@
-import { ChevronLeft, MoreVertical, User, Share2 } from "lucide-react";
+import { ChevronLeft, MoreVertical, User, Share2, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
@@ -136,12 +136,33 @@ export default function PostView() {
       <article className="card-default overflow-hidden">
         {/* Header */}
         <div className="border-light border-b p-4 md:p-6 lg:p-8">
+          {/* Draft Banner */}
+          {user?.id === post.authorId && post.hasDraft && (
+            <div className="mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+              <p className="text-sm text-amber-800">
+                게시되지 않은 임시 수정본이 있습니다.
+              </p>
+              <button
+                onClick={() => void navigate(`/post/${id}/edit`)}
+                className="text-sm font-medium text-amber-700 underline hover:text-amber-900"
+              >
+                수정 이어하기
+              </button>
+            </div>
+          )}
           <div className="mb-4 flex items-start justify-between gap-4">
             <h1 className="text-primary flex-1 text-xl font-bold md:text-2xl lg:text-3xl">
               {post.title}
             </h1>
             {user?.id === post.authorId && (
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => void navigate(`/post/${id}/edit`)}
+                  aria-label="게시글 수정"
+                  className="btn-icon-small"
+                >
+                  <Pencil className="h-5 w-5" />
+                </button>
                 <button
                   onClick={() => void handleDeletePost()}
                   disabled={isDeleting}

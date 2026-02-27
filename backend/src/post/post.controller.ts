@@ -41,11 +41,9 @@ export class PostController {
   }
 
   @Get('drafts/:userId')
-  async getDraftsByAuthor(@Param('userId') userId:string):Promise<PostResponseDto[]>{
+  async getDraftsByAuthor(@Param('userId') userId: string): Promise<PostResponseDto[]> {
     return this.postService.drafts(userId);
   }
-
-
 
   @Get('feed/:userId')
   @Public()
@@ -64,11 +62,13 @@ export class PostController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async updatePost(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser() user: User,
   ): Promise<PostResponseDto> {
-    return this.postService.updatePost(id, updatePostDto);
+    return this.postService.updatePost(id, user.id, updatePostDto);
   }
 
   @Delete(':id')
@@ -100,13 +100,20 @@ export class PostController {
   async saveDraft(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser() user: User,
   ): Promise<PostResponseDto> {
-    return this.postService.saveDraft(id, updatePostDto);
+    return this.postService.saveDraft(id, user.id, updatePostDto);
+  }
+
+  @Delete(':id/draft')
+  @UseGuards(JwtAuthGuard)
+  async discardDraft(@Param('id') id: string, @CurrentUser() user: User): Promise<PostResponseDto> {
+    return this.postService.discardDraft(id, user.id);
   }
 
   @Patch(':id/publish')
   @UseGuards(JwtAuthGuard)
-  async publishDraft(@Param('id') id: string): Promise<PostResponseDto> {
-    return this.postService.publishDraft(id);
+  async publishDraft(@Param('id') id: string, @CurrentUser() user: User): Promise<PostResponseDto> {
+    return this.postService.publishDraft(id, user.id);
   }
 }

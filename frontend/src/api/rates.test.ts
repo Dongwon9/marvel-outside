@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 
-import * as ratesApi from "./rates";
 import { ApiError } from "./errors";
+import * as ratesApi from "./rates";
 
 jest.mock("./client", () => ({
   __esModule: true,
@@ -83,7 +83,7 @@ describe("Rates API", () => {
           data: { message: "이미 평가했습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
@@ -136,7 +136,7 @@ describe("Rates API", () => {
           data: { message: "서버 오류가 발생했습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -175,13 +175,13 @@ describe("Rates API", () => {
           data: { message: "평가를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
 
       await expect(
-        ratesApi.getRateByPostAndUserId(postId, userId)
+        ratesApi.getRateByPostAndUserId(postId, userId),
       ).rejects.toThrow(ApiError);
     });
   });
@@ -202,7 +202,7 @@ describe("Rates API", () => {
 
       expect(mockClient.patch).toHaveBeenCalledWith(
         `/rates/${userId}/${postId}`,
-        updateData
+        updateData,
       );
       expect(result.isLike).toBe(false);
     });
@@ -223,13 +223,13 @@ describe("Rates API", () => {
           data: { message: "평가를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.patch as jest.Mock).mockRejectedValue(error);
 
       await expect(
-        ratesApi.updateRate(userId, postId, updateData)
+        ratesApi.updateRate(userId, postId, updateData),
       ).rejects.toThrow(ApiError);
     });
   });
@@ -246,7 +246,7 @@ describe("Rates API", () => {
       const result = await ratesApi.deleteRate(userId, postId);
 
       expect(mockClient.delete).toHaveBeenCalledWith(
-        `/rates/${userId}/${postId}`
+        `/rates/${userId}/${postId}`,
       );
       expect(result).toEqual(mockRateResponse);
     });
@@ -266,13 +266,13 @@ describe("Rates API", () => {
           data: { message: "평가를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.delete as jest.Mock).mockRejectedValue(error);
 
       await expect(ratesApi.deleteRate(userId, postId)).rejects.toThrow(
-        ApiError
+        ApiError,
       );
     });
   });

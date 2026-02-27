@@ -47,8 +47,7 @@ export default function BoardList() {
           name,
           description: description || undefined,
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-        setBoardsData(([newBoard] as any).concat(boards));
+        setBoardsData([newBoard, ...boards]);
       } catch (err) {
         console.error("Failed to create board:", err);
       }

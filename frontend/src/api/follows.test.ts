@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 
-import * as followsApi from "./follows";
 import { ApiError } from "./errors";
+import * as followsApi from "./follows";
 
 jest.mock("./client", () => ({
   __esModule: true,
@@ -73,7 +73,7 @@ describe("Follows API", () => {
           data: { message: "이미 따라하고 있습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
@@ -109,7 +109,7 @@ describe("Follows API", () => {
           data: { message: "따라하고 있지 않습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.delete as jest.Mock).mockRejectedValue(error);
@@ -130,7 +130,7 @@ describe("Follows API", () => {
       const result = await followsApi.getFollowers(userId);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        `/follows/users/${userId}/followers`
+        `/follows/users/${userId}/followers`,
       );
       expect(result).toEqual(mockFollowers);
     });
@@ -149,7 +149,7 @@ describe("Follows API", () => {
           data: { message: "사용자를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -170,7 +170,7 @@ describe("Follows API", () => {
       const result = await followsApi.getFollowing(userId);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        `/follows/users/${userId}/following`
+        `/follows/users/${userId}/following`,
       );
       expect(result).toEqual(mockFollowing);
     });
@@ -189,7 +189,7 @@ describe("Follows API", () => {
           data: { message: "사용자를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -209,7 +209,7 @@ describe("Follows API", () => {
       const result = await followsApi.getFollowStats(userId);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        `/follows/users/${userId}/stats`
+        `/follows/users/${userId}/stats`,
       );
       expect(result).toEqual(mockFollowStatsResponse);
       expect(result.followers).toBe(100);
@@ -230,7 +230,7 @@ describe("Follows API", () => {
           data: { message: "사용자를 찾을 수 없습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -279,7 +279,7 @@ describe("Follows API", () => {
           data: { message: "서버 오류가 발생했습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);

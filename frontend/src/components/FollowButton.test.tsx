@@ -1,10 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 
-import { FollowButton } from "./FollowButton";
 import * as followsApi from "@/api/follows";
 import { AuthContext } from "@/context/AuthContextDef";
 import type { AuthContextType } from "@/context/AuthContextDef";
+
+import { FollowButton } from "./FollowButton";
 
 jest.mock("@/api/follows");
 
@@ -26,9 +27,7 @@ describe("FollowButton", () => {
   };
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <AuthContext.Provider value={mockAuth}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={mockAuth}>{children}</AuthContext.Provider>
   );
 
   beforeEach(() => {
@@ -90,7 +89,9 @@ describe("FollowButton", () => {
     fireEvent.click(followButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/팔로우 처리를 할 수 없습니다/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/팔로우 처리를 할 수 없습니다/),
+      ).toBeInTheDocument();
     });
   });
 

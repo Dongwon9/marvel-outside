@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -29,6 +34,8 @@ export class PostService {
     id: string;
     title: string;
     content: string;
+    draftTitle: string | null;
+    draftContent: string | null;
     authorId: string;
     boardId: string;
     hits: number;
@@ -41,7 +48,15 @@ export class PostService {
     const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
     const authorName = this.getAuthorName(author);
     const boardName = board.name;
-    const postWithCounts = { ...postData, likeCount, dislikeCount, authorName, boardName };
+    const hasDraft = post.draftTitle !== null || post.draftContent !== null;
+    const postWithCounts = {
+      ...postData,
+      likeCount,
+      dislikeCount,
+      authorName,
+      boardName,
+      hasDraft,
+    };
     return plainToInstance(PostResponseDto, postWithCounts);
   }
   async post(id: string): Promise<PostResponseDto> {
@@ -95,7 +110,7 @@ export class PostService {
         authorId: userId,
         publishedAt: null,
       },
-      include:this.includeForDto,
+      include: this.includeForDto,
     });
     return drafts.map(draft => this.transformPostToDto(draft));
   }
@@ -135,12 +150,59 @@ export class PostService {
     return post.id;
   }
 
-  async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {
-    const post = await this.prisma.post.update({
+  async updatePost(
+    id: string,
+    userId: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You are not the author of this post');
+    }
+
+    const updated = await this.prisma.post.update({
       where: { id },
       data: updatePostDto,
+      include: this.includeForDto,
     });
-    return plainToInstance(PostResponseDto, post);
+
+    return this.transformPostToDto(updated);
+  }
+
+  async discardDraft(id: string, userId: string): Promise<PostResponseDto> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You are not the author of this post');
+    }
+
+    if (post.publishedAt === null) {
+      throw new BadRequestException('Cannot discard draft of an unpublished post');
+    }
+
+    const updated = await this.prisma.post.update({
+      where: { id },
+      data: {
+        draftTitle: null,
+        draftContent: null,
+      },
+      include: this.includeForDto,
+    });
+
+    return this.transformPostToDto(updated);
   }
 
   async deletePost(id: string): Promise<PostResponseDto> {
@@ -174,7 +236,11 @@ export class PostService {
     return { likeCount, dislikeCount };
   }
 
-  async saveDraft(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {
+  async saveDraft(
+    id: string,
+    userId: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
     const post = await this.prisma.post.findUnique({
       where: { id },
     });
@@ -183,10 +249,25 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
 
-    if (post.publishedAt !== null) {
-      throw new BadRequestException('Cannot edit a published post');
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You are not the author of this post');
     }
 
+    // 공개된 게시글: draftTitle/draftContent에 저장
+    if (post.publishedAt !== null) {
+      const updated = await this.prisma.post.update({
+        where: { id },
+        data: {
+          draftTitle: updatePostDto.title ?? post.draftTitle ?? post.title,
+          draftContent: updatePostDto.content ?? post.draftContent ?? post.content,
+        },
+        include: this.includeForDto,
+      });
+
+      return this.transformPostToDto(updated);
+    }
+
+    // 미공개 게시글: 기존처럼 title/content에 직접 저장
     const updated = await this.prisma.post.update({
       where: { id },
       data: updatePostDto,
@@ -196,7 +277,7 @@ export class PostService {
     return this.transformPostToDto(updated);
   }
 
-  async publishDraft(id: string): Promise<PostResponseDto> {
+  async publishDraft(id: string, userId: string): Promise<PostResponseDto> {
     const post = await this.prisma.post.findUnique({
       where: { id },
     });
@@ -205,10 +286,31 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
 
-    if (post.publishedAt !== null) {
-      throw new BadRequestException('Post is already published');
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You are not the author of this post');
     }
 
+    // 이미 공개된 게시글: draftTitle/draftContent → title/content로 교체
+    if (post.publishedAt !== null) {
+      if (post.draftTitle === null && post.draftContent === null) {
+        throw new BadRequestException('No draft changes to publish');
+      }
+
+      const updated = await this.prisma.post.update({
+        where: { id },
+        data: {
+          title: post.draftTitle ?? post.title,
+          content: post.draftContent ?? post.content,
+          draftTitle: null,
+          draftContent: null,
+        },
+        include: this.includeForDto,
+      });
+
+      return this.transformPostToDto(updated);
+    }
+
+    // 미공개 게시글: publishedAt 설정
     const published = await this.prisma.post.update({
       where: { id },
       data: { publishedAt: new Date() },

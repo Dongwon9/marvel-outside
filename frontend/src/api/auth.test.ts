@@ -1,7 +1,6 @@
 import { AxiosError } from "axios";
 
 import * as authApi from "./auth";
-import { ApiError } from "./errors";
 
 jest.mock("./client", () => ({
   __esModule: true,
@@ -58,7 +57,7 @@ describe("Auth API", () => {
           data: { message: "이메일 또는 비밀번호가 올바르지 않습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
@@ -100,7 +99,7 @@ describe("Auth API", () => {
           data: { message: "이미 존재하는 정보입니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
@@ -130,7 +129,7 @@ describe("Auth API", () => {
           data: { message: "서버 오류가 발생했습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.post as jest.Mock).mockRejectedValue(error);
@@ -169,7 +168,7 @@ describe("Auth API", () => {
           data: { message: "인증되지 않은 요청입니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.get as jest.Mock).mockRejectedValue(error);
@@ -201,7 +200,7 @@ describe("Auth API", () => {
           data: { message: "서버 오류가 발생했습니다." },
           headers: {},
           config: { url: "" } as any,
-        } as any
+        } as any,
       );
 
       (mockClient.delete as jest.Mock).mockRejectedValue(error);

@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { IsString, IsOptional, IsISO8601 } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class UpdatePostDto {
   @Exclude()
@@ -14,7 +14,7 @@ export class UpdatePostDto {
   @IsOptional()
   content?: string;
 
-  @IsISO8601()
+  @Exclude()
   @IsOptional()
   publishedAt?: string;
 }

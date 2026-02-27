@@ -58,7 +58,9 @@ export default function CommentForm({
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
       className="card-default card-padding-md border-light space-y-3"
     >
       <textarea
@@ -83,11 +85,7 @@ export default function CommentForm({
             취소
           </button>
         )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="btn-primary"
-        >
+        <button type="submit" disabled={isLoading} className="btn-primary">
           {isLoading ? "작성 중..." : isEdit ? "수정" : "댓글 작성"}
         </button>
       </div>

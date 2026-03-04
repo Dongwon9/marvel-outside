@@ -21,6 +21,7 @@ export class PostService {
     rates: true,
     author: { select: { name: true, deletedAt: true } },
     board: { select: { name: true } },
+    _count: { select: { comments: true } },
   };
 
   private getAuthorName(author: { name: string; deletedAt: Date | null }): string {
@@ -31,6 +32,7 @@ export class PostService {
     rates: { isLike: boolean }[];
     author: { name: string; deletedAt: Date | null };
     board: { name: string };
+    _count: { comments: number };
     id: string;
     title: string;
     content: string;
@@ -43,16 +45,18 @@ export class PostService {
     updatedAt: Date;
     publishedAt: Date | null;
   }): PostResponseDto {
-    const { rates, author, board, ...postData } = post;
+    const { rates, author, board, _count, ...postData } = post;
     const likeCount = post.rates.filter(rate => rate.isLike).length;
     const dislikeCount = post.rates.filter(rate => !rate.isLike).length;
     const authorName = this.getAuthorName(author);
     const boardName = board.name;
     const hasDraft = post.draftTitle !== null || post.draftContent !== null;
+    const commentCount = _count.comments;
     const postWithCounts = {
       ...postData,
       likeCount,
       dislikeCount,
+      commentCount,
       authorName,
       boardName,
       hasDraft,
@@ -75,6 +79,7 @@ export class PostService {
             name: true,
           },
         },
+        _count: { select: { comments: true } },
       },
     });
     if (!post) {

@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Post,
+  Query,
   Req,
   Response,
   UnauthorizedException,
@@ -19,6 +21,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { UserService } from '../user/user.service';
 
 interface RequestWithCookies extends Request {
   cookies: Record<string, string | undefined>;
@@ -29,6 +32,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('login')
@@ -82,6 +86,24 @@ export class AuthController {
       email: user.email,
       name: user.name,
     };
+  }
+
+  @Get('verify-email')
+  @Public()
+  async verifyEmail(@Query('token') token?: string): Promise<{ message: string }> {
+    if (!token) {
+      throw new BadRequestException('Verification token is required');
+    }
+
+    await this.userService.verifyEmail(token);
+    return { message: 'Email verified successfully' };
+  }
+
+  @Post('resend-verification')
+  @UseGuards(JwtAuthGuard)
+  async resendVerification(@CurrentUser() user: User): Promise<{ message: string }> {
+    await this.userService.resendVerificationEmail(user.id);
+    return { message: 'Verification email sent' };
   }
 
   private setAccessCookie(res: ExpressResponse, accessToken: string): void {

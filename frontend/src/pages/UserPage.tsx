@@ -148,7 +148,7 @@ export default function MyPage() {
           boardName: post.boardName,
           createdAt: post.createdAt,
           views: post.hits,
-          comments: 0, // API doesn't provide comment count - will be 0 for now
+          comments: post.commentCount,
         });
 
         const transformComment = (comment: CommentResponse): Comment => ({

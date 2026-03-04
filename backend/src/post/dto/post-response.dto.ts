@@ -57,6 +57,10 @@ export class PostResponseDto {
   @IsNotEmpty()
   dislikeCount!: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  commentCount!: number;
+
   @IsString()
   @IsOptional()
   draftTitle!: string | null;

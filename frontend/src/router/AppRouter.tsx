@@ -16,6 +16,7 @@ const Settings = lazy(() => import("@/pages/Settings"));
 const BoardList = lazy(() => import("@/pages/BoardList"));
 const BoardView = lazy(() => import("@/pages/BoardView"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const VerifyEmail = lazy(() => import("@/pages/VerifyEmail"));
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
         path: "/board/:id",
         element: <BoardView />,
       },
+      { path: "/verify-email", element: <VerifyEmail /> },
       { path: "/not-found", element: <NotFound /> },
       { path: "*", element: <NotFound /> },
     ],

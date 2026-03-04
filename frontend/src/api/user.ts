@@ -9,6 +9,7 @@ export interface User {
   name: string;
   registeredAt: Date;
   deletedAt: Date | null;
+  emailVerifiedAt: Date | null;
 }
 
 export interface UserStats {

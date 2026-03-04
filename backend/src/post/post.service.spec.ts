@@ -24,6 +24,7 @@ describe('PostService', () => {
         name: true,
       },
     },
+    _count: { select: { comments: true } },
   };
 
   beforeEach(async () => {
@@ -67,6 +68,7 @@ describe('PostService', () => {
         ],
         author: { name: 'author-name' },
         board: { name: 'board-name' },
+        _count: { comments: 0 },
       };
       prismaMock.post.findUnique.mockResolvedValue(post);
 
@@ -78,6 +80,7 @@ describe('PostService', () => {
           rates: { omit: { postId: true } },
           author: { select: { name: true, deletedAt: true } },
           board: { select: { name: true } },
+          _count: { select: { comments: true } },
         },
       });
       expect(result).toMatchObject({
@@ -116,6 +119,7 @@ describe('PostService', () => {
           rates: [{ userId: 'u1', isLike: true }],
           author: { name: 'Author 1' },
           board: { name: 'Board 1' },
+          _count: { comments: 0 },
         },
         {
           id: 'post-2',
@@ -135,6 +139,7 @@ describe('PostService', () => {
           ],
           author: { name: 'Author 2' },
           board: { name: 'Board 2' },
+          _count: { comments: 0 },
         },
       ];
       prismaMock.post.findMany.mockResolvedValue(posts);
@@ -257,6 +262,7 @@ describe('PostService', () => {
         rates: [],
         author: { name: 'Author 1', deletedAt: null },
         board: { name: 'Board 1' },
+        _count: { comments: 0 },
       };
       prismaMock.post.findUnique.mockResolvedValue(existingPost);
       prismaMock.post.update.mockResolvedValue(updated);
@@ -383,6 +389,7 @@ describe('PostService', () => {
           rates: [{ userId: 'u1', isLike: true }],
           author: { name: 'Author One' },
           board: { name: 'Board One' },
+          _count: { comments: 0 },
         },
         {
           id: 'post-2',
@@ -399,6 +406,7 @@ describe('PostService', () => {
           rates: [],
           author: { name: 'Author Two' },
           board: { name: 'Board Two' },
+          _count: { comments: 0 },
         },
       ];
       prismaMock.follow.findMany.mockResolvedValue(followings);
@@ -514,6 +522,7 @@ describe('PostService', () => {
         rates: [],
         author: { name: 'Author 1', deletedAt: null },
         board: { name: 'Board 1' },
+        _count: { comments: 0 },
       };
 
       prismaMock.post.findUnique.mockResolvedValueOnce(draftPost);
@@ -560,6 +569,7 @@ describe('PostService', () => {
         rates: [],
         author: { name: 'Author 1', deletedAt: null },
         board: { name: 'Board 1' },
+        _count: { comments: 0 },
       };
 
       prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);
@@ -630,6 +640,7 @@ describe('PostService', () => {
         rates: [],
         author: { name: 'Author 1', deletedAt: null },
         board: { name: 'Board 1' },
+        _count: { comments: 0 },
       };
 
       prismaMock.post.findUnique.mockResolvedValueOnce(draftPost);
@@ -673,6 +684,7 @@ describe('PostService', () => {
         rates: [],
         author: { name: 'Author 1', deletedAt: null },
         board: { name: 'Board 1' },
+        _count: { comments: 0 },
       };
 
       prismaMock.post.findUnique.mockResolvedValueOnce(publishedPost);

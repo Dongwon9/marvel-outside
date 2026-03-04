@@ -41,3 +41,15 @@ export async function getMe(): Promise<MeResponse | null> {
 export async function deleteAccount(): Promise<void> {
   await client.delete("/users");
 }
+
+export async function verifyEmail(token: string): Promise<{ message: string }> {
+  const response = await client.get<{ message: string }>("/auth/verify-email", {
+    params: { token },
+  });
+  return response.data;
+}
+
+export async function resendVerificationEmail(): Promise<{ message: string }> {
+  const response = await client.post<{ message: string }>("/auth/resend-verification");
+  return response.data;
+}

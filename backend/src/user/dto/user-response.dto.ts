@@ -6,6 +6,7 @@ export class UserResponseDto {
   name!: string;
   registeredAt!: Date;
   deletedAt!: Date | null;
+  emailVerifiedAt!: Date | null;
 
   @Exclude()
   passwordHashed!: string;

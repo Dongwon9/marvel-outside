@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-import { signup, login } from "../api/auth";
+import { signup } from "../api/auth";
 import { getErrorMessage } from "../api/errors";
 import { useAuth } from "../hooks/useAuth";
 
@@ -38,12 +38,12 @@ export default function Signup() {
       }
       try {
         await signup(userData);
-        const { name, ...loginData } = userData;
-        await login({ ...loginData, rememberMe: false });
-        await refetchUser();
-
+        alert(
+          "회원가입을 완료하시려면 이메일로 전송된 인증 링크를 열어 이메일 인증을 완료해주세요.",
+        );
+        setLoading(false);
         const state = location.state as LocationState | null;
-        const from = state?.from?.pathname ?? "/";
+        const from = state?.from?.pathname ?? "/login";
         void navigate(from);
       } catch (error) {
         console.error(error);

@@ -1,17 +1,34 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import crypto from 'crypto';
+
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  TooManyRequestsException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 
 import { Prisma } from '../generated/prisma/client';
+import { EmailService } from '../email/email.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async getUser(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
@@ -81,6 +98,9 @@ export class UserService {
         passwordHashed,
       },
     });
+
+    await this.sendVerificationEmailInternal(user.id);
+
     return plainToInstance(UserResponseDto, user);
   }
 
@@ -163,5 +183,73 @@ export class UserService {
       followingCount,
       likedCount,
     };
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const userId = await this.redisService.getEmailVerificationToken(token);
+    if (!userId) {
+      throw new BadRequestException('Invalid or expired verification token');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || user.deletedAt) {
+      await this.redisService.deleteEmailVerificationToken(token);
+      throw new NotFoundException('User not found for this verification token');
+    }
+
+    if (!user.emailVerifiedAt) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { emailVerifiedAt: new Date() },
+      });
+    }
+
+    await this.redisService.deleteEmailVerificationToken(token);
+  }
+
+  async resendVerificationEmail(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || user.deletedAt) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.sendVerificationEmailInternal(user.id);
+  }
+
+  private async sendVerificationEmailInternal(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || user.deletedAt) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.emailVerifiedAt) {
+      throw new BadRequestException('Email is already verified');
+    }
+
+    const hasCooldown = await this.redisService.getResendCooldown(user.id);
+    if (hasCooldown) {
+      throw new TooManyRequestsException('Please wait before resending verification email');
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    await this.redisService.setEmailVerificationToken(token, user.id);
+    await this.redisService.setResendCooldown(user.id);
+
+    const verifyBaseUrl =
+      this.configService.get<string>('EMAIL_VERIFY_URL_BASE') ??
+      'http://localhost:5173/verify-email';
+    const verifyUrl = `${verifyBaseUrl}?token=${token}`;
+
+    await this.emailService.sendVerificationEmail(user.email, verifyUrl);
   }
 }

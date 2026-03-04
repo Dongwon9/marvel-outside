@@ -37,6 +37,7 @@ export interface PostResponse {
   publishedAt?: string | null;
   likeCount: number;
   dislikeCount: number;
+  commentCount: number;
   draftTitle?: string | null;
   draftContent?: string | null;
   hasDraft: boolean;

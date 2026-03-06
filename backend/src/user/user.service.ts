@@ -5,14 +5,14 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  TooManyRequestsException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 
-import { Prisma } from '../generated/prisma/client';
 import { EmailService } from '../email/email.service';
+import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
@@ -20,7 +20,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-
 @Injectable()
 export class UserService {
   constructor(
@@ -137,6 +136,24 @@ export class UserService {
     return plainToInstance(UserResponseDto, user);
   }
 
+  @Cron('0 * * * *') // 1시간마다 실행
+  async cleanupUsers(): Promise<void> {
+    const cutoffDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
+    await this.prisma.user.deleteMany({
+      where: {
+        deletedAt: {
+          lt: cutoffDate,
+        },
+      },
+    });
+  }
+
+  async hardDeleteUserInstant(id: string): Promise<void> {
+    await this.prisma.user.delete({
+      where: { id },
+    });
+  }
+
   async restoreUser(id: string): Promise<UserResponseDto> {
     const user = await this.prisma.user.update({
       where: { id },
@@ -237,7 +254,7 @@ export class UserService {
 
     const hasCooldown = await this.redisService.getResendCooldown(user.id);
     if (hasCooldown) {
-      throw new TooManyRequestsException('Please wait before resending verification email');
+      throw new BadRequestException('Please wait before resending verification email');
     }
 
     const token = crypto.randomBytes(32).toString('hex');

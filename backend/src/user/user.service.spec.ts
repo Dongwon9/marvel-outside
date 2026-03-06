@@ -1,9 +1,13 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 
+import { EmailService } from '@/email/email.service';
+
 import { PrismaService } from '../prisma/prisma.service';
 
+import { RedisService } from './../redis/redis.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,8 +18,10 @@ jest.mock('bcrypt');
 
 describe('UserService', () => {
   let service: UserService;
+  let configService: ConfigService;
   let prismaService: PrismaService;
-
+  let redisService: RedisService;
+  let emailService: EmailService;
   const mockUser = {
     id: '1',
     email: 'test@example.com',
@@ -24,6 +30,7 @@ describe('UserService', () => {
     refreshToken: null,
     registeredAt: new Date(),
     deletedAt: null,
+    emailVerifiedAt: null,
   };
 
   beforeEach(async () => {
@@ -40,6 +47,32 @@ describe('UserService', () => {
               create: jest.fn(),
               update: jest.fn(),
             },
+            post: { count: jest.fn() },
+            comment: { count: jest.fn() },
+            follow: { count: jest.fn() },
+            rate: { count: jest.fn() },
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(),
+          },
+        },
+        {
+          provide: RedisService,
+          useValue: {
+            getEmailVerificationToken: jest.fn(),
+            deleteEmailVerificationToken: jest.fn(),
+            setEmailVerificationToken: jest.fn(),
+            setResendCooldown: jest.fn(),
+            getResendCooldown: jest.fn(),
+          },
+        },
+        {
+          provide: EmailService,
+          useValue: {
+            sendVerificationEmail: jest.fn(),
           },
         },
       ],
@@ -47,7 +80,9 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService);
     prismaService = module.get<PrismaService>(PrismaService);
-
+    redisService = module.get<RedisService>(RedisService);
+    emailService = module.get<EmailService>(EmailService);
+    configService = module.get<ConfigService>(ConfigService);
     jest.clearAllMocks();
   });
 
@@ -130,6 +165,11 @@ describe('UserService', () => {
       prismaService.user.create = mocks.create;
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedpassword');
 
+      const sendVerificationSpy = jest
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .spyOn(service as any, 'sendVerificationEmailInternal')
+        .mockResolvedValue(undefined);
+
       const result = await service.createUser(createUserDto);
 
       expect(bcrypt.hash).toHaveBeenCalledWith('password123', 10);
@@ -147,6 +187,7 @@ describe('UserService', () => {
           name: mockUser.name,
         }),
       );
+      expect(sendVerificationSpy).toHaveBeenCalledWith(mockUser.id);
     });
 
     it('should throw ConflictException if email already exists', async () => {

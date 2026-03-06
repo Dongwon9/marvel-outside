@@ -14,6 +14,9 @@ export interface Board {
   id: string;
   name: string;
   description?: string;
+  createdAt: string;
+  subscriberCount: number;
+  isSubscribed: boolean;
 }
 
 export interface BoardsQueryForm {
@@ -72,6 +75,24 @@ export async function updateBoard(
 export async function deleteBoard(id: string): Promise<void> {
   try {
     await client.delete(`/boards/${id}`);
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
+
+export async function subscribeBoard(id: string): Promise<void> {
+  try {
+    await client.post(`/boards/${id}/subscribe`);
+  } catch (error) {
+    const message = getErrorMessage(error);
+    throw new ApiError(getStatusCode(error), message, error);
+  }
+}
+
+export async function unsubscribeBoard(id: string): Promise<void> {
+  try {
+    await client.delete(`/boards/${id}/subscribe`);
   } catch (error) {
     const message = getErrorMessage(error);
     throw new ApiError(getStatusCode(error), message, error);

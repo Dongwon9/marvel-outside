@@ -43,7 +43,7 @@ export default function Signup() {
         );
         setLoading(false);
         const state = location.state as LocationState | null;
-        const from = state?.from?.pathname ?? "/login";
+        const from = state?.from?.pathname ?? "/";
         void navigate(from);
       } catch (error) {
         console.error(error);

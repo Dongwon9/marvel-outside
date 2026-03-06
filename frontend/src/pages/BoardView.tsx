@@ -3,18 +3,28 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button, Section } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import { getBoardById, type Board } from "../api/boards";
+import {
+  getBoardById,
+  subscribeBoard,
+  unsubscribeBoard,
+  type Board,
+} from "../api/boards";
 import { createPost, getPosts } from "../api/posts";
 import PostCard from "../components/PostCard";
 
 export default function BoardView() {
   const { id } = useParams<{ id: string }>();
+  const { isLoggedIn } = useAuth();
   const [board, setBoard] = useState<Board | null>(null);
   const [boardPending, setBoardPending] = useState(true);
   const [boardError, setBoardError] = useState<string | null>(null);
   const [orderBy, setOrderBy] = useState("createdAt");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscriberCount, setSubscriberCount] = useState(0);
+  const [isSubscribeLoading, setIsSubscribeLoading] = useState(false);
   const navigate = useNavigate();
 
   // Memoized fetch functions with orderBy dependency
@@ -56,6 +66,8 @@ export default function BoardView() {
         setBoardError(null);
         const boardData = await getBoardById(id);
         setBoard(boardData);
+        setIsSubscribed(boardData.isSubscribed);
+        setSubscriberCount(boardData.subscriberCount);
       } catch (err) {
         setBoardError("게시판 데이터를 불러올 수 없습니다.");
         console.error("Failed to fetch board data:", err);
@@ -66,6 +78,26 @@ export default function BoardView() {
 
     void fetchBoard();
   }, [id, navigate]);
+
+  const handleSubscribeToggle = async () => {
+    if (!id || isSubscribeLoading) return;
+    setIsSubscribeLoading(true);
+    try {
+      if (isSubscribed) {
+        await unsubscribeBoard(id);
+        setIsSubscribed(false);
+        setSubscriberCount((prev) => prev - 1);
+      } else {
+        await subscribeBoard(id);
+        setIsSubscribed(true);
+        setSubscriberCount((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error("구독 처리에 실패했습니다:", err);
+    } finally {
+      setIsSubscribeLoading(false);
+    }
+  };
 
   const createPostAndEnter = async () => {
     if (!id) return;
@@ -95,19 +127,33 @@ export default function BoardView() {
                   {board.description}
                 </p>
               )}
+              <p className="text-muted mt-1 text-sm">
+                구독자 {subscriberCount}명
+              </p>
             </>
           )}
         </div>
-        <Button
-          onClick={() => void createPostAndEnter()}
-          variant="primary"
-          size="md"
-        >
-          + 글쓰기
-        </Button>
+        {isLoggedIn && (
+          <div className="flex gap-2">
+            <Button
+              variant={isSubscribed ? "secondary" : "primary"}
+              size="md"
+              onClick={() => void handleSubscribeToggle()}
+              disabled={isSubscribeLoading}
+            >
+              {isSubscribed ? "구독 취소" : "구독하기"}
+            </Button>
+            <Button
+              onClick={() => void createPostAndEnter()}
+              variant="primary"
+              size="md"
+            >
+              + 글쓰기
+            </Button>
+          </div>
+        )}
       </div>
 
-      {/* Sort Options */}
       {!boardPending && !boardError && (
         <div className="flex items-center gap-2">
           <label htmlFor="sort" className="text-sm font-medium">

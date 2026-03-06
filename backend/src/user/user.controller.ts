@@ -70,7 +70,7 @@ export class UserController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@CurrentUser() user: User): Promise<void> {
-    await this.userService.deleteUser(user.id);
+    await this.userService.hardDeleteUserInstant(user.id);
   }
 
   @Get(':id/comments')

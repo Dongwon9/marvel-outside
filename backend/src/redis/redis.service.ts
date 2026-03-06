@@ -46,4 +46,79 @@ export class RedisService {
       throw new InternalServerErrorException('Failed to delete refresh token from Redis');
     }
   }
+
+  /**
+   * Store email verification token with TTL (default: 86400 = 24 hours)
+   * @param token Random hex token
+   * @param userId User ID
+   * @param ttl Time to live in seconds
+   */
+  async setEmailVerificationToken(token: string, userId: string, ttl = 86400): Promise<void> {
+    const key = `email_verify:${token}`;
+    try {
+      await this.redisClient.setex(key, ttl, userId);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to store email verification token in Redis');
+    }
+  }
+
+  /**
+   * Get user ID by email verification token
+   * @param token Random hex token
+   * @returns User ID or null if not found / expired
+   */
+  async getEmailVerificationToken(token: string): Promise<string | null> {
+    const key = `email_verify:${token}`;
+    try {
+      return await this.redisClient.get(key);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to retrieve email verification token from Redis',
+      );
+    }
+  }
+
+  /**
+   * Delete email verification token after use
+   * @param token Random hex token
+   */
+  async deleteEmailVerificationToken(token: string): Promise<void> {
+    const key = `email_verify:${token}`;
+    try {
+      await this.redisClient.del(key);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to delete email verification token from Redis',
+      );
+    }
+  }
+
+  /**
+   * Set resend cooldown (default: 60 seconds)
+   * @param userId User ID
+   * @param ttl Time to live in seconds
+   */
+  async setResendCooldown(userId: string, ttl = 60): Promise<void> {
+    const key = `email_resend_cooldown:${userId}`;
+    try {
+      await this.redisClient.setex(key, ttl, '1');
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to set resend cooldown in Redis');
+    }
+  }
+
+  /**
+   * Check if resend cooldown is active for userId
+   * @param userId User ID
+   * @returns true if cooldown is active
+   */
+  async getResendCooldown(userId: string): Promise<boolean> {
+    const key = `email_resend_cooldown:${userId}`;
+    try {
+      const value = await this.redisClient.get(key);
+      return value !== null;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to check resend cooldown in Redis');
+    }
+  }
 }

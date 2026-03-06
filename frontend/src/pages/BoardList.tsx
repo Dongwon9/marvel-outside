@@ -101,6 +101,9 @@ export default function BoardList() {
                   {board.description}
                 </p>
               )}
+              <p className="text-muted mt-2 text-xs">
+                구독자 {board.subscriberCount}명
+              </p>
             </Link>
           ))}
         </div>

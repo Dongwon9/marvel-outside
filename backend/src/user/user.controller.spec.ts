@@ -56,6 +56,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        emailVerifiedAt: new Date(),
       };
 
       mockUserService.createUser.mockResolvedValue(userResponseDto);
@@ -93,6 +94,7 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
+          emailVerifiedAt: new Date(),
         },
         {
           id: '2',
@@ -101,6 +103,7 @@ describe('UserController', () => {
           registeredAt: new Date(),
           deletedAt: null,
           passwordHashed: '',
+          emailVerifiedAt: new Date(),
         },
       ];
       const query: GetUsersQueryDto = { skip: 0, take: 10 };
@@ -123,6 +126,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        emailVerifiedAt: new Date(),
       };
 
       mockUserService.getUserById.mockResolvedValue(userResponseDto);
@@ -153,6 +157,7 @@ describe('UserController', () => {
         registeredAt: new Date(),
         deletedAt: null,
         passwordHashed: '',
+        emailVerifiedAt: new Date(),
       };
 
       mockUserService.updateUser.mockResolvedValue(updatedUser);

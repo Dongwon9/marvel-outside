@@ -14,6 +14,7 @@ import { BoardModule } from './board/board.module';
 import { CommentModule } from './comment/comment.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { RequestContextMiddleware } from './common/request-context/request-context.middleware';
+import { EmailModule } from './email/email.module';
 import { FollowModule } from './follow/follow.module';
 import { PostModule } from './post/post.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -78,6 +79,7 @@ interface RequestWithContext {
     }),
     PrismaModule,
     RedisModule,
+    EmailModule,
     AuthModule,
     UserModule,
     PostModule,

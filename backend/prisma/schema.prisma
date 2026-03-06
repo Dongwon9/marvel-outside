@@ -14,15 +14,17 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
-  name           String    @unique
-  passwordHashed String    @db.Text
-  registeredAt   DateTime  @default(now())
-  deletedAt      DateTime?
-  following      Follow[]  @relation("UserFollowing")
-  followers      Follow[]  @relation("UserFollowers")
-  posts          Post[]
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  name               String              @unique
+  passwordHashed     String              @db.Text
+  registeredAt       DateTime            @default(now())
+  deletedAt          DateTime?
+  emailVerifiedAt    DateTime?
+  following          Follow[]            @relation("UserFollowing")
+  followers          Follow[]            @relation("UserFollowers")
+  posts              Post[]
+  boardSubscriptions BoardSubscription[]
 
   rates    Rate[]
   comments Comment[]
@@ -44,11 +46,25 @@ model Follow {
 }
 
 model Board {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  posts       Post[]
+  id            String              @id @default(uuid())
+  name          String              @unique
+  description   String?
+  createdAt     DateTime            @default(now())
+  posts         Post[]
+  subscriptions BoardSubscription[]
+}
+
+model BoardSubscription {
+  userId    String
+  boardId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@id([userId, boardId])
+  @@index([userId])
+  @@index([boardId])
 }
 
 model Post {

@@ -210,11 +210,20 @@ export class PostService {
     return this.transformPostToDto(updated);
   }
 
-  async deletePost(id: string): Promise<PostResponseDto> {
-    const post = await this.prisma.post.delete({
+  async deletePost(id: string, userId: string): Promise<PostResponseDto> {
+    const post = await this.prisma.post.findUnique({
       where: { id },
     });
-    return plainToInstance(PostResponseDto, post);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You can only delete your own post');
+    }
+    const deleted = await this.prisma.post.delete({
+      where: { id },
+    });
+    return plainToInstance(PostResponseDto, deleted);
   }
 
   async incrementHits(id: string): Promise<PostResponseDto> {

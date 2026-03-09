@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/auth.guard';
@@ -41,7 +42,13 @@ export class PostController {
   }
 
   @Get('drafts/:userId')
-  async getDraftsByAuthor(@Param('userId') userId: string): Promise<PostResponseDto[]> {
+  async getDraftsByAuthor(
+    @Param('userId') userId: string,
+    @CurrentUser() user: User,
+  ): Promise<PostResponseDto[]> {
+    if (user.id !== userId) {
+      throw new ForbiddenException('You can only view your own drafts');
+    }
     return this.postService.drafts(userId);
   }
 
@@ -73,8 +80,8 @@ export class PostController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deletePost(@Param('id') id: string): Promise<void> {
-    await this.postService.deletePost(id);
+  async deletePost(@Param('id') id: string, @CurrentUser() user: User): Promise<void> {
+    await this.postService.deletePost(id, user.id);
   }
 
   @Get('rating/:id')

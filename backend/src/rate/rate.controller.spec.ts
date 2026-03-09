@@ -7,6 +7,16 @@ import { UpdateRateDto } from './dto/update-rate.dto';
 import { RateController } from './rate.controller';
 import { RateService } from './rate.service';
 
+const mockUser = {
+  id: 'user-123',
+  email: 'test@example.com',
+  name: 'Test User',
+  passwordHashed: '',
+  registeredAt: new Date(),
+  deletedAt: null,
+  emailVerifiedAt: null,
+};
+
 describe('RateController', () => {
   let controller: RateController;
   let mockRateService: jest.Mocked<RateService>;
@@ -35,7 +45,6 @@ describe('RateController', () => {
   describe('create', () => {
     it('should create a rate and return RateResponseDto', async () => {
       const createRateDto: CreateRateDto = {
-        userId: 'user-123',
         postId: 'post-456',
         isLike: true,
       };
@@ -47,24 +56,23 @@ describe('RateController', () => {
 
       mockRateService.create.mockResolvedValue(rateResponseDto);
 
-      const result = await controller.create(createRateDto);
+      const result = await controller.create(createRateDto, mockUser as any);
 
       expect(result).toEqual(rateResponseDto);
-      expect(mockRateService.create).toHaveBeenCalledWith(createRateDto);
+      expect(mockRateService.create).toHaveBeenCalledWith('user-123', createRateDto);
     });
 
-    it('should pass CreateRateDto to service.create', async () => {
+    it('should pass current user id and CreateRateDto to service.create', async () => {
       const createRateDto: CreateRateDto = {
-        userId: 'user-789',
         postId: 'post-999',
         isLike: false,
       };
 
       mockRateService.create.mockResolvedValue({} as RateResponseDto);
 
-      await controller.create(createRateDto);
+      await controller.create(createRateDto, mockUser as any);
 
-      expect(mockRateService.create).toHaveBeenCalledWith(createRateDto);
+      expect(mockRateService.create).toHaveBeenCalledWith('user-123', createRateDto);
       expect(mockRateService.create).toHaveBeenCalledTimes(1);
     });
   });

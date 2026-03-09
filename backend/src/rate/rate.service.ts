@@ -12,8 +12,8 @@ import { UpdateRateDto } from './dto/update-rate.dto';
 export class RateService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createRateDto: CreateRateDto): Promise<RateResponseDto> {
-    const { userId, postId, isLike } = createRateDto;
+  async create(userId: string, createRateDto: CreateRateDto): Promise<RateResponseDto> {
+    const { postId, isLike } = createRateDto;
     const rate = await this.prisma.rate.create({
       data: {
         userId,

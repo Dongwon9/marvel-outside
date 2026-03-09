@@ -41,9 +41,13 @@ async function bootstrap() {
   const port = configService.get<number>('PORT') ?? 3000;
   app.useLogger(app.get(Logger));
   app.use(cookieParser());
+  const sessionSecret = configService.get<string>('SESSION_SECRET');
+  if (nodeEnv === 'production' && !sessionSecret) {
+    throw new Error('SESSION_SECRET is required in production');
+  }
   app.use(
     session({
-      secret: configService.get<string>('SESSION_SECRET') || 'very-important-secret-key',
+      secret: sessionSecret || 'dev-secret-not-for-production',
       resave: false,
       saveUninitialized: false,
       cookie: {

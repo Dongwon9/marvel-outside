@@ -44,8 +44,8 @@ describe('RateService', () => {
 
   describe('create', () => {
     it('should create a rate and return RateResponseDto', async () => {
+      const userId = 'user-123';
       const createRateDto: CreateRateDto = {
-        userId: 'user-123',
         postId: 'post-456',
         isLike: true,
       };
@@ -58,7 +58,7 @@ describe('RateService', () => {
 
       jest.spyOn(prisma.rate, 'create').mockResolvedValueOnce(mockRate as any);
 
-      const result = await service.create(createRateDto);
+      const result = await service.create(userId, createRateDto);
 
       expect(prisma.rate.create).toHaveBeenCalledWith({
         data: {

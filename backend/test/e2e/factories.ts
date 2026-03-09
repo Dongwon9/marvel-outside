@@ -72,13 +72,11 @@ export class E2ECommentFactory {
 
 export class E2ERateFactory {
   static createRateDto(
-    userId: string,
     postId: string,
     isLike: boolean = true,
     overrides?: Partial<CreateRateDto>,
   ): CreateRateDto {
     return {
-      userId,
       postId,
       isLike,
       ...overrides,
@@ -86,11 +84,10 @@ export class E2ERateFactory {
   }
 
   static createMultipleRateDtos(
-    userIds: string[],
-    postId: string,
+    postIds: string[],
     isLike: boolean = true,
   ): CreateRateDto[] {
-    return userIds.map(userId => this.createRateDto(userId, postId, isLike));
+    return postIds.map(postId => this.createRateDto(postId, isLike));
   }
 }
 

@@ -8,9 +8,12 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  ForbiddenException,
 } from '@nestjs/common';
 
+import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { Public } from '@/auth/decorators/public.decorator';
+import type { User } from '@/generated/prisma/client';
 import { UserResponseDto } from '@/user/dto/user-response.dto';
 
 import { CreateFollowDto } from './dto/create-follow.dto';
@@ -22,24 +25,32 @@ import { FollowService } from './follow.service';
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
-  // 사용자 팔로우
+  // 사용자 팔로우 (followerId는 로그인 사용자로 고정)
   @Post('users/:userId/follow')
   @HttpCode(HttpStatus.CREATED)
   async follow(
-    @Param('userId') followerId: string,
+    @Param('userId') userId: string,
     @Body() createFollowDto: CreateFollowDto,
+    @CurrentUser() user: User,
   ): Promise<FollowResponseDto> {
-    return this.followService.follow(followerId, createFollowDto);
+    if (user.id !== userId) {
+      throw new ForbiddenException('You can only follow as yourself');
+    }
+    return this.followService.follow(user.id, createFollowDto);
   }
 
-  // 사용자 언팔로우
+  // 사용자 언팔로우 (followerId는 로그인 사용자로 고정)
   @Delete('users/:userId/follow/:followingId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async unfollow(
-    @Param('userId') followerId: string,
+    @Param('userId') userId: string,
     @Param('followingId') followingId: string,
+    @CurrentUser() user: User,
   ): Promise<void> {
-    await this.followService.unfollow(followerId, followingId);
+    if (user.id !== userId) {
+      throw new ForbiddenException('You can only unfollow as yourself');
+    }
+    await this.followService.unfollow(user.id, followingId);
   }
 
   // 특정 사용자의 팔로워 목록

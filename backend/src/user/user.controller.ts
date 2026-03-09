@@ -9,6 +9,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  ForbiddenException,
 } from '@nestjs/common';
 
 import { CurrentUser } from '@/auth/decorators/current-user.decorator';
@@ -63,7 +64,11 @@ export class UserController {
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: User,
   ): Promise<UserResponseDto> {
+    if (user.id !== id) {
+      throw new ForbiddenException('You can only update your own profile');
+    }
     return this.userService.updateUser(id, updateUserDto);
   }
 
